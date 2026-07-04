@@ -1,0 +1,5 @@
+{ "config": { "slug":"test-cta","topic":"cta","totalDuration":5 },
+  "scenes":[{ "id":"s1","type":"cta","start":0,"duration":5,
+    "headline":"pH = **ONE NUMBER**","subheadline":"A hydrogen-ion headcount.",
+    "bg":"#0B0E14","fg":"#FFFFFF","accent":"#FFD60A",
+    "captions":["That's the whole idea."] }] }

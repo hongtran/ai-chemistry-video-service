@@ -1,0 +1,452 @@
+{
+  "config": {
+    "topic": "How does the pH scale work?",
+    "slug": "how-does-the-ph-scale-work",
+    "totalDuration": 67.37,
+    "width": 1080,
+    "height": 1920,
+    "audio": "assets/tts/narration.mp3"
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "type": "cover",
+      "eyebrow": "Understanding pH",
+      "headline": "What is the pH scale?",
+      "captions": [
+        "The pH scale is",
+        "a simple way",
+        "to measure how acidic",
+        "or basic a substance is."
+      ],
+      "bg": "#0b1020",
+      "fg": "#f1f5f9",
+      "accent": "#a855f7",
+      "start": 0,
+      "duration": 6.37,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "The pH scale is",
+          "start": 0,
+          "end": 1.8
+        },
+        {
+          "text": "a simple way",
+          "start": 1.8,
+          "end": 2.58
+        },
+        {
+          "text": "to measure how acidic",
+          "start": 2.58,
+          "end": 3.68
+        },
+        {
+          "text": "or basic a substance is.",
+          "start": 3.68,
+          "end": 5.84
+        }
+      ]
+    },
+    {
+      "id": "scale-range",
+      "type": "ph-bar",
+      "eyebrow": "The range",
+      "headline": "From 0 to 14",
+      "captions": [
+        "It ranges from zero to fourteen,",
+        "with seven being neutral,",
+        "which is what you'd find",
+        "in pure water."
+      ],
+      "bg": "#0b1020",
+      "fg": "#f1f5f9",
+      "accent": "#fbbf24",
+      "title": "THE pH SCALE",
+      "targetPh": 7,
+      "start": 6.37,
+      "duration": 5.66,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "It ranges from zero to fourteen,",
+          "start": 0.15,
+          "end": 1.85
+        },
+        {
+          "text": "with seven being neutral,",
+          "start": 1.85,
+          "end": 2.97
+        },
+        {
+          "text": "which is what you'd find",
+          "start": 3.43,
+          "end": 4.27
+        },
+        {
+          "text": "in pure water.",
+          "start": 4.27,
+          "end": 4.95
+        }
+      ]
+    },
+    {
+      "id": "acidic-basic",
+      "type": "diagram",
+      "eyebrow": "Acidic vs Basic",
+      "headline": "Below 7 is acidic, above is basic",
+      "captions": [
+        "Anything below seven",
+        "is considered acidic,",
+        "while anything above seven",
+        "is basic, or alkaline."
+      ],
+      "bg": "#1a0e0e",
+      "fg": "#f1f5f9",
+      "accent": "#ef4444",
+      "items": [
+        {
+          "label": "Acidic",
+          "color": "#ef4444"
+        },
+        {
+          "label": "Neutral",
+          "color": "#fbbf24"
+        },
+        {
+          "label": "Basic",
+          "color": "#22c55e"
+        }
+      ],
+      "start": 12.03,
+      "duration": 6.14,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Anything below seven",
+          "start": 0.15,
+          "end": 1.03
+        },
+        {
+          "text": "is considered acidic,",
+          "start": 1.03,
+          "end": 2.05
+        },
+        {
+          "text": "while anything above seven",
+          "start": 2.65,
+          "end": 3.97
+        },
+        {
+          "text": "is basic, or alkaline.",
+          "start": 3.97,
+          "end": 5.77
+        }
+      ]
+    },
+    {
+      "id": "logarithmic-scale",
+      "type": "stats",
+      "eyebrow": "Logarithmic scale",
+      "headline": "Tenfold difference",
+      "captions": [
+        "This scale is logarithmic,",
+        "meaning each whole number change",
+        "represents a tenfold difference",
+        "in acidity or basicity."
+      ],
+      "bg": "#0b1020",
+      "fg": "#f1f5f9",
+      "accent": "#3b82f6",
+      "stat": "10×",
+      "statLabel": "difference per unit",
+      "start": 18.17,
+      "duration": 7.57,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This scale is logarithmic,",
+          "start": 0.15,
+          "end": 1.97
+        },
+        {
+          "text": "meaning each whole number change",
+          "start": 2.49,
+          "end": 3.93
+        },
+        {
+          "text": "represents a tenfold difference",
+          "start": 3.93,
+          "end": 5.51
+        },
+        {
+          "text": "in acidity or basicity.",
+          "start": 5.51,
+          "end": 7.09
+        }
+      ]
+    },
+    {
+      "id": "example",
+      "type": "ph-bar",
+      "eyebrow": "Example",
+      "headline": "pH comparison",
+      "captions": [
+        "For example, a substance",
+        "with a pH of three is",
+        "ten times more acidic than",
+        "one with a pH of four."
+      ],
+      "bg": "#0b1020",
+      "fg": "#f1f5f9",
+      "accent": "#a855f7",
+      "title": "pH COMPARISON",
+      "targetPh": 3,
+      "start": 25.74,
+      "duration": 6.97,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "For example, a substance",
+          "start": 0.15,
+          "end": 1.5
+        },
+        {
+          "text": "with a pH of three is",
+          "start": 1.5,
+          "end": 3.1
+        },
+        {
+          "text": "ten times more acidic than",
+          "start": 3.1,
+          "end": 4.6
+        },
+        {
+          "text": "one with a pH of four.",
+          "start": 4.6,
+          "end": 6.97
+        }
+      ]
+    },
+    {
+      "id": "ion-concentration",
+      "type": "particle-count",
+      "eyebrow": "Ion concentrations",
+      "headline": "Hydrogen vs Hydroxide",
+      "captions": [
+        "Acids have a higher concentration",
+        "of hydrogen ions,",
+        "while bases have more",
+        "hydroxide ions."
+      ],
+      "bg": "#0b1020",
+      "fg": "#f1f5f9",
+      "accent": "#ef4444",
+      "particleLabel": "H⁺",
+      "particleColor": "#ef4444",
+      "targetCount": 10,
+      "containerLabel": "Acidic solution",
+      "result": "More acidic",
+      "start": 32.71,
+      "duration": 6.12,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Acids have a higher concentration",
+          "start": 0.15,
+          "end": 1.33
+        },
+        {
+          "text": "of hydrogen ions,",
+          "start": 1.33,
+          "end": 2.39
+        },
+        {
+          "text": "while bases have more",
+          "start": 2.87,
+          "end": 4.09
+        },
+        {
+          "text": "hydroxide ions.",
+          "start": 4.09,
+          "end": 5.17
+        }
+      ]
+    },
+    {
+      "id": "everyday-substances",
+      "type": "diagram",
+      "eyebrow": "In everyday life",
+      "headline": "pH levels of common items",
+      "captions": [
+        "Everyday substances have",
+        "different pH levels;",
+        "lemon juice, for instance,",
+        "is acidic with a pH around two,",
+        "while baking soda is basic,",
+        "sitting around nine."
+      ],
+      "bg": "#1a0e0e",
+      "fg": "#f1f5f9",
+      "accent": "#22c55e",
+      "items": [
+        {
+          "label": "Lemon juice",
+          "color": "#ef4444"
+        },
+        {
+          "label": "pH 2",
+          "color": "#ef4444"
+        },
+        {
+          "label": "Baking soda",
+          "color": "#22c55e"
+        },
+        {
+          "label": "pH 9",
+          "color": "#22c55e"
+        }
+      ],
+      "start": 38.83,
+      "duration": 10.02,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Everyday substances have",
+          "start": 0.15,
+          "end": 1.21
+        },
+        {
+          "text": "different pH levels;",
+          "start": 1.21,
+          "end": 2.27
+        },
+        {
+          "text": "lemon juice, for instance,",
+          "start": 3.15,
+          "end": 4.07
+        },
+        {
+          "text": "is acidic with a pH around two,",
+          "start": 4.17,
+          "end": 6.35
+        },
+        {
+          "text": "while baking soda is basic,",
+          "start": 6.35,
+          "end": 7.99
+        },
+        {
+          "text": "sitting around nine.",
+          "start": 8.51,
+          "end": 10.02
+        }
+      ]
+    },
+    {
+      "id": "importance",
+      "type": "cta",
+      "eyebrow": "",
+      "headline": "Why it matters",
+      "captions": [
+        "Understanding the pH scale is crucial,",
+        "not just in chemistry labs,",
+        "but in everyday life.",
+        "From maintaining a healthy pool",
+        "to ensuring the right soil conditions",
+        "for plants."
+      ],
+      "bg": "#0b1020",
+      "fg": "#f1f5f9",
+      "accent": "#fbbf24",
+      "subheadline": "It's essential in daily life.",
+      "start": 48.85,
+      "duration": 10.3,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Understanding the pH scale is crucial,",
+          "start": 0.15,
+          "end": 1.95
+        },
+        {
+          "text": "not just in chemistry labs,",
+          "start": 2.55,
+          "end": 3.67
+        },
+        {
+          "text": "but in everyday life.",
+          "start": 3.87,
+          "end": 4.99
+        },
+        {
+          "text": "From maintaining a healthy pool",
+          "start": 5.27,
+          "end": 6.79
+        },
+        {
+          "text": "to ensuring the right soil conditions",
+          "start": 6.79,
+          "end": 8.79
+        },
+        {
+          "text": "for plants.",
+          "start": 8.79,
+          "end": 9.47
+        }
+      ]
+    },
+    {
+      "id": "closing",
+      "type": "cover",
+      "eyebrow": "Next time",
+      "headline": "You're measuring more than numbers",
+      "captions": [
+        "So next time you check",
+        "the pH of something,",
+        "you'll know you're measuring",
+        "its acidity or basicity",
+        "on a scale that tells",
+        "a lot more than just numbers."
+      ],
+      "bg": "#0b1020",
+      "fg": "#f1f5f9",
+      "accent": "#a855f7",
+      "start": 59.15,
+      "duration": 8.22,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "So next time you check",
+          "start": 0.15,
+          "end": 1.05
+        },
+        {
+          "text": "the pH of something,",
+          "start": 1.05,
+          "end": 2.07
+        },
+        {
+          "text": "you'll know you're measuring",
+          "start": 2.53,
+          "end": 3.33
+        },
+        {
+          "text": "its acidity or basicity",
+          "start": 3.33,
+          "end": 5.01
+        },
+        {
+          "text": "on a scale that tells",
+          "start": 5.01,
+          "end": 6.41
+        },
+        {
+          "text": "a lot more than just numbers.",
+          "start": 6.41,
+          "end": 7.87
+        }
+      ]
+    }
+  ]
+}

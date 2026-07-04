@@ -1,0 +1,11 @@
+{
+  "config": { "slug": "test-particle-count", "topic": "pc test", "totalDuration": 5 },
+  "scenes": [{
+    "id": "s1", "type": "particle-count", "start": 0, "duration": 5,
+    "eyebrow": "The measure", "headline": "pH = an **H⁺** headcount",
+    "bg": "#FF3B30", "fg": "#FFFFFF", "accent": "#FFD60A",
+    "particleLabel": "H⁺", "particleColor": "#FFFFFF", "targetCount": 12,
+    "containerLabel": "Acidic solution", "result": "More H⁺ → lower pH",
+    "captions": ["Count the **hydrogen ions**.", "More ions, stronger acid."]
+  }]
+}

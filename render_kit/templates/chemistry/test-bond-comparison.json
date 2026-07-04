@@ -1,0 +1,11 @@
+{
+  "config": { "slug": "test-bond-comparison", "topic": "Bond comparison test", "totalDuration": 7 },
+  "scenes": [{
+    "id": "s1", "type": "bond-comparison", "start": 0, "duration": 7,
+    "ionicAtom1": "Na", "ionicAtom2": "Cl",
+    "covalentAtom1": "H", "covalentAtom2": "H",
+    "bg": "#0B0E14", "fg": "#FFFFFF", "accent": "#FFD60A",
+    "headline": "**STEAL** vs **SHARE**",
+    "captions": ["Ionic bonds transfer electrons; covalent bonds share them.", "The difference determines a compound's properties."]
+  }]
+}

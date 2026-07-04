@@ -1,0 +1,6 @@
+{ "config": { "slug":"test-diagram","topic":"diagram","totalDuration":5 },
+  "scenes":[{ "id":"s1","type":"diagram","start":0,"duration":5,
+    "eyebrow":"Everyday chemistry","headline":"The scale is **everywhere**",
+    "bg":"#0B0E14","fg":"#FFFFFF","accent":"#FFD60A",
+    "items":["Battery acid","Lemon","Water","Soap","Bleach"],
+    "captions":["From acid to base —","it surrounds you."] }] }

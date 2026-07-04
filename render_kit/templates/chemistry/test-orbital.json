@@ -1,0 +1,10 @@
+{
+  "config": { "slug": "test-orbital", "topic": "Orbital test", "totalDuration": 7 },
+  "scenes": [{
+    "id": "s1", "type": "orbital-overlap", "start": 0, "duration": 7,
+    "atom1": "H", "atom2": "H",
+    "bg": "#1ABC9C", "fg": "#0B0E14", "accent": "#0B0E14",
+    "headline": "Clouds **overlap**",
+    "captions": ["Two hydrogen atoms share electrons to form a stable bond.", "This sharing creates a covalent bond."]
+  }]
+}

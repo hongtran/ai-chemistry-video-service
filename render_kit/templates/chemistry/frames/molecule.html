@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+/* SB-1 */
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;800;900&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; }
+#eyebrow { position:absolute; top:120px; left:0; right:0; text-align:center; font-family:'Inter',sans-serif; font-size:34px; font-weight:800; letter-spacing:6px; text-transform:uppercase; opacity:.85; }
+#hero { position:absolute; top:340px; left:0; right:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:28px; }
+#mol-title { font-family:'Anton',sans-serif; font-size:52px; font-weight:400; color:{{fg}}; text-align:center; }
+#mol-svg { overflow:visible; }
+.bond-line { stroke:{{fg}}; stroke-width:8; stroke-linecap:round; fill:none; }
+.atom-label { font-family:'Anton',sans-serif; font-size:40px; font-weight:400; fill:#FFFFFF; text-anchor:middle; dominant-baseline:central; }
+#headline { position:absolute; top:1100px; left:0; right:0; text-align:center; padding:0 80px; font-family:'Anton',sans-serif; font-weight:400; font-size:120px; line-height:.98; text-transform:uppercase; }
+#caption-zone { position:absolute; bottom:180px; left:0; right:0; padding:0 90px; display:flex; align-items:center; justify-content:center; }
+#caption { position:relative; width:100%; height:2.4em; }
+.hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div id="eyebrow">{{eyebrow}}</div>
+    <div id="hero">
+      <div id="mol-title">{{title}}</div>
+      <svg id="mol-svg" viewBox="0 0 720 560" width="720" height="560"></svg>
+    </div>
+    <div id="headline">{{headline}}</div>
+    <div id="caption-zone"><div id="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+/* SB-2 */
+function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+['eyebrow','headline'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hfHighlight(t); });
+function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.style.cssText='position:absolute;width:100%;left:0;top:50%;transform:translateY(-50%);font-family:Inter,sans-serif;font-size:66px;font-weight:900;text-align:center;line-height:1.25;opacity:0;'; d.innerHTML=hfHighlight(c.text); host.appendChild(d); return d; }); }
+function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); } }); }
+
+var ns = 'http://www.w3.org/2000/svg';
+var cx = 360, cy = 210, bondLen = 220, r = 64;
+var centerSymbol = '{{centerSymbol}}';
+var centerColor  = '{{centerColor}}';
+var leftSymbol   = '{{leftSymbol}}';
+var leftColor    = '{{leftColor}}';
+var rightSymbol  = '{{rightSymbol}}';
+var rightColor   = '{{rightColor}}';
+var bondOrder    = parseInt('{{bondOrder}}') || 1;
+var angle        = parseFloat('{{angle}}') || 109.5;
+var half         = (angle / 2) * Math.PI / 180;
+
+var lx = cx - bondLen * Math.sin(half);
+var ly = cy + bondLen * Math.cos(half);
+var rx = cx + bondLen * Math.sin(half);
+var ry = cy + bondLen * Math.cos(half);
+
+var atoms = [
+  { id: 'center', x: cx, y: cy, symbol: centerSymbol, color: centerColor },
+  { id: 'left',   x: lx, y: ly, symbol: leftSymbol,   color: leftColor   },
+  { id: 'right',  x: rx, y: ry, symbol: rightSymbol,  color: rightColor  },
+];
+
+var svg = document.getElementById('mol-svg');
+var bondEls = [];
+
+function makeLine(x1, y1, x2, y2) {
+  var len = Math.hypot(x2 - x1, y2 - y1);
+  var el = document.createElementNS(ns, 'line');
+  el.setAttribute('x1', x1); el.setAttribute('y1', y1);
+  el.setAttribute('x2', x2); el.setAttribute('y2', y2);
+  el.setAttribute('class', 'bond-line');
+  el.setAttribute('stroke-dasharray', len);
+  el.setAttribute('stroke-dashoffset', len);
+  svg.appendChild(el);
+  bondEls.push(el);
+  return el;
+}
+
+function drawBond(a, b) {
+  if (bondOrder === 2) {
+    var dx = b.x - a.x, dy = b.y - a.y;
+    var len = Math.hypot(dx, dy);
+    var ox = (-dy / len) * 10, oy = (dx / len) * 10;
+    makeLine(a.x + ox, a.y + oy, b.x + ox, b.y + oy);
+    makeLine(a.x - ox, a.y - oy, b.x - ox, b.y - oy);
+  } else {
+    makeLine(a.x, a.y, b.x, b.y);
+  }
+}
+
+drawBond(atoms[0], atoms[1]);
+drawBond(atoms[0], atoms[2]);
+
+atoms.forEach(function(atom) {
+  var circle = document.createElementNS(ns, 'circle');
+  circle.setAttribute('cx', atom.x); circle.setAttribute('cy', atom.y);
+  circle.setAttribute('r', r); circle.setAttribute('fill', atom.color);
+  circle.setAttribute('id', 'atom-' + atom.id);
+  svg.appendChild(circle);
+
+  var text = document.createElementNS(ns, 'text');
+  text.setAttribute('x', atom.x); text.setAttribute('y', atom.y);
+  text.setAttribute('class', 'atom-label');
+  text.textContent = atom.symbol;
+  svg.appendChild(text);
+});
+
+gsap.set('#mol-title',     { opacity: 0, y: -20 });
+gsap.set('[id^="atom-"]',  { scale: 0, transformOrigin: 'center' });
+gsap.set('.atom-label',    { opacity: 0 });
+gsap.set('#eyebrow',       { opacity: 0, y: -12 });
+gsap.set('#headline',      { opacity: 0, scale: 1.25 });
+
+var tl = gsap.timeline({ paused: true });
+tl.to('#eyebrow',    { opacity: 1, y: 0, duration: 0.3, ease: 'power2.out' }, 0);
+tl.to('#mol-title',  { opacity: 1, y: 0, duration: 0.5, ease: 'power3.out' }, 0.1);
+bondEls.forEach(function(el, i) {
+  tl.to(el, { strokeDashoffset: 0, duration: 0.5, ease: 'power2.inOut' }, 0.3 + i * 0.1);
+});
+tl.to('[id^="atom-"]', { scale: 1, duration: 0.4, ease: 'back.out(1.4)', stagger: 0.1 }, 0.5);
+tl.to('.atom-label',   { opacity: 1, duration: 0.3, stagger: 0.1 }, 0.7);
+tl.to('#headline',     { opacity: 1, scale: 1, duration: 0.35, ease: 'back.out(1.6)' }, 0.8);
+
+var captionTiming = {{captionTiming}};
+var chunks = hfBuildCaptions(captionTiming);
+hfAnimateCaptions(tl, chunks, captionTiming);
+
+window.__timelines['{{id}}'] = tl;
+</script>
+</template>
+</body>
+</html>

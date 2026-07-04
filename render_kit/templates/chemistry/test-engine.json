@@ -1,0 +1,7 @@
+{
+  "config": { "slug": "test-engine", "topic": "engine test", "totalDuration": 6, "width": 1080, "height": 1920 },
+  "scenes": [
+    { "id": "s1", "type": "cover", "start": 0, "duration": 3, "headline": "A", "transition": "cut" },
+    { "id": "s2", "type": "cover", "start": 3, "duration": 3, "headline": "B" }
+  ]
+}

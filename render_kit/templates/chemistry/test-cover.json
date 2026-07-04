@@ -1,0 +1,9 @@
+{
+  "config": { "slug": "test-cover", "topic": "cover test", "totalDuration": 4 },
+  "scenes": [{
+    "id": "s1", "type": "cover", "start": 0, "duration": 4,
+    "eyebrow": "The question", "headline": "What makes lemon **BURN**?",
+    "bg": "#0B0E14", "fg": "#FFFFFF", "accent": "#FF3B30",
+    "captions": ["A glimpse of the answer...", "It is all **one scale**."]
+  }]
+}

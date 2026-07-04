@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+/* SB-1 */
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;800;900&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; }
+#eyebrow { position:absolute; top:120px; left:0; right:0; text-align:center; font-family:'Inter',sans-serif; font-size:34px; font-weight:800; letter-spacing:6px; text-transform:uppercase; opacity:.85; }
+#caption-zone { position:absolute; bottom:230px; left:0; right:0; padding:0 90px; display:flex; align-items:center; justify-content:center; }
+#caption { position:relative; width:100%; height:2.4em; }
+.hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+/* CTA overrides — headline centered within #hero zone */
+#hero { position:absolute; top:0; left:0; right:0; bottom:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:36px; }
+#headline { font-family:'Anton',sans-serif; font-weight:400; font-size:150px; line-height:.98; text-transform:uppercase; text-align:center; padding:0 80px; }
+#subheadline { font-family:'Inter',sans-serif; font-size:40px; font-weight:800; text-align:center; padding:0 80px; opacity:.85; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div id="hero">
+      <div id="headline">{{headline}}</div>
+      <div id="subheadline">{{subheadline}}</div>
+    </div>
+    <div id="caption-zone"><div id="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+/* SB-2 */
+function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+['eyebrow','headline'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hfHighlight(t); });
+function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.style.cssText='position:absolute;width:100%;left:0;top:50%;transform:translateY(-50%);font-family:Inter,sans-serif;font-size:66px;font-weight:900;text-align:center;line-height:1.25;opacity:0;'; d.innerHTML=hfHighlight(c.text); host.appendChild(d); return d; }); }
+function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); } }); }
+
+gsap.set('#headline',   { opacity:0, scale:1.25 });
+gsap.set('#subheadline',{ opacity:0, y:16 });
+
+var tl = gsap.timeline({ paused:true });
+tl.to('#headline',    { opacity:1, scale:1, duration:0.35, ease:'back.out(1.6)' }, 0.15);
+tl.to('#subheadline', { opacity:1, y:0,    duration:0.5,  ease:'power3.out'     }, 0.65);
+
+var captionTiming = {{captionTiming}};
+var chunks = hfBuildCaptions(captionTiming);
+hfAnimateCaptions(tl, chunks, captionTiming);
+
+window.__timelines['{{id}}'] = tl;
+</script>
+</template>
+</body>
+</html>

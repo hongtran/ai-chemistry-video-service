@@ -1,0 +1,11 @@
+{
+  "config": { "slug": "test-atom", "topic": "Atom test", "totalDuration": 7 },
+  "scenes": [{
+    "id": "s1", "type": "atom", "start": 0, "duration": 7,
+    "title": "Sodium — Na", "symbol": "Na",
+    "bg": "#1ABC9C", "fg": "#0B0E14", "accent": "#0B0E14",
+    "headline": "1 electron, wants **2**",
+    "shell1": 2, "shell2": 8, "shell3": 1,
+    "captions": ["Sodium has 11 electrons.", "Two in the first shell, eight in the second,", "and one in its outer shell."]
+  }]
+}

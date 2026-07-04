@@ -1,0 +1,159 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Chemistry HyperFrames Data",
+  "type": "object",
+  "required": ["config", "scenes"],
+  "properties": {
+    "config": {
+      "type": "object",
+      "required": ["topic", "slug", "totalDuration"],
+      "properties": {
+        "topic":         { "type": "string", "description": "Human-readable topic title" },
+        "slug":          { "type": "string", "description": "kebab-case output directory name" },
+        "totalDuration": { "type": "number", "description": "Total video duration in seconds" },
+        "width":         { "type": "number" },
+        "height":        { "type": "number" },
+        "bgm":           { "type": "string", "description": "BGM path relative to videos/<slug>/" },
+        "audio":         { "type": "string", "description": "Single full-script narration path relative to videos/<slug>/. Written by scripts/align-captions.mjs; replaces the old per-scene scenes[].audio." },
+        "voiceStyle":    { "type": "string", "description": "Metadata for LLM pipeline; not used at render" }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "start", "duration"],
+        "properties": {
+          "id":         { "type": "string", "description": "Unique kebab-case id → filename and composition-id" },
+          "type": {
+            "type": "string",
+            "description": "Frame type selector. All types render at the canvas size given by config.width/height (9:16 vertical by default).",
+            "enum": ["cover", "stats", "quote", "diagram", "cta",
+                     "atom", "element-card", "reaction-equation", "molecule",
+                     "ph-bar", "orbital-overlap", "bond-comparison",
+                     "particle-count", "tug-of-war"],
+            "typeUsage": {
+              "cover": "DEFAULT for the opening scene / topic intro. A safe general choice.",
+              "stats": "use when the scene centers on ONE striking number or figure.",
+              "diagram": "DEFAULT for general explanatory content — a set of labelled ideas/steps with no dedicated visual. A safe general choice when nothing more specific fits.",
+              "cta": "DEFAULT for the closing scene / takeaway / call to action.",
+              "atom": "use ONLY when the narration describes a specific element's atomic structure or electron shells.",
+              "molecule": "use ONLY for a specific named molecule/compound whose atoms are being described (e.g. NaCl, H₂O).",
+              "ph-bar": "use ONLY when the narration is specifically about acidity, alkalinity, or the pH scale.",
+              "orbital-overlap": "use ONLY when the narration is specifically about orbitals overlapping/sharing between two atoms.",
+              "bond-comparison": "use ONLY when directly contrasting an ionic bond vs a covalent bond.",
+              "particle-count": "use ONLY when the narration counts/quantifies particles or ions (e.g. concentration).",
+              "tug-of-war": "use ONLY when the narration frames two atoms competing/pulling for electrons.",
+              "element-card": "use ONLY when the narration is specifically about a single element's properties (atomic number, mass, symbol, etc.)",
+              "reaction-equation": "use ONLY when the narration is specifically about a chemical reaction and its reactants/products. Show the reaction equation with labels.",
+              "quote": "use ONLY when the narration is a pull quote or citation. Show the quote text and attribution."
+            }
+          },
+          "start":    { "type": "number", "description": "Computed by scripts/align-captions.mjs from real narration timestamps once that pipeline has run; hand-authored otherwise." },
+          "duration": { "type": "number", "description": "Computed by scripts/align-captions.mjs from real narration timestamps once that pipeline has run; hand-authored otherwise." },
+          "sfx":      { "anyOf": [{ "type": "string" }, { "type": "null" }] },
+          "transition": { "type": "string", "enum": ["fade", "slide", "cut", "punch", "shake"], "description": "Override default transition" },
+          "overrides": {
+            "type": "object",
+            "description": "Per-scene style token overrides",
+            "properties": {
+              "headlineFontSize":    { "type": "string" },
+              "subheadlineFontSize": { "type": "string" },
+              "statFontSize":        { "type": "string" },
+              "quoteFontSize":       { "type": "string" }
+            }
+          },
+
+          "bg":     { "type": "string", "description": "Full-bleed background color (hex)" },
+          "fg":     { "type": "string", "description": "Foreground/text color (hex)" },
+          "accent": { "type": "string", "description": "Keyword highlight color (hex)" },
+
+          "eyebrow":     { "type": "string" },
+          "headline":    { "type": "string" },
+          "captions": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Naturally-split caption chunks displayed sequentially during the scene. Also doubles as the scene's expected narration text (chunks joined with spaces) for scripts/align-captions.mjs."
+          },
+          "captionTiming": {
+            "type": "array",
+            "description": "Populate-computed, not hand-authored. Written by scripts/align-captions.mjs from real Whisper word timestamps: one {text,start,end} entry per captions[] chunk, start/end in scene-local seconds. If absent, populate.js falls back to evenly spacing captions[] across duration.",
+            "items": {
+              "type": "object",
+              "required": ["text", "start", "end"],
+              "properties": {
+                "text":  { "type": "string" },
+                "start": { "type": "number" },
+                "end":   { "type": "number" }
+              }
+            }
+          },
+
+          "items": {
+            "type": "array",
+            "description": "Sticker chip labels (diagram). Each entry is either a plain string label, or { label, color } for a per-chip background color (e.g. pH markers: 0 red, 7 white, 14 blue) — do not mix in unsupported shapes like nested objects.",
+            "items": { "anyOf": [
+              { "type": "string" },
+              { "type": "object", "required": ["label"], "properties": { "label": { "type": "string" }, "color": { "type": "string", "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$" } } }
+            ] }
+          },
+          "stat":        { "type": "string", "description": "Large stat figure, e.g. '10,000×' or '7' (stats)" },
+          "statLabel":   { "type": "string", "description": "Short label under the stat, e.g. 'more acidic' (stats)" },
+          "quote":       { "type": "string", "description": "Pull quote text (quote)" },
+          "attribution": { "type": "string", "description": "Attribution (quote)" },
+          "subheadline": { "type": "string", "description": "Secondary line under the headline, one short sentence (cta)" },
+
+          "symbol":       { "type": "string", "description": "Short chemical element symbol only, 1-3 characters, e.g. 'H', 'O', 'Na'— NEVER a descriptive phrase like 'Sodium atom'. Rendered large and prominent (a small circle badge on atom, a big card heading on element-card) — will look wrong or overflow if it's not a real short symbol. (atom, element-card)" },
+          "shell1":       { "description": "Electron count on shell 1 (atom)", "anyOf": [{ "type": "number" }, { "type": "string" }] },
+          "shell2":       { "description": "Electron count on shell 2 (atom)", "anyOf": [{ "type": "number" }, { "type": "string" }] },
+          "shell3":       { "description": "Electron count on shell 3 (atom)", "anyOf": [{ "type": "number" }, { "type": "string" }] },
+          "title": {
+            "type": "string",
+            "description": "Scene title label — meaning differs by type: for atom, the element's full name + symbol, e.g. 'Sodium — Na'; for molecule, the compound name/formula, e.g. 'NaCl' or 'H₂'; for ph-bar, a short heading label, e.g. 'THE pH SCALE'. (atom, molecule, ph-bar)"
+          },
+          "atomicNumber": { "anyOf": [{ "type": "number" }, { "type": "string" }], "description": "Atomic number (element-card)" },
+          "atomicMass":   { "anyOf": [{ "type": "number" }, { "type": "string" }], "description": "Atomic mass (element-card)" },
+          "name":         { "type": "string", "description": "Element full name (element-card)" },
+          "color":        { "type": "string", "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", "description": "Card background color (element-card)" },
+
+          "r1":      { "type": "string", "description": "First reactant (reaction-equation)" },
+          "r2":      { "type": "string", "description": "Second reactant, optional — omit if the reaction only has one reactant (reaction-equation)" },
+          "r3":      { "type": "string", "description": "Third reactant, optional (reaction-equation)" },
+          "p1":      { "type": "string", "description": "First product (reaction-equation)" },
+          "p2":      { "type": "string", "description": "Second product, optional — omit if the reaction only has one product (reaction-equation)" },
+          "label":   { "type": "string", "description": "Label above reaction arrow (reaction-equation)" },
+          "eqTitle": { "type": "string", "description": "Equation title (reaction-equation)" },
+
+          "leftSymbol":   { "type": "string", "description": "Short chemical element symbol only, 1-3 characters, e.g. 'Na' — NEVER a descriptive phrase. Renders inside a small fixed-size circle and will visually overflow if too long. (molecule, tug-of-war)" },
+          "centerSymbol": { "type": "string", "description": "Short chemical element symbol only, 1-3 characters. Optional — only set for a 3-atom molecule with a center atom (e.g. H2O's O); omit for a simple 2-atom pair. (molecule)" },
+          "rightSymbol":  { "type": "string", "description": "Short chemical element symbol only, 1-3 characters, e.g. 'Cl' — NEVER a descriptive phrase. Renders inside a small fixed-size circle and will visually overflow if too long. (molecule, tug-of-war)" },
+          "leftColor":    { "type": "string", "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", "description": "Left atom color (molecule, tug-of-war)" },
+          "centerColor":  { "type": "string", "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", "description": "Center atom color. Optional, pairs with centerSymbol. (molecule)" },
+          "rightColor":   { "type": "string", "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", "description": "Right atom color (molecule, tug-of-war)" },
+          "angle":        { "type": "number", "minimum": 0, "maximum": 360, "description": "Bond angle in degrees. 180 = atoms side-by-side (typical for a diatomic pair like H₂ or NaCl); other values angle the bond, mainly useful with a center atom. (molecule)" },
+          "bondOrder":    { "type": "number", "enum": [1, 2], "description": "1 = single, 2 = double bond (molecule)" },
+
+          "targetPh": { "type": "number", "minimum": 0, "maximum": 14, "description": "pH value to highlight 0–14 (ph-bar)" },
+
+          "atom1": { "type": "string", "description": "Short chemical element symbol only, 1-3 characters, e.g. 'H' — NEVER a descriptive phrase like 'Atom A'. Renders inside a small fixed-size circle and will visually overflow if too long. (orbital-overlap)" },
+          "atom2": { "type": "string", "description": "Short chemical element symbol only, 1-3 characters, e.g. 'H' — NEVER a descriptive phrase like 'Atom B'. Renders inside a small fixed-size circle and will visually overflow if too long. (orbital-overlap)" },
+
+          "ionicAtom1":    { "type": "string", "description": "Short chemical element symbol only, 1-3 characters — the electron donor, e.g. 'Na'. Renders inside a small fixed-size circle and will visually overflow if too long. (bond-comparison)" },
+          "ionicAtom2":    { "type": "string", "description": "Short chemical element symbol only, 1-3 characters — the electron acceptor, e.g. 'Cl'. Renders inside a small fixed-size circle and will visually overflow if too long. (bond-comparison)" },
+          "covalentAtom1": { "type": "string", "description": "Short chemical element symbol only, 1-3 characters, e.g. 'H'. Renders inside a small fixed-size circle and will visually overflow if too long. (bond-comparison)" },
+          "covalentAtom2": { "type": "string", "description": "Short chemical element symbol only, 1-3 characters, e.g. 'H'. Renders inside a small fixed-size circle and will visually overflow if too long. (bond-comparison)" },
+
+          "particleLabel": { "type": "string", "description": "Short label shown on each particle icon, e.g. 'H⁺' — 1-3 characters, renders inside a small glyph. (particle-count)" },
+          "particleColor": { "type": "string", "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", "description": "Particle icon color (particle-count)" },
+          "targetCount":   { "anyOf": [{ "type": "number" }, { "type": "string" }], "description": "Number of particle icons to count up to, typically 5-20 for visual clarity (particle-count)" },
+          "containerLabel":{ "type": "string", "description": "Label for the container/vessel holding the particles, e.g. 'Strong acid' or 'pH 2 solution' (particle-count)" },
+          "result":        { "type": "string", "description": "Short concluding label shown once the count-up completes, e.g. 'Highly acidic' (particle-count)" },
+          "mode":          { "type": "string", "enum": ["equal", "unequal"], "description": "'equal' = both atoms pull with the same strength (covalent-leaning, they end up sharing); 'unequal' = one atom dominates (ionic-leaning, it ends up winning outright) (tug-of-war)" },
+          "electrons":     { "anyOf": [{ "type": "number" }, { "type": "string" }], "description": "Number of electrons being contested in the tug-of-war, typically 1-2 (tug-of-war)" },
+          "verb":          { "type": "string", "description": "Present-tense verb describing the pull/interaction shown, e.g. 'pulling', 'winning' (mode: unequal), 'sharing' (mode: equal) (tug-of-war)" }
+        }
+      }
+    }
+  }
+}

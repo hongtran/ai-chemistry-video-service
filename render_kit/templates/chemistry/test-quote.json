@@ -1,0 +1,8 @@
+{ "config": { "slug": "test-quote", "topic": "quote test", "totalDuration": 5 },
+  "scenes": [{
+    "id": "s1", "type": "quote", "start": 0, "duration": 5,
+    "quote": "Chemistry is the study of matter, but I prefer to see it as the study of **change**.",
+    "attribution": "Walter White",
+    "captions": []
+  }]
+}

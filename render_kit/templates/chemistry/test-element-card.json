@@ -1,0 +1,8 @@
+{
+  "config": { "slug": "test-element-card", "topic": "Element card test", "totalDuration": 7 },
+  "scenes": [{
+    "id": "s1", "type": "element-card", "start": 0, "duration": 7,
+    "symbol": "Na", "name": "Sodium", "atomicNumber": 11, "atomicMass": "22.99",
+    "captions": ["Sodium is a **highly reactive** metal.", "It readily gives away its lone outer electron."]
+  }]
+}

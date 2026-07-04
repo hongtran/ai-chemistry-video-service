@@ -1,0 +1,10 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+artifacts/
+.DS_Store
+
+# render_kit generated output / deps (populate.js writes videos/<slug>/, npx caches here)
+render_kit/videos/
+render_kit/node_modules/
