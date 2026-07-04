@@ -1,0 +1,25 @@
+# Secrets — never bake into the image (pass at runtime with --env-file)
+.env
+
+# Local Python virtualenv (platform-specific, huge)
+.venv/
+
+# Python caches
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Generated output / caches
+artifacts/
+render_kit/videos/
+render_kit/node_modules/
+node_modules/
+
+# VCS / OS cruft
+.git/
+.gitignore
+.DS_Store
+**/.DS_Store
+
+# Docs & plans not needed at runtime
+docs/

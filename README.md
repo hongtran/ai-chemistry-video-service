@@ -30,7 +30,7 @@ formatted `"<step>: <reason>"`).
 Chemistry validation is **not** part of the job lifecycle: the LLM guard runs synchronously
 in the POST handler — a non-chemistry query gets an immediate `400` and no job is created.
 
-## Run
+## Run local
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
@@ -50,6 +50,36 @@ the default). No external repo is required. The hyperframes CLI itself is fetche
 runtime via `npx hyperframes@0.7.18`, so rendering needs **Node 18+, npm, and internet**
 (a headless Chromium is downloaded on first run). See `render_kit/README.md` for details
 and a manual render command that produces a video with no OpenAI key.
+
+## Docker
+
+The image bundles everything — Python service **and** the render toolchain (Node,
+system Chromium, ffmpeg) — so no host Node/Chromium is needed.
+
+```bash
+docker build -t chemistry-video-service .
+
+# Stub mode: no credentials, walks the pipeline with placeholder artifacts
+docker run --rm -p 8000:8000 -e USE_STUB_PIPELINE=true chemistry-video-service
+
+# Real mode: pass your env (OPENAI_API_KEY, USE_STUB_PIPELINE=false, …)
+docker run --rm -p 8000:8000 --env-file .env chemistry-video-service
+```
+
+Then hit `http://localhost:8000` (see the API section). `.env` is **not** baked into
+the image (it's in `.dockerignore`) — credentials are passed at runtime.
+
+To keep rendered videos on the host across restarts, mount the artifacts dir:
+`-v "$(pwd)/artifacts:/app/artifacts"`.
+
+## How to test on local
+Access this API doc: http://0.0.0.0:8000/docs then click `Try it out` button for test on that
+
+Notes:
+- Chromium runs software-rendered (no GPU in the container), so rendering is slower
+  than on a GPU host but produces identical output.
+- `CONTAINER=true` (set in the image) makes the hyperframes engine apply the right
+  Chromium sandbox flags automatically.
 
 ## API (base: `/api/v1`)
 
