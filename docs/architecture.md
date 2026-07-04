@@ -23,8 +23,8 @@ Trade-off: an extra LLM round-trip, bounded so jobs can't loop.
 - **In-memory state is ephemeral** (dies with the process). Accepted for the prototype; the Protocol is the seam to make it durable.
 
 ## Video-generation pipeline boundary
-
-  Query
+  ```text
+ Query
     │
     ▼
 narration script      ──▶ script.txt
@@ -57,6 +57,7 @@ narration script      ──▶ script.txt
                                                              │
                                                              ▼
                                               status = COMPLETED, video_path set
+```
 **Decisions & trade-offs**
 - **LLM authors data, not code.** Each run produces a schema-constrained
   `data.json`; the subprocess renders by populating it into a pre-defined set of
@@ -71,13 +72,13 @@ narration script      ──▶ script.txt
 - **Captions come from script + transcript, not guesswork.** Scene-split captions
   are authored from the original script and the transcript text.
   - Trade-off: one extra LLM/transcription call to get **word-level tim
-**Timing is system-computed, never LLM-authored.** The LLM authors scene
+- **Timing is system-computed, never LLM-authored.** The LLM authors scene
   *content* against a relaxed "authoring" schema (no start/duration); alignment +
   `compose` compute the timing and validate the final `data.json` against the full
   schema.
   - Trade-off: two schemas to keep in sync, but it removes a whole class of LLM
     errors (bad/overlapping timings) from the output.
-**Fail loud, no silent fallback.** A persistent alignment failure ends in
+- **Fail loud, no silent fallback.** A persistent alignment failure ends in
   `FAILED` with a clear message rather than shipping a video with mismatched or
   empty caption timing.
   - Trade-off: more outright failures, fewer "completed but subtly wrong" videos —
