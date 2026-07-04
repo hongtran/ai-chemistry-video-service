@@ -39,6 +39,9 @@ cp .env.example .env          # stub mode is on by default; add OPENAI_API_KEY f
 uvicorn app.main:app --reload
 ```
 
+`USE_STUB_PIPELINE=true` (default in `.env.example`) runs a credential-free demo: the guard
+accepts any non-empty query and the pipeline walks all steps with placeholder artifacts.
+
 ## Rendering
 
 The real render step shells out to `render_kit/scripts/build-video.sh` — a vendored,
