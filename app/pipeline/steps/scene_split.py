@@ -12,9 +12,11 @@ from pathlib import Path
 
 import jsonschema
 from openai import AsyncOpenAI
+import logging
 
 from app.config import Settings
 from app.llm.client import with_retries
+logger = logging.getLogger(__name__)
 
 _PROMPT_PATH = Path(__file__).parent.parent / "prompts" / "scene_split.txt"
 _EXAMPLES_PATH = Path(__file__).parent.parent / "prompts" / "scene_examples.json"
@@ -130,10 +132,12 @@ async def generate_scenes(
         f"- {t}: {', '.join(fields) if fields else '(no extra required fields)'}"
         for t, fields in REQUIRED_CONTENT_FIELDS.items()
     )
-    user_parts = [
-        "TRANSCRIPT (what was actually spoken, with punctuation — "
-        f"SOURCE OF TRUTH for captions):\n{transcript_text}",
-        f"NARRATION SCRIPT (reference only; captions must follow the transcript):\n{script}",
+    # Static, query-independent context lives in the system prompt so it forms a
+    # stable prefix OpenAI can cache across requests. author_schema (derived from
+    # the fixed scene schema), required_lines (from the static REQUIRED_CONTENT_FIELDS),
+    # and the golden examples file never change per request.
+    system_parts = [
+        _PROMPT_PATH.read_text("utf-8"),
         "SCENE JSON SCHEMA (one scene object; includes typeUsage guide):\n"
         + json.dumps(author_schema["items"], indent=2),
         "REQUIRED CONTENT FIELDS PER TYPE — every scene MUST include non-empty "
@@ -145,6 +149,13 @@ async def generate_scenes(
         "(captions in the examples are illustrative only; YOUR captions must "
         "copy the transcript verbatim):\n" + _EXAMPLES_PATH.read_text("utf-8"),
     ]
+
+    # Per-request (dynamic) content stays in the user message.
+    user_parts = [
+        "TRANSCRIPT (what was actually spoken, with punctuation — "
+        f"SOURCE OF TRUTH for captions):\n{transcript_text}",
+        f"NARRATION SCRIPT (reference only; captions must follow the transcript):\n{script}",
+    ]
     if alignment_feedback:
         user_parts.append(
             "PREVIOUS ATTEMPT FAILED WORD ALIGNMENT against the audio:\n"
@@ -154,10 +165,9 @@ async def generate_scenes(
         )
 
     messages: list[dict] = [
-        {"role": "system", "content": _PROMPT_PATH.read_text("utf-8")},
+        {"role": "system", "content": "\n\n".join(system_parts)},
         {"role": "user", "content": "\n\n".join(user_parts)},
     ]
-
     last_errors: list[str] = []
     for attempt in (1, 2):
         async def _call() -> str:
@@ -183,6 +193,9 @@ async def generate_scenes(
                     return scenes
 
         if attempt == 1:
+            logger.warning(
+                "scene split attempt 1 failed schema validation: %s", "; ".join(last_errors[:10])
+            )
             messages.append({"role": "assistant", "content": raw})
             messages.append({
                 "role": "user",
@@ -196,5 +209,5 @@ async def generate_scenes(
 
     raise SceneSplitError(
         "LLM scene output failed schema validation after a corrective re-prompt: "
-        + "; ".join(last_errors[:5])
+        + "; ".join(last_errors[:10])
     )
