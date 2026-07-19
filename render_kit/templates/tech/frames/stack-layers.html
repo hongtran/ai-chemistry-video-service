@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --layer-label:54px; --layer-sub:28px; --slab-h:168px; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --layer-label:46px; --layer-sub:26px; --slab-h:150px; --cap-size:44px; --cap-bottom:70px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:250px; text-align:center; }
+#main-clip.horizontal .title { top:120px; text-align:left; }
+
+.stack { position:absolute; z-index:2; display:flex; flex-direction:column; gap:22px; }
+#main-clip.vertical .stack   { left:var(--pad); right:var(--pad); top:470px; }
+#main-clip.horizontal .stack { left:var(--pad); width:860px; top:300px; }
+
+.slab { position:relative; height:var(--slab-h); background:#161B22; border:2px solid rgba(230,237,243,.14); border-radius:24px; display:flex; flex-direction:column; justify-content:center; padding:0 52px; box-shadow:0 16px 40px rgba(0,0,0,.4); }
+.slab-label { font-weight:700; font-size:var(--layer-label); line-height:1.1; }
+.slab-sub { font-family:'JetBrains Mono',monospace; font-size:var(--layer-sub); opacity:.6; margin-top:8px; }
+.slab.focus { border-color:{{accent}}; background:#1E1A10; }
+.slab-ring { position:absolute; inset:-3px; border-radius:26px; border:3px solid {{accent}}; box-shadow:0 0 50px {{accent}}44; opacity:0; }
+/* Badge on the slab's top-right border — never on the label's line, so a
+   long label + long annotation can't collide (was right:34px top:50%). */
+.slab-tag { position:absolute; z-index:3; right:28px; top:-30px; max-width:calc(100% - 56px); overflow:hidden; white-space:nowrap; background:{{accent}}; color:{{bg}}; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px; padding:14px 26px; border-radius:999px; opacity:0; }
+#main-clip.horizontal .slab-tag { display:none; }
+
+.anno { position:absolute; z-index:3; display:none; background:{{accent}}; color:{{bg}}; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:34px; padding:22px 36px; border-radius:20px; white-space:nowrap; opacity:0; }
+#main-clip.horizontal .anno { display:block; }
+.anno-arrow { position:absolute; left:-26px; top:50%; margin-top:-14px; width:0; height:0; border-top:14px solid transparent; border-bottom:14px solid transparent; border-right:26px solid {{accent}}; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <div class="stack"></div>
+    <div class="anno"><span class="anno-arrow"></span><span class="anno-txt">{{annotation}}</span></div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var DUR = parseFloat('{{duration}}') || 4;
+  var VERT = '{{orientation}}' === 'vertical';
+  var PAD = VERT ? 84 : 130;
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var LAYERS = {{layers}};
+  var FOCUS = Number('{{highlightIndex}}');
+  var ANNO = $('.anno-txt').textContent.trim(); // via the DOM — apostrophe-safe
+  var stack = $('.stack');
+  // Horizontal: shrink slabs when there are many layers so the stack
+  // (top:300) clears the caption band (~928+). Vertical has room as-is.
+  var GAP = 22;
+  var slabH = VERT ? 168 : Math.min(150, Math.floor((600 - (LAYERS.length - 1) * GAP) / Math.max(1, LAYERS.length)));
+  if (!VERT) stack.style.setProperty('--slab-h', slabH + 'px');
+
+  var slabEls = LAYERS.map(function(l, i){
+    var el = document.createElement('div');
+    el.className = 'slab' + (i === FOCUS ? ' focus' : '');
+    el.innerHTML = '<div class="slab-ring"></div>' +
+      '<div class="slab-label">' + hl(l.label || '') + '<\/div>' +
+      (l.sublabel ? '<div class="slab-sub">' + esc(l.sublabel) + '<\/div>' : '') +
+      (i === FOCUS && ANNO && VERT ? '<div class="slab-tag">' + esc(ANNO) + '<\/div>' : '');
+    stack.appendChild(el);
+    return el;
+  });
+
+  // Horizontal: annotation panel floats right of the stack, aligned to the
+  // focus slab — position from layout constants (slab-h 150 + gap 22).
+  var anno = $('.anno');
+  if (!VERT && ANNO && slabEls[FOCUS]) {
+    var y = 300 + FOCUS * (slabH + GAP) + slabH / 2 - 40;
+    anno.style.left = (PAD + 860 + 70) + 'px';
+    anno.style.top = y + 'px';
+  } else if (!VERT) {
+    anno.style.display = 'none';
+  }
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+
+  // Slabs drop into place bottom-up, like the stack is being assembled
+  var span = Math.min(DUR * 0.4, Math.max(1.0, slabEls.length * 0.3));
+  var per = span / Math.max(1, slabEls.length);
+  slabEls.slice().reverse().forEach(function(el, ri){
+    tl.fromTo(el, { opacity:0, y:-70 }, { opacity:1, y:0, duration:0.34, ease:'back.out(1.5)' }, 0.35 + ri * per);
+  });
+
+  // Highlight beat: focus ring + annotation
+  var focusAt = 0.35 + span + 0.25;
+  var focusSlab = slabEls[FOCUS];
+  if (focusSlab) {
+    tl.fromTo(focusSlab.querySelector('.slab-ring'), { opacity:0 }, { opacity:1, duration:0.3, ease:'power2.out' }, focusAt);
+    tl.fromTo(focusSlab, { scale:1 }, { scale:1.04, duration:0.18, ease:'power2.out' }, focusAt);
+    tl.to(focusSlab, { scale:1, duration:0.25, ease:'power2.inOut' }, focusAt + 0.18);
+    var tag = focusSlab.querySelector('.slab-tag');
+    if (tag) tl.fromTo(tag, { opacity:0, x:30 }, { opacity:1, x:0, duration:0.3, ease:'back.out(1.6)' }, focusAt + 0.2);
+    if (!VERT && ANNO) tl.fromTo(anno, { opacity:0, x:40 }, { opacity:1, x:0, duration:0.32, ease:'back.out(1.6)' }, focusAt + 0.2);
+    // B-roll: focus ring pulses for the rest of the scene
+    var pulses = Math.max(1, Math.floor((DUR - focusAt - 0.6) / 0.9));
+    tl.to(focusSlab.querySelector('.slab-ring'), { opacity:0.45, duration:0.45, ease:'sine.inOut', repeat:pulses * 2 - 1, yoyo:true }, focusAt + 0.6);
+  } else {
+    // No focus layer: let the whole stack breathe instead
+    var reps = Math.max(1, Math.floor((DUR - focusAt) / 1.2));
+    tl.to(slabEls, { y:-6, duration:0.6, ease:'sine.inOut', repeat:reps * 2 - 1, yoyo:true, stagger:0.06 }, focusAt);
+  }
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

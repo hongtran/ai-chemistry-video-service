@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --cap-size:44px; --cap-bottom:70px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:250px; text-align:center; }
+#main-clip.horizontal .title { top:120px; text-align:left; }
+
+.rig { position:absolute; z-index:2; inset:0; }
+.agent-card { position:absolute; background:#161B22; border:2px solid rgba(230,237,243,.16); border-radius:26px; text-align:center; padding:34px 46px; box-shadow:0 16px 44px rgba(0,0,0,.4); }
+.agent-glyph { font-size:56px; line-height:1.1; margin-bottom:10px; }
+.agent-label { font-weight:700; font-size:44px; line-height:1.1; white-space:nowrap; }
+
+.hub { position:absolute; background:#12202A; border:3px solid {{accent}}; border-radius:34px; text-align:center; padding:36px 52px; box-shadow:0 0 60px {{accent}}44; }
+.hub-glyph { font-size:60px; line-height:1.1; margin-bottom:8px; }
+.hub-label { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:52px; letter-spacing:4px; color:{{accent}}; white-space:nowrap; }
+.hub-ring { position:absolute; inset:-4px; border-radius:36px; border:3px solid {{accent}}; opacity:0; }
+
+.app-chip { position:absolute; display:flex; flex-direction:column; align-items:center; gap:10px; background:#161B22; border:1px solid rgba(230,237,243,.14); border-radius:22px; padding:24px 20px; text-align:center; box-shadow:0 12px 34px rgba(0,0,0,.4); }
+.app-glyph { font-size:52px; line-height:1.1; }
+.app-label { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:27px; white-space:nowrap; }
+
+.wire { position:absolute; height:8px; margin-top:-4px; border-radius:4px; background:{{accent}}; opacity:.85; }
+.wire.main { height:12px; margin-top:-6px; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <span class="agent-src" hidden>{{agentLabel}}</span>
+    <span class="hub-src" hidden>{{hubLabel}}</span>
+    <div class="rig"></div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var W = {{width}}, H = {{height}};
+  var DUR = parseFloat('{{duration}}') || 4;
+  var VERT = '{{orientation}}' === 'vertical';
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var APPS = {{apps}};
+  var agentLabel = $('.agent-src').textContent.trim() || 'Your Agent';
+  var hubLabel = $('.hub-src').textContent.trim() || 'MCP';
+  var rig = $('.rig');
+  var n = Math.max(1, APPS.length);
+
+  // Layout constants (no DOM reads): agent → hub → fan of apps.
+  // Vertical: top→down. Horizontal: left→right.
+  var A, HUB, appPos;
+  if (VERT) {
+    A = { x: W/2, y: 620 };
+    HUB = { x: W/2, y: 1010 };
+    var spread = Math.min(240, (W - 2*84 - 180) / Math.max(1, n - 1));
+    appPos = APPS.map(function(_, i){ return { x: W/2 + (i - (n-1)/2) * spread, y: 1440 }; });
+  } else {
+    A = { x: 440, y: 620 };
+    HUB = { x: 960, y: 620 };
+    // 480px total spread around y=600 keeps the lowest chip above the caption band (~928+)
+    var vspread = Math.min(170, 480 / Math.max(1, n - 1));
+    appPos = APPS.map(function(_, i){ return { x: 1560, y: 600 + (i - (n-1)/2) * vspread }; });
+  }
+
+  function place(el, cx, cy){
+    el.style.left = cx + 'px'; el.style.top = cy + 'px';
+    el.style.transform = 'translate(-50%, -50%)';
+    // GSAP must own transforms; convert the centering to xPercent/yPercent
+    el.style.transform = '';
+    gsap.set(el, { left: cx, top: cy, xPercent: -50, yPercent: -50 });
+  }
+  function wire(from, to, cls){
+    var dx = to.x - from.x, dy = to.y - from.y;
+    var len = Math.sqrt(dx*dx + dy*dy);
+    var ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    var e = document.createElement('div');
+    e.className = 'wire' + (cls ? ' ' + cls : '');
+    e.style.left = from.x + 'px'; e.style.top = from.y + 'px'; e.style.width = len + 'px';
+    rig.insertBefore(e, rig.firstChild); // wires paint beneath the cards
+    gsap.set(e, { rotation: ang, scaleX: 0, transformOrigin: 'left center' });
+    return e;
+  }
+
+  var agent = document.createElement('div');
+  agent.className = 'agent-card';
+  agent.innerHTML = '<div class="agent-glyph">🤖<\/div><div class="agent-label">' + esc(agentLabel) + '<\/div>';
+  rig.appendChild(agent);
+  place(agent, A.x, A.y);
+
+  var mainWire = wire(A, HUB, 'main');
+
+  var hub = document.createElement('div');
+  hub.className = 'hub';
+  hub.innerHTML = '<div class="hub-ring"></div><div class="hub-glyph">🔌<\/div><div class="hub-label">' + esc(hubLabel) + '<\/div>';
+  rig.appendChild(hub);
+  place(hub, HUB.x, HUB.y);
+
+  var apps = APPS.map(function(a, i){
+    var w = wire(HUB, appPos[i]);
+    var chip = document.createElement('div');
+    chip.className = 'app-chip';
+    chip.innerHTML = (a.glyph ? '<div class="app-glyph">' + esc(a.glyph) + '<\/div>' : '') +
+      '<div class="app-label">' + esc(a.label || '') + '<\/div>';
+    rig.appendChild(chip);
+    place(chip, appPos[i].x, appPos[i].y);
+    return { wire:w, chip:chip };
+  });
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+
+  // Agent appears, plugs into the hub, then apps click in one by one
+  tl.fromTo(agent, { opacity:0, scale:0.7 }, { opacity:1, scale:1, duration:0.34, ease:'back.out(1.7)' }, 0.18);
+  tl.to(mainWire, { scaleX:1, duration:0.3, ease:'power2.out' }, 0.48);
+  tl.fromTo(hub, { opacity:0, scale:0.6, rotation:-6 }, { opacity:1, scale:1, rotation:0, duration:0.4, ease:'back.out(1.9)' }, 0.7);
+  var span = Math.min(DUR * 0.32, Math.max(0.8, apps.length * 0.3));
+  var per = span / Math.max(1, apps.length);
+  apps.forEach(function(a, i){
+    var at = 1.15 + i * per;
+    tl.to(a.wire, { scaleX:1, duration:0.22, ease:'power2.out' }, at);
+    tl.fromTo(a.chip, { opacity:0, scale:0.6 }, { opacity:1, scale:1, duration:0.28, ease:'back.out(2)' }, at + 0.12);
+  });
+
+  // B-roll: hub heartbeat — one plug, many apps
+  var idleAt = 1.15 + span + 0.4;
+  var pulses = Math.max(1, Math.floor((DUR - idleAt) / 0.9));
+  tl.fromTo($('.hub-ring'), { opacity:0, scale:1 }, { opacity:0.85, scale:1.05, duration:0.45, ease:'sine.inOut', repeat:pulses * 2 - 1, yoyo:true }, idleAt);
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

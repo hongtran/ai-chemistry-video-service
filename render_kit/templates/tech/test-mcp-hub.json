@@ -1,0 +1,16 @@
+{
+  "config": { "slug": "test-tech-mcp-hub", "topic": "tech mcp-hub test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "mcp-hub", "start": 0, "duration": 6,
+    "title": "One plug: **MCP**",
+    "agentLabel": "Your Agent",
+    "hubLabel": "MCP",
+    "apps": [
+      { "glyph": "💬", "label": "Slack" },
+      { "glyph": "📁", "label": "Drive" },
+      { "glyph": "💳", "label": "Stripe" },
+      { "glyph": "🗓️", "label": "Calendar" }
+    ],
+    "captions": ["No custom code", "per **integration**."]
+  }]
+}

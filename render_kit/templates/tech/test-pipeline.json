@@ -1,0 +1,15 @@
+{
+  "config": { "slug": "test-tech-pipeline", "topic": "tech pipeline test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "pipeline", "start": 0, "duration": 6,
+    "title": "The **RAG** pipeline",
+    "nodes": [
+      { "label": "Query", "glyph": "❓" },
+      { "label": "Retriever", "sublabel": "vector search", "glyph": "🔍" },
+      { "label": "Vector DB", "sublabel": "top-k docs", "glyph": "🗄️" },
+      { "label": "LLM", "sublabel": "grounded answer", "glyph": "🧠" }
+    ],
+    "highlightNode": 2,
+    "captions": ["The database does the **remembering**,", "the model does the talking."]
+  }]
+}

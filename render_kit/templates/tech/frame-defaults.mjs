@@ -1,0 +1,144 @@
+// Shared source of truth for the tech template's scene shape — the set of
+// valid frame types, their per-type fields, and structural validation.
+// Consumed by populate.js (rendering); authored so a future LLM script
+// pipeline can import it the same way scripts/generate-script.mjs imports
+// the chemistry one (this template is not wired into scripts/ yet).
+
+export const SHARED = { bg: '#0D1117', fg: '#E6EDF3', accent: '#22D3EE', eyebrow: '', headline: '', captions: [] };
+
+// Canvas orientations. populate.js resolves width/height from
+// config.orientation ('vertical' → 1080×1920, 'horizontal' → 1920×1080)
+// and injects an {{orientation}} token every frame uses as a root class,
+// switching between two hand-tuned layouts per frame.
+export const ORIENTATIONS = ['vertical', 'horizontal'];
+
+export const FRAME_DEFAULTS = {
+  // Universal frames
+  cover:         { ...SHARED },
+  stats:         { ...SHARED, accent: '#4ADE80', stat: '', statLabel: '', prefix: '', suffix: '' },
+  quote:         { ...SHARED, accent: '#A78BFA', quote: '', attribution: '', quoteFontSize: '' },
+  'bullet-list': { ...SHARED, title: '', items: [] },
+  cta:           { ...SHARED, accent: '#F472B6', subheadline: '' },
+  // Tech frames — window-chrome family
+  'concept-card':{ ...SHARED, accent: '#A78BFA', term: '', tagline: '', definition: '', glyph: '' },
+  'code-snippet':{ ...SHARED, filename: 'main.py', language: 'python', code: [], highlightLines: [] },
+  terminal:      { ...SHARED, accent: '#4ADE80', commands: [] },
+  chat:          { ...SHARED, title: '', messages: [] },
+  // Tech frames — diagram family
+  pipeline:      { ...SHARED, title: '', nodes: [], highlightNode: -1 },
+  comparison:    { ...SHARED, leftTitle: '', rightTitle: '', leftItems: [], rightItems: [], leftAccent: '#22D3EE', rightAccent: '#F472B6', verdict: '' },
+  roadmap:       { ...SHARED, accent: '#FFB224', title: '', steps: [] },
+  'stack-layers':{ ...SHARED, accent: '#FFB224', title: '', layers: [], highlightIndex: -1, annotation: '' },
+  // Tech frames — viz family
+  'vector-space':{ ...SHARED, title: '', clusterLabels: [], queryLabel: 'query' },
+  'neural-net':  { ...SHARED, accent: '#A78BFA', title: '', layerLabels: [], outputLabel: '' },
+  // AI-agent concept family
+  'task-breakdown': { ...SHARED, title: '', goal: '', subtasks: [] },
+  'thought-chain':  { ...SHARED, accent: '#A78BFA', title: '', question: '', thoughts: [], conclusion: '' },
+  'tool-use':       { ...SHARED, accent: '#4ADE80', title: '', agentLabel: 'Agent', tools: [] },
+  memory:           { ...SHARED, accent: '#FFB224', title: '', shortLabel: 'SHORT-TERM', longLabel: 'LONG-TERM', shortItems: [], longItems: [] },
+  'reflection-loop':{ ...SHARED, accent: '#F472B6', title: '', steps: [], failLabel: 'error found', passLabel: 'fixed' },
+  'mcp-hub':        { ...SHARED, title: '', agentLabel: 'Your Agent', hubLabel: 'MCP', apps: [] },
+};
+
+export const VALID_TYPES = Object.keys(FRAME_DEFAULTS);
+
+// Fields that distinguish a type from the shared base (bg/fg/accent/eyebrow/
+// headline/captions) — i.e. what a scene of this type actually needs to set
+// beyond the common fields.
+export function typeSpecificFields(type) {
+  return Object.keys(FRAME_DEFAULTS[type] ?? {}).filter((k) => !(k in SHARED));
+}
+
+// Every {{token}} each frames/*.html actually substitutes, beyond the shared
+// base (bg/fg/accent/eyebrow/headline/captions/id/width/height/duration/
+// orientation/captionTiming) — the authoritative field list per type.
+// Array/object fields are injected into frame <script> blocks as JSON
+// literals by populate.js token substitution (e.g. `var NODES = {{nodes}};`),
+// so string content inside them is escaped by the frame at DOM-build time,
+// never inlined as raw markup.
+export const TYPE_CONTENT_FIELDS = {
+  cover: [],
+  stats: ['stat', 'statLabel', 'prefix', 'suffix'],
+  quote: ['quote', 'attribution', 'quoteFontSize'],
+  'bullet-list': ['title', 'items'],
+  cta: ['subheadline'],
+  'concept-card': ['term', 'tagline', 'definition', 'glyph'],
+  'code-snippet': ['filename', 'language', 'code', 'highlightLines'],
+  terminal: ['commands'],
+  chat: ['title', 'messages'],
+  pipeline: ['title', 'nodes', 'highlightNode'],
+  comparison: ['leftTitle', 'rightTitle', 'leftItems', 'rightItems', 'leftAccent', 'rightAccent', 'verdict'],
+  roadmap: ['title', 'steps'],
+  'stack-layers': ['title', 'layers', 'highlightIndex', 'annotation'],
+  'vector-space': ['title', 'clusterLabels', 'queryLabel'],
+  'neural-net': ['title', 'layerLabels', 'outputLabel'],
+  'task-breakdown': ['title', 'goal', 'subtasks'],
+  'thought-chain': ['title', 'question', 'thoughts', 'conclusion'],
+  'tool-use': ['title', 'agentLabel', 'tools'],
+  memory: ['title', 'shortLabel', 'longLabel', 'shortItems', 'longItems'],
+  'reflection-loop': ['title', 'steps', 'failLabel', 'passLabel'],
+  'mcp-hub': ['title', 'agentLabel', 'hubLabel', 'apps'],
+};
+
+// Which orientations each type supports. All tech frames ship with both
+// layouts authored (unlike chemistry's VERTICAL_TYPES gate); kept as a map
+// so a future type can opt out of one orientation without new machinery.
+export const SUPPORTED_ORIENTATIONS = Object.fromEntries(
+  VALID_TYPES.map((t) => [t, [...ORIENTATIONS]])
+);
+
+// Which of a type's content fields actually break/degrade visibly if left
+// empty. Hand-judged, not derived from FRAME_DEFAULTS — a blank default can
+// mean "always fill this in" (concept-card's term) or "genuinely optional"
+// (comparison's verdict, pipeline's highlightNode).
+export const REQUIRED_CONTENT_FIELDS = {
+  cover: [],
+  stats: ['stat', 'statLabel'],
+  quote: ['quote', 'attribution'],
+  'bullet-list': ['title', 'items'],
+  cta: ['subheadline'],
+  'concept-card': ['term', 'definition'],
+  'code-snippet': ['code'],
+  terminal: ['commands'],
+  chat: ['messages'],
+  pipeline: ['title', 'nodes'],
+  comparison: ['leftTitle', 'rightTitle', 'leftItems', 'rightItems'],
+  roadmap: ['title', 'steps'],
+  'stack-layers': ['title', 'layers'],
+  'vector-space': ['title', 'clusterLabels'],
+  'neural-net': ['title'],
+  'task-breakdown': ['goal', 'subtasks'],
+  'thought-chain': ['question', 'thoughts', 'conclusion'],
+  'tool-use': ['tools'],
+  memory: ['shortItems', 'longItems'],
+  'reflection-loop': ['steps'],
+  'mcp-hub': ['apps'],
+};
+
+export function requiredContentFields(type) {
+  return REQUIRED_CONTENT_FIELDS[type] ?? [];
+}
+
+export function validateData(data) {
+  const errors = [];
+  if (!data.config?.slug) errors.push('config.slug is required');
+  if (!data.config?.totalDuration) errors.push('config.totalDuration is required');
+  if (data.config?.orientation && !ORIENTATIONS.includes(data.config.orientation))
+    errors.push(`config.orientation "${data.config.orientation}" is invalid — must be one of: ${ORIENTATIONS.join(', ')}`);
+  if (!Array.isArray(data.scenes) || data.scenes.length === 0)
+    errors.push('scenes[] must be a non-empty array');
+  for (const scene of data.scenes ?? []) {
+    if (!scene.id) errors.push('a scene is missing id');
+    if (!VALID_TYPES.includes(scene.type))
+      errors.push(`scene "${scene.id}" has invalid type "${scene.type}" — must be one of: ${VALID_TYPES.join(', ')}`);
+    if (scene.start === undefined) errors.push(`scene "${scene.id}" missing start`);
+    if (!scene.duration) errors.push(`scene "${scene.id}" missing duration`);
+    for (const field of requiredContentFields(scene.type ?? '')) {
+      const v = scene[field];
+      const empty = v === undefined || v === null || v === '' || (Array.isArray(v) && v.length === 0);
+      if (empty) errors.push(`scene "${scene.id}" (${scene.type}) is missing required field "${field}"`);
+    }
+  }
+  return errors;
+}

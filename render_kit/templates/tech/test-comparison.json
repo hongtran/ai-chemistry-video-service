@@ -1,0 +1,12 @@
+{
+  "config": { "slug": "test-tech-comparison", "topic": "tech comparison test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "comparison", "start": 0, "duration": 6,
+    "headline": "Two ways to add **knowledge**",
+    "leftTitle": "RAG", "rightTitle": "Fine-tuning",
+    "leftItems": ["Fresh data at query time", "Cheap to update", "Sources you can cite"],
+    "rightItems": ["Bakes style & skills in", "Costly retraining", "Frozen knowledge"],
+    "verdict": "Facts → **RAG**. Behavior → fine-tune.",
+    "captions": ["They solve **different** problems."]
+  }]
+}

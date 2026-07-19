@@ -1,10 +1,12 @@
 # Architecture Note
 
-FastAPI backend: chemistry query → rendered explainer video.
+FastAPI backend: subject-scoped educational query → rendered explainer video.
+Chemistry is the only enabled subject today, but prompts, schema selection, and
+render template selection are routed through a subject registry.
 
 ## Job lifecycle
 
-`POST /videos` is a **synchronous gate** (length + LLM chemistry guard); only on pass does it create a `PENDING` job, enqueue the id, and return `202`. The client polls. An async video generation job — `RealVideoPipeline.run`
+`POST /videos` is a **synchronous gate** (length + LLM subject guard); only on pass does it create a `PENDING` job, enqueue the id, and return `202`. The client polls. An async video generation job — `RealVideoPipeline.run`
 — which advances `PROCESSING → COMPLETED/FAILED` and bumps `current_step` through `narration → tts → transcription → scene_split → alignment → compose → render`.
 
 **Decisions & trade-offs**
@@ -63,10 +65,10 @@ narration script      ──▶ script.txt
   `data.json`; the subprocess renders by populating it into a pre-defined set of
   frame HTML templates (hyperframes, headless Chrome). The LLM never generates
   render code.
-  - Trade-off: more moving parts, but it **scales by extending frame templates**
-    — adding a subject means new HTML templates, not new pipeline logic. Rendering
-    stays **deterministic, low-error, and controllable**, unlike letting the LLM
-    emit render code.
+  - Trade-off: more moving parts, but it **scales by extending subject config and
+    frame templates** — adding a subject should not require changing pipeline
+    orchestration. Rendering stays **deterministic, low-error, and controllable**,
+    unlike letting the LLM emit render code.
   - Cost: **4 LLM calls on a lightweight model** per video — cheaper than
     end-to-end AI-video generators.
 - **Captions come from script + transcript, not guesswork.** Scene-split captions

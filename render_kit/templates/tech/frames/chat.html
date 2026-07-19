@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --msg-size:46px; --chat-top:500px; --chat-w:100%; --cap-size:58px; --cap-bottom:190px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --msg-size:40px; --chat-top:290px; --chat-w:1150px; --cap-size:44px; --cap-bottom:75px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:280px; text-align:center; }
+#main-clip.horizontal .title { top:130px; text-align:left; }
+
+.chat { position:absolute; z-index:2; top:var(--chat-top); left:50%; transform:translateX(-50%); width:calc(var(--chat-w) - 0px); max-width:calc(100% - 2*var(--pad)); display:flex; flex-direction:column; gap:36px; }
+.msg-wrap { display:flex; flex-direction:column; max-width:82%; }
+.msg-wrap.user { align-self:flex-end; align-items:flex-end; }
+.msg-wrap.assistant { align-self:flex-start; align-items:flex-start; }
+.msg { position:relative; padding:34px 44px; border-radius:34px; font-family:'Inter',sans-serif; font-weight:700; font-size:var(--msg-size); line-height:1.4; }
+.msg-wrap.user .msg { background:{{accent}}; color:{{bg}}; border-bottom-right-radius:10px; }
+.msg-wrap.assistant .msg { background:#1C2330; border:1px solid rgba(230,237,243,.1); border-bottom-left-radius:10px; }
+.msg .w { display:inline-block; white-space:pre; }
+.who { font-family:'JetBrains Mono',monospace; font-size:24px; font-weight:700; letter-spacing:2px; opacity:.55; color:{{fg}}; margin-bottom:12px; padding:0 16px; }
+.dots { position:absolute; left:44px; top:50%; margin-top:-8px; display:flex; gap:14px; }
+.dot-b { width:16px; height:16px; border-radius:50%; background:{{fg}}; opacity:.5; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+.msg.user .hl { background:{{bg}}; color:{{accent}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <div class="chat"></div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var DUR = parseFloat('{{duration}}') || 4;
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+  // Multi-word **spans** must survive word-splitting: re-mark each word
+  function splitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g, function(_m, inner){
+    return inner.split(/\s+/).map(function(w){ return '**' + w + '**'; }).join(' ');
+  }); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var MESSAGES = {{messages}};
+  var chat = $('.chat');
+  var msgs = MESSAGES.map(function(m){
+    var role = m.role === 'user' ? 'user' : 'assistant';
+    var wrap = document.createElement('div');
+    wrap.className = 'msg-wrap ' + role;
+    var dotsHtml = role === 'assistant'
+      ? '<span class="dots"><span class="dot-b"></span><span class="dot-b"></span><span class="dot-b"></span></span>' : '';
+    wrap.innerHTML = '<div class="who">' + (role === 'user' ? 'YOU' : 'AGENT') + '<\/div>' +
+      '<div class="msg">' + dotsHtml +
+      splitMarks(String(m.text).trim()).split(/\s+/).map(function(w){ return '<span class="w">' + hl(w) + ' <\/span>'; }).join('') +
+      '<\/div>';
+    chat.appendChild(wrap);
+    return { el:wrap, role:role, dots:wrap.querySelector('.dots'),
+             words:Array.prototype.slice.call(wrap.querySelectorAll('.w')) };
+  });
+
+  // Defensive fit: a conversation taller than its zone scales down to clear
+  // the caption band (content limits live in schema.json; this is the net).
+  // xPercent re-applies the CSS translateX(-50%) centering GSAP takes over.
+  (function(){
+    var zone = chat; if (!zone.children.length) return;
+    function apply(){
+      gsap.set(zone, { clearProps:'transform' }); // re-measure from natural layout
+      var rootR = root.getBoundingClientRect();
+      var k = (rootR.width / parseFloat('{{width}}')) || 1;
+      var r = zone.getBoundingClientRect();
+      var top = (r.top - rootR.top) / k, h = r.height / k;
+      var avail = (('{{orientation}}' === 'vertical') ? 1580 : 890) - top;
+      if (h > avail && avail > 0) gsap.set(zone, { xPercent:-50, x:0, scale: Math.max(0.55, avail / h), transformOrigin: '50% 0' });
+    }
+    apply(); // pre-font metrics can under-measure wraps — re-run when fonts land
+    if (document.fonts) {
+      document.fonts.ready.then(function(){ apply(); });
+      if (document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', function(){ apply(); });
+    }
+  })();
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+
+  // Budget the conversation to ~75% of the scene
+  var natural = 0;
+  msgs.forEach(function(m){
+    natural += m.role === 'assistant' ? 0.5 + Math.min(1.0, m.words.length * 0.07) + 0.25 : 0.55;
+  });
+  var k = Math.min(1, (DUR * 0.75 - 0.5) / natural);
+
+  // First bubble lands early so the scene never sits fully empty
+  var t = 0.22;
+  msgs.forEach(function(m){
+    if (m.role === 'user') {
+      tl.fromTo(m.el, { opacity:0, x:80, scale:0.9 }, { opacity:1, x:0, scale:1, duration:0.35, ease:'back.out(1.6)' }, t);
+      t += 0.55 * k;
+    } else {
+      // Bubble arrives showing a typing indicator, then the reply reveals
+      // word by word as the dots fade out.
+      var thinkDur = 0.5 * k;
+      tl.fromTo(m.el, { opacity:0, x:-80, scale:0.9 }, { opacity:1, x:0, scale:1, duration:0.35, ease:'back.out(1.6)' }, t);
+      var bounces = Math.max(1, Math.round(thinkDur / 0.24));
+      Array.prototype.forEach.call(m.dots.children, function(d, di){
+        tl.fromTo(d, { y:0 }, { y:-10, duration:0.12, ease:'sine.inOut', repeat:bounces * 2 - 1, yoyo:true }, t + 0.1 + di * 0.07);
+      });
+      t += thinkDur + 0.15;
+      tl.to(m.dots, { opacity:0, duration:0.15 }, t - 0.05);
+      var revealSpan = Math.min(1.0, m.words.length * 0.07) * k;
+      var per = m.words.length > 1 ? revealSpan / m.words.length : revealSpan;
+      m.words.forEach(function(w, wi){
+        tl.fromTo(w, { opacity:0 }, { opacity:1, duration:0.14 }, t + wi * per);
+      });
+      t += revealSpan + 0.25 * k;
+    }
+  });
+
+  // B-roll: conversation breathes gently for the rest of the scene
+  if (DUR - t > 0.9) {
+    var reps = Math.max(1, Math.floor((DUR - t) / 1.2));
+    tl.to(msgs.map(function(m){ return m.el; }), { y:-6, duration:0.6, ease:'sine.inOut', repeat:reps * 2 - 1, yoyo:true, stagger:0.08 }, t);
+  }
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var ct = CT[i]; if(!ct) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, ct.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : ct.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(ct.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(ct.words) ? ct.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

@@ -32,7 +32,7 @@ class StubPipeline:
         for step in PipelineStep:
             await self._jobs.update(job_id, current_step=step)
             await asyncio.sleep(self._step_delay)
-            self._write_placeholder(job_id, step, job.query)
+            self._write_placeholder(job_id, step, job.query, job.orientation)
 
         video_path = self._artifacts.path_for(job_id, "video.mp4")
         await self._jobs.update(
@@ -41,7 +41,9 @@ class StubPipeline:
             video_path=str(video_path),
         )
 
-    def _write_placeholder(self, job_id: str, step: PipelineStep, query: str) -> None:
+    def _write_placeholder(
+        self, job_id: str, step: PipelineStep, query: str, orientation: str = "vertical"
+    ) -> None:
         if step is PipelineStep.NARRATION:
             self._artifacts.save_text(
                 job_id, "script.txt", f"[stub] narration script for: {query}\n"
@@ -57,10 +59,29 @@ class StubPipeline:
         elif step is PipelineStep.SCENE_SPLIT:
             self._artifacts.save_json(job_id, "scenes.json", [{"type": "stub", "caption": query}])
         elif step is PipelineStep.COMPOSE:
+            horizontal = orientation == "horizontal"
             self._artifacts.save_json(
                 job_id,
                 "data.json",
-                {"config": {"width": 1080, "height": 1920}, "scenes": []},
+                {
+                    "config": {
+                        "orientation": orientation,
+                        "width": 1920 if horizontal else 1080,
+                        "height": 1080 if horizontal else 1920,
+                    },
+                    "scenes": [],
+                },
+            )
+            self._artifacts.save_json(
+                job_id,
+                "meta.json",
+                {
+                    "id": "stub-slug",
+                    "name": query,
+                    "description": f"[stub] YouTube description for: {query}",
+                    "hashtags": ["stub"],
+                    "tags": ["stub video"],
+                },
             )
         elif step is PipelineStep.RENDER:
             self._artifacts.save_bytes(job_id, "video.mp4", _PLACEHOLDER_VIDEO)

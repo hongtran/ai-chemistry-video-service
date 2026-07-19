@@ -1,0 +1,9 @@
+{
+  "config": { "slug": "test-tech-bullet-list", "topic": "tech bullet-list test", "totalDuration": 5 },
+  "scenes": [{
+    "id": "s1", "type": "bullet-list", "start": 0, "duration": 5,
+    "title": "5 skills of an **AI engineer**",
+    "items": ["Prompt & context design", "**RAG** pipelines", "Evals & observability", "Fine-tuning basics", "Product sense"],
+    "captions": ["It is less about math,", "more about **systems**."]
+  }]
+}

@@ -4,3 +4,4 @@ openai>=1.60
 pydantic>=2.7
 pydantic-settings>=2.3
 jsonschema>=4.22
+httpx>=0.27

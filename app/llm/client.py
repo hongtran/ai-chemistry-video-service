@@ -1,4 +1,4 @@
-"""Thin OpenAI wrapper + retry policy + the chemistry guard.
+"""Thin OpenAI wrapper + retry policy + the subject guard.
 
 One retry helper covers every OpenAI call in the service: exponential backoff
 with jitter, retrying only transient failures (rate limit / 5xx / timeouts /
@@ -28,22 +28,22 @@ _RETRYABLE = (
 
 
 class GuardUnavailableError(Exception):
-    """The chemistry guard could not get an answer from the LLM (after retries).
+    """The subject guard could not get an answer from the LLM (after retries).
     Transient — the caller may reasonably retry later."""
 
 
 class GuardMisconfiguredError(Exception):
-    """The chemistry guard is misconfigured (bad/revoked API key, no permission).
+    """The subject guard is misconfigured (bad/revoked API key, no permission).
     Permanent until a human fixes it — retrying will not help."""
 
 
 class GuardResult(BaseModel):
-    is_chemistry: bool
+    is_valid: bool
     reason: str
 
 
-class ChemistryGuard(Protocol):
-    async def check(self, query: str) -> GuardResult: ...
+class SubjectGuard(Protocol):
+    async def check(self, query: str, subject: str) -> GuardResult: ...
 
 
 async def with_retries(
@@ -69,30 +69,28 @@ async def with_retries(
     raise last_exc  # type: ignore[misc]
 
 
-_GUARD_SYSTEM_PROMPT = (
-    "You are a gatekeeper for an educational chemistry video service. "
-    "Decide whether the user's query is a chemistry concept or question that a "
-    "short educational chemistry video could explain. Chemistry includes atoms, "
-    "molecules, bonds, reactions, acids/bases, thermochemistry, electrochemistry, "
-    "organic/inorganic/physical/analytical chemistry, and everyday chemistry "
-    "phenomena. Queries that are primarily another subject (pure physics, math, "
-    "biology without a chemical angle, history, etc.) or are not educational "
-    "topics at all are NOT chemistry. Reply with is_chemistry and a one-sentence "
-    "reason."
-)
-
-
-class LLMChemistryGuard:
+class LLMSubjectGuard:
     def __init__(self, client: AsyncOpenAI, settings: Settings) -> None:
         self._client = client
         self._settings = settings
 
-    async def check(self, query: str) -> GuardResult:
+    async def check(self, query: str, subject: str) -> GuardResult:
+        from app.subjects import get_subject_config
+
+        subject_config = get_subject_config(subject, self._settings)
+        system_prompt = (
+            "You are a gatekeeper for an educational video service. "
+            f"Decide whether the user's query is a {subject_config.display_name} "
+            "concept or question that a short educational video could explain. "
+            f"{subject_config.guard_description} Reply with is_valid and a "
+            "one-sentence reason."
+        )
+
         async def _call() -> GuardResult:
             completion = await self._client.chat.completions.parse(
                 model=self._settings.llm_model,
                 messages=[
-                    {"role": "system", "content": _GUARD_SYSTEM_PROMPT},
+                    {"role": "system", "content": system_prompt},
                     {"role": "user", "content": query},
                 ],
                 response_format=GuardResult,
@@ -106,7 +104,7 @@ class LLMChemistryGuard:
         except GuardUnavailableError:
             raise
         except (openai.AuthenticationError, openai.PermissionDeniedError) as exc:
-            logger.critical("chemistry guard misconfigured: %s", exc)
+            logger.critical("subject guard misconfigured: %s", exc)
             raise GuardMisconfiguredError(
                 "OpenAI credentials are invalid or lack permission"
             ) from exc
@@ -114,12 +112,12 @@ class LLMChemistryGuard:
             raise GuardUnavailableError(str(exc)) from exc
 
 
-class StubChemistryGuard:
+class StubSubjectGuard:
     """Accepts any non-empty query. Used in USE_STUB_PIPELINE mode so the demo
     needs no OpenAI credentials."""
 
-    async def check(self, query: str) -> GuardResult:
-        return GuardResult(is_chemistry=True, reason="stub mode: guard disabled")
+    async def check(self, query: str, subject: str) -> GuardResult:
+        return GuardResult(is_valid=True, reason="stub mode: guard disabled")
 
 
 def build_openai_client(settings: Settings) -> AsyncOpenAI:

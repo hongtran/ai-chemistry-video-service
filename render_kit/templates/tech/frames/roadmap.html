@@ -1,0 +1,191 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --step-label:52px; --step-sub:30px; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --step-label:44px; --step-sub:27px; --cap-size:44px; --cap-bottom:70px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:250px; text-align:center; }
+#main-clip.horizontal .title { top:120px; text-align:left; }
+
+.track { position:absolute; z-index:2; background:rgba(230,237,243,.14); border-radius:6px; }
+.track-fill { position:absolute; inset:0; background:{{accent}}; border-radius:6px; }
+.runner { position:absolute; z-index:2; width:34px; height:34px; border-radius:50%; background:{{accent}}; box-shadow:0 0 34px {{accent}}; }
+
+.steps { position:absolute; inset:0; z-index:3; }
+.step { position:absolute; inset:0; }
+.step-dot { position:absolute; width:52px; height:52px; border-radius:50%; background:#161B22; border:5px solid rgba(230,237,243,.3); display:flex; align-items:center; justify-content:center; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:24px; }
+.dot-on { position:absolute; inset:-5px; border-radius:50%; border:5px solid {{accent}}; box-shadow:0 0 26px {{accent}}66; opacity:0; }
+.step-text { position:absolute; }
+.step-label { font-weight:700; font-size:var(--step-label); line-height:1.1; white-space:nowrap; }
+.step-sub { font-family:'JetBrains Mono',monospace; font-size:var(--step-sub); opacity:.6; margin-top:8px; white-space:nowrap; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <div class="track"><div class="track-fill"></div></div>
+    <div class="runner"></div>
+    <div class="steps"></div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var W = {{width}}, H = {{height}};
+  var DUR = parseFloat('{{duration}}') || 4;
+  var VERT = '{{orientation}}' === 'vertical';
+  var PAD = VERT ? 84 : 130;
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var STEPS = {{steps}};
+  var n = Math.max(2, STEPS.length);
+
+  // Track geometry — pure constants derived from the canvas, no DOM reads.
+  // Vertical: line runs down the left third; labels sit to its right.
+  // Horizontal: line runs across the middle; labels alternate above/below.
+  var track = $('.track');
+  var geo;
+  if (VERT) {
+    var x = PAD + 110, y0 = 520, y1 = H - 430;
+    geo = { x:x, y0:y0, y1:y1, len:y1 - y0 };
+    track.style.cssText += 'left:' + (x - 6) + 'px; top:' + y0 + 'px; width:12px; height:' + geo.len + 'px;';
+    $('.track-fill').style.transformOrigin = 'center top';
+  } else {
+    var y = 620, x0 = PAD + 120, x1 = W - PAD - 200;
+    geo = { y:y, x0:x0, x1:x1, len:x1 - x0 };
+    track.style.cssText += 'top:' + (y - 6) + 'px; left:' + x0 + 'px; height:12px; width:' + geo.len + 'px;';
+    $('.track-fill').style.transformOrigin = 'left center';
+  }
+
+  var stepsHost = $('.steps');
+  var stepEls = STEPS.map(function(s, i){
+    var frac = STEPS.length > 1 ? i / (STEPS.length - 1) : 0;
+    var el = document.createElement('div');
+    el.className = 'step';
+    el.innerHTML = '<div class="step-dot">' + String(i + 1).padStart(2, '0') + '<div class="dot-on"></div><\/div>' +
+      '<div class="step-text"><div class="step-label">' + hl(s.label || '') + '<\/div>' +
+      (s.sublabel ? '<div class="step-sub">' + esc(s.sublabel) + '<\/div>' : '') + '<\/div>';
+    var dot = el.querySelector('.step-dot');
+    var text = el.querySelector('.step-text');
+    if (VERT) {
+      var yy = geo.y0 + frac * geo.len;
+      dot.style.cssText += 'left:' + (geo.x - 26) + 'px; top:' + (yy - 26) + 'px;';
+      text.style.cssText += 'left:' + (geo.x + 70) + 'px; top:' + (yy - 30) + 'px;';
+    } else {
+      var xx = geo.x0 + frac * geo.len;
+      dot.style.cssText += 'left:' + (xx - 26) + 'px; top:' + (geo.y - 26) + 'px;';
+      var above = i % 2 === 0;
+      // Centered on the dot (xPercent survives the later scale tween) so a
+      // long nowrap label can't run off the right canvas edge.
+      text.style.cssText += 'left:' + xx + 'px; text-align:center;' + (above ? 'bottom:' + (H - geo.y + 60) + 'px;' : 'top:' + (geo.y + 60) + 'px;');
+      gsap.set(text, { xPercent:-50 });
+    }
+    stepsHost.appendChild(el);
+    // The .step wrapper spans the whole canvas (so dot/text coordinates are
+    // canvas-space); animate the dot and text blocks themselves.
+    return { dot:dot, text:text, ring:el.querySelector('.dot-on') };
+  });
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+  tl.fromTo(track, { opacity:0 }, { opacity:1, duration:0.3 }, 0.3);
+
+  // The fill (and glowing runner) travel the line; each step lights up
+  // exactly as the runner passes it.
+  var travelDur = Math.min(DUR * 0.55, Math.max(1.4, STEPS.length * 0.6));
+  var t0 = 0.5;
+  tl.fromTo($('.track-fill'), VERT ? { scaleY:0 } : { scaleX:0 },
+    VERT ? { scaleY:1, duration:travelDur, ease:'power1.inOut' } : { scaleX:1, duration:travelDur, ease:'power1.inOut' }, t0);
+  var runner = $('.runner');
+  if (VERT) {
+    runner.style.left = (geo.x - 17) + 'px'; runner.style.top = (geo.y0 - 17) + 'px';
+    tl.fromTo(runner, { opacity:0 }, { opacity:1, duration:0.2 }, t0);
+    tl.to(runner, { y:geo.len, duration:travelDur, ease:'power1.inOut' }, t0);
+  } else {
+    runner.style.left = (geo.x0 - 17) + 'px'; runner.style.top = (geo.y - 17) + 'px';
+    tl.fromTo(runner, { opacity:0 }, { opacity:1, duration:0.2 }, t0);
+    tl.to(runner, { x:geo.len, duration:travelDur, ease:'power1.inOut' }, t0);
+  }
+  stepEls.forEach(function(s, i){
+    var frac = STEPS.length > 1 ? i / (STEPS.length - 1) : 0;
+    // power1.inOut progress ≈ linear enough to time the light-up beats
+    var at = t0 + frac * travelDur;
+    tl.fromTo([s.dot, s.text], { opacity:0, scale:0.7 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(1.8)' }, Math.max(t0, at - 0.1));
+    tl.fromTo(s.ring, { opacity:0 }, { opacity:1, duration:0.2, ease:'power2.out' }, at);
+  });
+  // Runner hands off to the final milestone: fade out on arrival, then the
+  // last step's ring pulses as B-roll for the rest of the scene.
+  var idleAt = t0 + travelDur - 0.18;
+  tl.to(runner, { opacity:0, scale:1.6, duration:0.16, ease:'power2.out' }, idleAt);
+  var last = stepEls[stepEls.length - 1];
+  if (last) {
+    var pulses = Math.max(1, Math.floor((DUR - idleAt - 0.3) / 0.8));
+    tl.to(last.ring, { opacity:0.4, duration:0.4, ease:'sine.inOut', repeat:pulses * 2 - 1, yoyo:true }, idleAt + 0.3);
+  }
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "config": { "slug": "test-tech-quote", "topic": "tech quote test", "totalDuration": 4 },
+  "scenes": [{
+    "id": "s1", "type": "quote", "start": 0, "duration": 4,
+    "quote": "The hottest new programming language is **English**.",
+    "attribution": "Andrej Karpathy",
+    "captions": ["Prompting became a real skill overnight."]
+  }]
+}

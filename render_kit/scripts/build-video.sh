@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build a video end-to-end from a chemistry template data.json:
+# Build a video end-to-end from a subject template data.json:
 #   1. stage a provided full-script narration file into videos/<slug>/
 #   2. populate the data.json into videos/<slug>/
 #   3. run npm run check (lint + validate + inspect) in that project
 #   4. render the composition to MP4 (default path, or --out_path if given)
 #   5. print the path to the rendered video on stdout
 #
-# Usage: scripts/build-video.sh <path-to-data.json> [--out_path <output-video-path>] [--audio_file <narration-audio-file>]
+# Usage: scripts/build-video.sh <path-to-data.json> [--template <template-name>] [--out_path <output-video-path>] [--audio_file <narration-audio-file>]
 #
 # --audio_file points at the single full-script narration file (as referenced
 # by data.json's config.audio, e.g. "assets/tts/narration.mp3"). It's staged
@@ -21,9 +21,22 @@ set -euo pipefail
 INVOKE_DIR="$(pwd)"
 OUT_PATH=""
 AUDIO_FILE=""
+TEMPLATE="chemistry"
 POSITIONAL=()
 while [ $# -gt 0 ]; do
   case "$1" in
+    --template)
+      TEMPLATE="${2:-}"
+      if [ -z "$TEMPLATE" ]; then
+        echo "Error: --template requires a value" >&2
+        exit 1
+      fi
+      shift 2
+      ;;
+    --template=*)
+      TEMPLATE="${1#*=}"
+      shift
+      ;;
     --out_path)
       OUT_PATH="${2:-}"
       if [ -z "$OUT_PATH" ]; then
@@ -56,7 +69,7 @@ while [ $# -gt 0 ]; do
 done
 
 if [ ${#POSITIONAL[@]} -ne 1 ]; then
-  echo "Usage: $0 <path-to-data.json> [--out_path <output-video-path>] [--audio_file <narration-audio-file>]" >&2
+  echo "Usage: $0 <path-to-data.json> [--template <template-name>] [--out_path <output-video-path>] [--audio_file <narration-audio-file>]" >&2
   exit 1
 fi
 
@@ -65,6 +78,12 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [ ! -f "$DATA_JSON" ]; then
   echo "Error: data file not found: $DATA_JSON" >&2
+  exit 1
+fi
+
+POPULATE_SCRIPT="$ROOT_DIR/templates/$TEMPLATE/populate.js"
+if [ ! -f "$POPULATE_SCRIPT" ]; then
+  echo "Error: template populate script not found: $POPULATE_SCRIPT" >&2
   exit 1
 fi
 
@@ -92,8 +111,8 @@ if [ -n "$AUDIO_FILE" ]; then
   cp "$AUDIO_FILE" "$VIDEO_DIR/$AUDIO_REL"
 fi
 
-echo "==> Populating template (slug: $SLUG)" >&2
-node "$ROOT_DIR/templates/chemistry/populate.js" "$DATA_JSON" >&2
+echo "==> Populating template ($TEMPLATE, slug: $SLUG)" >&2
+node "$POPULATE_SCRIPT" "$DATA_JSON" >&2
 
 echo "==> Checking composition" >&2
 (cd "$VIDEO_DIR" && npm run check) >&2

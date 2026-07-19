@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --stat-size:300px; --fix-size:110px; --label-size:56px; --cap-size:58px; --cap-bottom:220px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --stat-size:280px; --fix-size:100px; --label-size:54px; --cap-size:44px; --cap-bottom:90px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+.num-glow { position:absolute; inset:0; opacity:0;
+  background:radial-gradient(ellipse 60% 38% at 50% 42%, {{accent}}30, transparent 70%); }
+
+.eyebrow { position:absolute; z-index:2; left:0; right:0; top:150px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:30px; font-weight:700; letter-spacing:3px; color:{{accent}}; }
+#main-clip.horizontal .eyebrow { top:110px; }
+
+.hero { position:absolute; z-index:2; left:var(--pad); right:var(--pad); display:flex; }
+#main-clip.vertical .hero   { top:600px; flex-direction:column; align-items:center; text-align:center; gap:36px; }
+#main-clip.horizontal .hero { top:0; bottom:150px; flex-direction:row; align-items:center; justify-content:center; gap:90px; text-align:left; }
+
+.stat-line { font-weight:700; font-size:var(--stat-size); line-height:1; letter-spacing:-4px; color:{{accent}}; white-space:nowrap; }
+.fix { font-size:var(--fix-size); font-weight:700; letter-spacing:0; vertical-align:.12em; opacity:.9; }
+.stat-label { font-family:'Inter',sans-serif; font-weight:800; font-size:var(--label-size); line-height:1.25; max-width:14em; }
+#main-clip.horizontal .stat-label { border-left:10px solid {{accent}}; padding-left:44px; max-width:9.5em; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="num-glow"></div>
+    <div class="eyebrow">{{eyebrow}}</div>
+    <span class="stat-src" hidden>{{stat}}</span>
+    <div class="hero">
+      <div class="stat-line"><span class="fix pre">{{prefix}}</span><span class="stat-num"></span><span class="fix post">{{suffix}}</span></div>
+      <div class="stat-label">{{statLabel}}</div>
+    </div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var DUR = parseFloat('{{duration}}') || 4;
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  ['.eyebrow','.stat-label'].forEach(function(sel){
+    var el = $(sel); if(!el) return;
+    var t = el.textContent.trim();
+    if(!t){ el.style.display = 'none'; return; }
+    el.innerHTML = hl(t);
+  });
+  ['.pre','.post'].forEach(function(sel){
+    var el = $(sel); if(el && !el.textContent.trim()) el.style.display = 'none';
+  });
+
+  // Parse the stat into (pre)(number)(post) so the numeric part counts up,
+  // e.g. "80" → 80, "10,000×" → 10000 + "×", "3.5s" → 3.5 + "s".
+  var STAT = $('.stat-src').textContent.trim(); // via hidden DOM node — apostrophe-safe
+  var numEl = $('.stat-num');
+  var m = STAT.match(/^([^0-9]*)([0-9][0-9,]*\.?[0-9]*)([\s\S]*)$/);
+  var tl = gsap.timeline({ paused:true });
+
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo($('.eyebrow'), { opacity:0, y:-16 }, { opacity:1, y:0, duration:0.3, ease:'power2.out' }, 0.1);
+  tl.fromTo($('.stat-line'), { opacity:0, scale:0.8 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(1.8)' }, 0.2);
+
+  var countDur = Math.min(1.4, DUR * 0.4);
+  if (m) {
+    var hasComma = m[2].indexOf(',') !== -1;
+    var target = parseFloat(m[2].replace(/,/g, ''));
+    var decimals = (m[2].split('.')[1] || '').length;
+    var fmt = function(v){
+      var s = v.toFixed(decimals);
+      if (hasComma) s = s.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return m[1] + s + m[3];
+    };
+    numEl.textContent = fmt(0);
+    var proxy = { v: 0 };
+    tl.to(proxy, { v: target, duration: countDur, ease:'power2.out',
+      onUpdate: function(){ numEl.textContent = fmt(proxy.v); } }, 0.3);
+  } else {
+    numEl.textContent = STAT;
+  }
+
+  // Landing beat: glow flash + pop once the count settles
+  var landAt = 0.3 + countDur;
+  tl.fromTo($('.num-glow'), { opacity:0 }, { opacity:1, duration:0.25, ease:'power2.out' }, landAt - 0.1);
+  tl.fromTo($('.stat-line'), { scale:1 }, { scale:1.05, duration:0.12, ease:'power2.out' }, landAt);
+  tl.to($('.stat-line'), { scale:1, duration:0.2, ease:'power2.inOut' }, landAt + 0.12);
+  tl.fromTo($('.stat-label'), { opacity:0, y:26 }, { opacity:1, y:0, duration:0.32, ease:'power2.out' }, 0.55);
+  // B-roll: gentle glow breathe for the rest of the scene
+  var breatheDur = Math.max(0.6, DUR - landAt - 0.5);
+  tl.to($('.num-glow'), { opacity:0.55, duration:breatheDur, ease:'sine.inOut' }, landAt + 0.4);
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

@@ -11,10 +11,15 @@
         "topic":         { "type": "string", "description": "Human-readable topic title" },
         "slug":          { "type": "string", "description": "kebab-case output directory name" },
         "totalDuration": { "type": "number", "description": "Total video duration in seconds" },
+        "orientation":   { "type": "string", "enum": ["vertical", "horizontal"], "description": "Canvas orientation. 'vertical' → 1080×1920 (9:16, default), 'horizontal' → 1920×1080 (16:9). Resolves width/height and picks each frame's layout." },
         "width":         { "type": "number" },
         "height":        { "type": "number" },
+        "capHighlight":  { "type": "string", "description": "Karaoke spoken-word highlight color (hex). Defaults to #FFD24A; independent of each frame's accent so captions read as one system." },
+        "description":   { "type": "string", "description": "YouTube description (2-4 sentences). Written to meta.json; not used at render." },
+        "hashtags":      { "type": "array", "items": { "type": "string" }, "description": "YouTube hashtags (3-6, lowercase, no #). Written to meta.json; not used at render." },
+        "tags":          { "type": "array", "items": { "type": "string" }, "description": "YouTube search-keyword tags (5-10 phrases). Written to meta.json; not used at render." },
         "bgm":           { "type": "string", "description": "BGM path relative to videos/<slug>/" },
-        "audio":         { "type": "string", "description": "Single full-script narration path relative to videos/<slug>/. Written by scripts/align-captions.mjs; replaces the old per-scene scenes[].audio." },
+        "audio":         { "type": "string", "description": "Single full-script narration path relative to videos/<slug>/. Written by the alignment step; replaces the old per-scene scenes[].audio." },
         "voiceStyle":    { "type": "string", "description": "Metadata for LLM pipeline; not used at render" }
       }
     },
@@ -28,7 +33,7 @@
           "id":         { "type": "string", "description": "Unique kebab-case id → filename and composition-id" },
           "type": {
             "type": "string",
-            "description": "Frame type selector. All types render at the canvas size given by config.width/height (9:16 vertical by default).",
+            "description": "Frame type selector. Every type renders in both orientations at the canvas size resolved from config.orientation (vertical 1080×1920 by default, horizontal 1920×1080).",
             "enum": ["cover", "stats", "quote", "diagram", "cta",
                      "atom", "element-card", "reaction-equation", "molecule",
                      "ph-bar", "orbital-overlap", "bond-comparison",
@@ -78,14 +83,27 @@
           },
           "captionTiming": {
             "type": "array",
-            "description": "Populate-computed, not hand-authored. Written by scripts/align-captions.mjs from real Whisper word timestamps: one {text,start,end} entry per captions[] chunk, start/end in scene-local seconds. If absent, populate.js falls back to evenly spacing captions[] across duration.",
+            "description": "Populate-computed, not hand-authored. Written by the alignment step from real Whisper word timestamps: one {text,start,end,words} entry per captions[] chunk, start/end in scene-local seconds. words[] carries per-token {text,start,end} for the karaoke highlight. If absent, populate.js falls back to evenly spacing captions[] across duration and synthesizes words[].",
             "items": {
               "type": "object",
               "required": ["text", "start", "end"],
               "properties": {
                 "text":  { "type": "string" },
                 "start": { "type": "number" },
-                "end":   { "type": "number" }
+                "end":   { "type": "number" },
+                "words": {
+                  "type": "array",
+                  "description": "Per-word timing for the karaoke highlight; one entry per whitespace token, scene-local seconds.",
+                  "items": {
+                    "type": "object",
+                    "required": ["text", "start", "end"],
+                    "properties": {
+                      "text":  { "type": "string" },
+                      "start": { "type": "number" },
+                      "end":   { "type": "number" }
+                    }
+                  }
+                }
               }
             }
           },

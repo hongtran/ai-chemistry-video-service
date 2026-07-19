@@ -1,0 +1,9 @@
+{
+  "config": { "slug": "test-tech-stats", "topic": "tech stats test", "totalDuration": 4 },
+  "scenes": [{
+    "id": "s1", "type": "stats", "start": 0, "duration": 4,
+    "eyebrow": "THE REALITY", "stat": "80", "suffix": "%",
+    "statLabel": "of AI projects **never ship**",
+    "captions": ["Most AI projects stall in the demo phase."]
+  }]
+}

@@ -1,0 +1,5109 @@
+{
+  "config": {
+    "topic": "Chatbots vs. AI Agents: What’s the Real Difference?",
+    "slug": "chatbots-vs-ai-agents-what-s-the-real-difference-h",
+    "totalDuration": 269.63,
+    "orientation": "horizontal",
+    "description": "Explore the fundamental differences between chatbots and AI agents. Understand how they interact with users, their capabilities, and their limitations. Discover why these distinctions matter for their use in technology.",
+    "hashtags": [
+      "chatbots",
+      "aiagents",
+      "technology",
+      "machinelearning"
+    ],
+    "tags": [
+      "chatbots",
+      "ai agents",
+      "technology",
+      "machine learning",
+      "AI",
+      "natural language processing",
+      "digital assistants"
+    ],
+    "audio": "assets/tts/narration.mp3"
+  },
+  "scenes": [
+    {
+      "id": "s0-intro",
+      "type": "cover",
+      "eyebrow": "AI Insights",
+      "headline": "Chatbots vs. AI Agents: What’s the Real Difference?",
+      "captions": [
+        "When we talk about chatbots",
+        "and AI agents, it's easy",
+        "to lump them together",
+        "as if they're the same thing."
+      ],
+      "start": 0,
+      "duration": 5.99,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "When we talk about chatbots",
+          "start": 0,
+          "end": 1.72,
+          "words": [
+            {
+              "text": "When",
+              "start": 0,
+              "end": 0.38
+            },
+            {
+              "text": "we",
+              "start": 0.38,
+              "end": 0.64
+            },
+            {
+              "text": "talk",
+              "start": 0.64,
+              "end": 0.92
+            },
+            {
+              "text": "about",
+              "start": 0.92,
+              "end": 1.38
+            },
+            {
+              "text": "chatbots",
+              "start": 1.38,
+              "end": 1.72
+            }
+          ]
+        },
+        {
+          "text": "and AI agents, it's easy",
+          "start": 1.72,
+          "end": 3.46,
+          "words": [
+            {
+              "text": "and",
+              "start": 1.72,
+              "end": 1.98
+            },
+            {
+              "text": "AI",
+              "start": 1.98,
+              "end": 2.38
+            },
+            {
+              "text": "agents,",
+              "start": 2.38,
+              "end": 2.78
+            },
+            {
+              "text": "it's",
+              "start": 3.02,
+              "end": 3.18
+            },
+            {
+              "text": "easy",
+              "start": 3.18,
+              "end": 3.46
+            }
+          ]
+        },
+        {
+          "text": "to lump them together",
+          "start": 3.46,
+          "end": 4.4,
+          "words": [
+            {
+              "text": "to",
+              "start": 3.46,
+              "end": 3.84
+            },
+            {
+              "text": "lump",
+              "start": 3.84,
+              "end": 3.84
+            },
+            {
+              "text": "them",
+              "start": 3.84,
+              "end": 4.12
+            },
+            {
+              "text": "together",
+              "start": 4.12,
+              "end": 4.4
+            }
+          ]
+        },
+        {
+          "text": "as if they're the same thing.",
+          "start": 4.4,
+          "end": 5.92,
+          "words": [
+            {
+              "text": "as",
+              "start": 4.4,
+              "end": 4.6
+            },
+            {
+              "text": "if",
+              "start": 4.6,
+              "end": 4.74
+            },
+            {
+              "text": "they're",
+              "start": 4.74,
+              "end": 4.88
+            },
+            {
+              "text": "the",
+              "start": 4.88,
+              "end": 5.04
+            },
+            {
+              "text": "same",
+              "start": 5.04,
+              "end": 5.26
+            },
+            {
+              "text": "thing.",
+              "start": 5.26,
+              "end": 5.92
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-similarities",
+      "type": "bullet-list",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Shared Traits",
+      "captions": [
+        "After all, both are powered",
+        "by artificial intelligence,",
+        "both can interact with us",
+        "using natural language,",
+        "and both serve as intermediaries",
+        "between humans and machines."
+      ],
+      "items": [
+        "Powered by **AI**",
+        "Use natural **language**",
+        "Act as **intermediaries**"
+      ],
+      "start": 5.99,
+      "duration": 9.78,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "After all, both are powered",
+          "start": 0.15,
+          "end": 1.53,
+          "words": [
+            {
+              "text": "After",
+              "start": 0.15,
+              "end": 0.53
+            },
+            {
+              "text": "all,",
+              "start": 0.53,
+              "end": 0.79
+            },
+            {
+              "text": "both",
+              "start": 1.01,
+              "end": 1.05
+            },
+            {
+              "text": "are",
+              "start": 1.05,
+              "end": 1.41
+            },
+            {
+              "text": "powered",
+              "start": 1.41,
+              "end": 1.53
+            }
+          ]
+        },
+        {
+          "text": "by artificial intelligence,",
+          "start": 1.53,
+          "end": 2.91,
+          "words": [
+            {
+              "text": "by",
+              "start": 1.53,
+              "end": 1.87
+            },
+            {
+              "text": "artificial",
+              "start": 1.87,
+              "end": 2.31
+            },
+            {
+              "text": "intelligence,",
+              "start": 2.31,
+              "end": 2.91
+            }
+          ]
+        },
+        {
+          "text": "both can interact with us",
+          "start": 3.41,
+          "end": 4.59,
+          "words": [
+            {
+              "text": "both",
+              "start": 3.41,
+              "end": 3.61
+            },
+            {
+              "text": "can",
+              "start": 3.61,
+              "end": 3.85
+            },
+            {
+              "text": "interact",
+              "start": 3.85,
+              "end": 4.15
+            },
+            {
+              "text": "with",
+              "start": 4.15,
+              "end": 4.39
+            },
+            {
+              "text": "us",
+              "start": 4.39,
+              "end": 4.59
+            }
+          ]
+        },
+        {
+          "text": "using natural language,",
+          "start": 4.59,
+          "end": 5.73,
+          "words": [
+            {
+              "text": "using",
+              "start": 4.59,
+              "end": 4.83
+            },
+            {
+              "text": "natural",
+              "start": 4.83,
+              "end": 5.29
+            },
+            {
+              "text": "language,",
+              "start": 5.29,
+              "end": 5.73
+            }
+          ]
+        },
+        {
+          "text": "and both serve as intermediaries",
+          "start": 5.87,
+          "end": 7.91,
+          "words": [
+            {
+              "text": "and",
+              "start": 5.87,
+              "end": 6.45
+            },
+            {
+              "text": "both",
+              "start": 6.45,
+              "end": 6.77
+            },
+            {
+              "text": "serve",
+              "start": 6.77,
+              "end": 6.99
+            },
+            {
+              "text": "as",
+              "start": 6.99,
+              "end": 7.31
+            },
+            {
+              "text": "intermediaries",
+              "start": 7.31,
+              "end": 7.91
+            }
+          ]
+        },
+        {
+          "text": "between humans and machines.",
+          "start": 7.91,
+          "end": 9.41,
+          "words": [
+            {
+              "text": "between",
+              "start": 7.91,
+              "end": 8.33
+            },
+            {
+              "text": "humans",
+              "start": 8.33,
+              "end": 8.69
+            },
+            {
+              "text": "and",
+              "start": 8.69,
+              "end": 9.41
+            },
+            {
+              "text": "machines.",
+              "start": 9.41,
+              "end": 9.41
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-differences",
+      "type": "bullet-list",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Key Differences",
+      "captions": [
+        "But when we dig a little deeper,",
+        "we find that there are some",
+        "fundamental differences between the two,",
+        "differences that have significant",
+        "implications for how we use them",
+        "and what we can expect from them."
+      ],
+      "items": [
+        "Different **capabilities**",
+        "Varying **use cases**",
+        "Distinct **expectations**"
+      ],
+      "start": 15.77,
+      "duration": 11.18,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "But when we dig a little deeper,",
+          "start": 0.15,
+          "end": 1.91,
+          "words": [
+            {
+              "text": "But",
+              "start": 0.15,
+              "end": 0.67
+            },
+            {
+              "text": "when",
+              "start": 0.67,
+              "end": 0.83
+            },
+            {
+              "text": "we",
+              "start": 0.83,
+              "end": 1.17
+            },
+            {
+              "text": "dig",
+              "start": 1.17,
+              "end": 1.23
+            },
+            {
+              "text": "a",
+              "start": 1.23,
+              "end": 1.43
+            },
+            {
+              "text": "little",
+              "start": 1.43,
+              "end": 1.61
+            },
+            {
+              "text": "deeper,",
+              "start": 1.61,
+              "end": 1.91
+            }
+          ]
+        },
+        {
+          "text": "we find that there are some",
+          "start": 2.29,
+          "end": 3.57,
+          "words": [
+            {
+              "text": "we",
+              "start": 2.29,
+              "end": 2.57
+            },
+            {
+              "text": "find",
+              "start": 2.57,
+              "end": 2.77
+            },
+            {
+              "text": "that",
+              "start": 2.77,
+              "end": 3.05
+            },
+            {
+              "text": "there",
+              "start": 3.05,
+              "end": 3.07
+            },
+            {
+              "text": "are",
+              "start": 3.07,
+              "end": 3.19
+            },
+            {
+              "text": "some",
+              "start": 3.19,
+              "end": 3.57
+            }
+          ]
+        },
+        {
+          "text": "fundamental differences between the two,",
+          "start": 3.57,
+          "end": 5.39,
+          "words": [
+            {
+              "text": "fundamental",
+              "start": 3.57,
+              "end": 3.97
+            },
+            {
+              "text": "differences",
+              "start": 3.97,
+              "end": 4.41
+            },
+            {
+              "text": "between",
+              "start": 4.41,
+              "end": 4.83
+            },
+            {
+              "text": "the",
+              "start": 4.83,
+              "end": 4.97
+            },
+            {
+              "text": "two,",
+              "start": 4.97,
+              "end": 5.39
+            }
+          ]
+        },
+        {
+          "text": "differences that have significant",
+          "start": 6.15,
+          "end": 7.33,
+          "words": [
+            {
+              "text": "differences",
+              "start": 6.15,
+              "end": 6.17
+            },
+            {
+              "text": "that",
+              "start": 6.17,
+              "end": 6.51
+            },
+            {
+              "text": "have",
+              "start": 6.51,
+              "end": 6.79
+            },
+            {
+              "text": "significant",
+              "start": 6.79,
+              "end": 7.33
+            }
+          ]
+        },
+        {
+          "text": "implications for how we use them",
+          "start": 7.33,
+          "end": 9.11,
+          "words": [
+            {
+              "text": "implications",
+              "start": 7.33,
+              "end": 7.89
+            },
+            {
+              "text": "for",
+              "start": 7.89,
+              "end": 8.27
+            },
+            {
+              "text": "how",
+              "start": 8.27,
+              "end": 8.47
+            },
+            {
+              "text": "we",
+              "start": 8.47,
+              "end": 8.67
+            },
+            {
+              "text": "use",
+              "start": 8.67,
+              "end": 8.93
+            },
+            {
+              "text": "them",
+              "start": 8.93,
+              "end": 9.11
+            }
+          ]
+        },
+        {
+          "text": "and what we can expect from them.",
+          "start": 9.11,
+          "end": 10.83,
+          "words": [
+            {
+              "text": "and",
+              "start": 9.11,
+              "end": 9.63
+            },
+            {
+              "text": "what",
+              "start": 9.63,
+              "end": 9.81
+            },
+            {
+              "text": "we",
+              "start": 9.81,
+              "end": 9.95
+            },
+            {
+              "text": "can",
+              "start": 9.95,
+              "end": 10.13
+            },
+            {
+              "text": "expect",
+              "start": 10.13,
+              "end": 10.43
+            },
+            {
+              "text": "from",
+              "start": 10.43,
+              "end": 10.67
+            },
+            {
+              "text": "them.",
+              "start": 10.67,
+              "end": 10.83
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-chatbots",
+      "type": "concept-card",
+      "eyebrow": "",
+      "headline": "",
+      "term": "Chatbots",
+      "tagline": "Scripted Interactions",
+      "definition": "Chatbots simulate a conversation with a human, often limited by predefined responses.",
+      "glyph": "💬",
+      "captions": [
+        "Let's start with chatbots.",
+        "These are the more familiar of the two.",
+        "Most of us have encountered a chatbot",
+        "at some point, whether it's",
+        "on a customer service website,",
+        "a banking app, or even in a virtual",
+        "assistant on our phones."
+      ],
+      "start": 26.95,
+      "duration": 13.14,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Let's start with chatbots.",
+          "start": 0.15,
+          "end": 1.61,
+          "words": [
+            {
+              "text": "Let's",
+              "start": 0.15,
+              "end": 0.67
+            },
+            {
+              "text": "start",
+              "start": 0.67,
+              "end": 0.85
+            },
+            {
+              "text": "with",
+              "start": 0.85,
+              "end": 1.09
+            },
+            {
+              "text": "chatbots.",
+              "start": 1.09,
+              "end": 1.61
+            }
+          ]
+        },
+        {
+          "text": "These are the more familiar of the two.",
+          "start": 1.61,
+          "end": 3.73,
+          "words": [
+            {
+              "text": "These",
+              "start": 1.61,
+              "end": 2.21
+            },
+            {
+              "text": "are",
+              "start": 2.21,
+              "end": 2.31
+            },
+            {
+              "text": "the",
+              "start": 2.31,
+              "end": 2.45
+            },
+            {
+              "text": "more",
+              "start": 2.45,
+              "end": 2.71
+            },
+            {
+              "text": "familiar",
+              "start": 2.71,
+              "end": 2.97
+            },
+            {
+              "text": "of",
+              "start": 2.97,
+              "end": 3.29
+            },
+            {
+              "text": "the",
+              "start": 3.29,
+              "end": 3.29
+            },
+            {
+              "text": "two.",
+              "start": 3.29,
+              "end": 3.73
+            }
+          ]
+        },
+        {
+          "text": "Most of us have encountered a chatbot",
+          "start": 4.41,
+          "end": 5.81,
+          "words": [
+            {
+              "text": "Most",
+              "start": 4.41,
+              "end": 4.41
+            },
+            {
+              "text": "of",
+              "start": 4.41,
+              "end": 4.59
+            },
+            {
+              "text": "us",
+              "start": 4.59,
+              "end": 4.69
+            },
+            {
+              "text": "have",
+              "start": 4.69,
+              "end": 4.89
+            },
+            {
+              "text": "encountered",
+              "start": 4.89,
+              "end": 5.25
+            },
+            {
+              "text": "a",
+              "start": 5.25,
+              "end": 5.69
+            },
+            {
+              "text": "chatbot",
+              "start": 5.69,
+              "end": 5.81
+            }
+          ]
+        },
+        {
+          "text": "at some point, whether it's",
+          "start": 5.81,
+          "end": 7.35,
+          "words": [
+            {
+              "text": "at",
+              "start": 5.81,
+              "end": 6.03
+            },
+            {
+              "text": "some",
+              "start": 6.03,
+              "end": 6.33
+            },
+            {
+              "text": "point,",
+              "start": 6.33,
+              "end": 6.57
+            },
+            {
+              "text": "whether",
+              "start": 7.05,
+              "end": 7.13
+            },
+            {
+              "text": "it's",
+              "start": 7.13,
+              "end": 7.35
+            }
+          ]
+        },
+        {
+          "text": "on a customer service website,",
+          "start": 7.35,
+          "end": 8.73,
+          "words": [
+            {
+              "text": "on",
+              "start": 7.35,
+              "end": 7.45
+            },
+            {
+              "text": "a",
+              "start": 7.45,
+              "end": 7.61
+            },
+            {
+              "text": "customer",
+              "start": 7.61,
+              "end": 7.93
+            },
+            {
+              "text": "service",
+              "start": 7.93,
+              "end": 8.31
+            },
+            {
+              "text": "website,",
+              "start": 8.31,
+              "end": 8.73
+            }
+          ]
+        },
+        {
+          "text": "a banking app, or even in a virtual",
+          "start": 9.11,
+          "end": 11.15,
+          "words": [
+            {
+              "text": "a",
+              "start": 9.11,
+              "end": 9.47
+            },
+            {
+              "text": "banking",
+              "start": 9.47,
+              "end": 9.47
+            },
+            {
+              "text": "app,",
+              "start": 9.47,
+              "end": 9.81
+            },
+            {
+              "text": "or",
+              "start": 9.83,
+              "end": 10.31
+            },
+            {
+              "text": "even",
+              "start": 10.31,
+              "end": 10.59
+            },
+            {
+              "text": "in",
+              "start": 10.59,
+              "end": 10.75
+            },
+            {
+              "text": "a",
+              "start": 10.75,
+              "end": 10.95
+            },
+            {
+              "text": "virtual",
+              "start": 10.95,
+              "end": 11.15
+            }
+          ]
+        },
+        {
+          "text": "assistant on our phones.",
+          "start": 11.15,
+          "end": 12.43,
+          "words": [
+            {
+              "text": "assistant",
+              "start": 11.15,
+              "end": 11.57
+            },
+            {
+              "text": "on",
+              "start": 11.57,
+              "end": 11.85
+            },
+            {
+              "text": "our",
+              "start": 11.85,
+              "end": 12.09
+            },
+            {
+              "text": "phones.",
+              "start": 12.09,
+              "end": 12.43
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-chatbot-limitations",
+      "type": "bullet-list",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Chatbot Limitations",
+      "captions": [
+        "Chatbots are designed to simulate",
+        "a conversation with a human.",
+        "They can answer questions,",
+        "provide information,",
+        "and even perform simple tasks.",
+        "However, they're typically limited",
+        "by their programming.",
+        "Many chatbots operate on a script",
+        "or a set of predefined responses.",
+        "They work well within a certain context",
+        "but can struggle if you ask them",
+        "something outside their programmed",
+        "knowledge base."
+      ],
+      "items": [
+        "Scripted **responses**",
+        "Limited **context**",
+        "Predefined **tasks**"
+      ],
+      "start": 40.09,
+      "duration": 23,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Chatbots are designed to simulate",
+          "start": 0.15,
+          "end": 1.73,
+          "words": [
+            {
+              "text": "Chatbots",
+              "start": 0.15,
+              "end": 0.57
+            },
+            {
+              "text": "are",
+              "start": 0.57,
+              "end": 0.89
+            },
+            {
+              "text": "designed",
+              "start": 0.89,
+              "end": 1.13
+            },
+            {
+              "text": "to",
+              "start": 1.13,
+              "end": 1.73
+            },
+            {
+              "text": "simulate",
+              "start": 1.73,
+              "end": 1.73
+            }
+          ]
+        },
+        {
+          "text": "a conversation with a human.",
+          "start": 1.73,
+          "end": 3.15,
+          "words": [
+            {
+              "text": "a",
+              "start": 1.73,
+              "end": 2.51
+            },
+            {
+              "text": "conversation",
+              "start": 2.51,
+              "end": 2.51
+            },
+            {
+              "text": "with",
+              "start": 2.51,
+              "end": 2.73
+            },
+            {
+              "text": "a",
+              "start": 2.73,
+              "end": 3.15
+            },
+            {
+              "text": "human.",
+              "start": 3.15,
+              "end": 3.15
+            }
+          ]
+        },
+        {
+          "text": "They can answer questions,",
+          "start": 3.77,
+          "end": 4.77,
+          "words": [
+            {
+              "text": "They",
+              "start": 3.77,
+              "end": 3.77
+            },
+            {
+              "text": "can",
+              "start": 3.77,
+              "end": 4.01
+            },
+            {
+              "text": "answer",
+              "start": 4.01,
+              "end": 4.23
+            },
+            {
+              "text": "questions,",
+              "start": 4.23,
+              "end": 4.77
+            }
+          ]
+        },
+        {
+          "text": "provide information,",
+          "start": 5.47,
+          "end": 6.01,
+          "words": [
+            {
+              "text": "provide",
+              "start": 5.47,
+              "end": 5.47
+            },
+            {
+              "text": "information,",
+              "start": 5.47,
+              "end": 6.01
+            }
+          ]
+        },
+        {
+          "text": "and even perform simple tasks.",
+          "start": 6.19,
+          "end": 8.13,
+          "words": [
+            {
+              "text": "and",
+              "start": 6.19,
+              "end": 6.55
+            },
+            {
+              "text": "even",
+              "start": 6.55,
+              "end": 6.87
+            },
+            {
+              "text": "perform",
+              "start": 6.87,
+              "end": 7.25
+            },
+            {
+              "text": "simple",
+              "start": 7.25,
+              "end": 7.67
+            },
+            {
+              "text": "tasks.",
+              "start": 7.67,
+              "end": 8.13
+            }
+          ]
+        },
+        {
+          "text": "However, they're typically limited",
+          "start": 8.87,
+          "end": 10.61,
+          "words": [
+            {
+              "text": "However,",
+              "start": 8.87,
+              "end": 9.31
+            },
+            {
+              "text": "they're",
+              "start": 9.31,
+              "end": 9.89
+            },
+            {
+              "text": "typically",
+              "start": 9.89,
+              "end": 10.31
+            },
+            {
+              "text": "limited",
+              "start": 10.31,
+              "end": 10.61
+            }
+          ]
+        },
+        {
+          "text": "by their programming.",
+          "start": 10.61,
+          "end": 11.47,
+          "words": [
+            {
+              "text": "by",
+              "start": 10.61,
+              "end": 10.85
+            },
+            {
+              "text": "their",
+              "start": 10.85,
+              "end": 11.19
+            },
+            {
+              "text": "programming.",
+              "start": 11.19,
+              "end": 11.47
+            }
+          ]
+        },
+        {
+          "text": "Many chatbots operate on a script",
+          "start": 12.37,
+          "end": 14.11,
+          "words": [
+            {
+              "text": "Many",
+              "start": 12.37,
+              "end": 12.55
+            },
+            {
+              "text": "chatbots",
+              "start": 12.55,
+              "end": 13.07
+            },
+            {
+              "text": "operate",
+              "start": 13.07,
+              "end": 13.47
+            },
+            {
+              "text": "on",
+              "start": 13.47,
+              "end": 13.69
+            },
+            {
+              "text": "a",
+              "start": 13.69,
+              "end": 14.09
+            },
+            {
+              "text": "script",
+              "start": 14.09,
+              "end": 14.11
+            }
+          ]
+        },
+        {
+          "text": "or a set of predefined responses.",
+          "start": 14.11,
+          "end": 15.87,
+          "words": [
+            {
+              "text": "or",
+              "start": 14.11,
+              "end": 14.39
+            },
+            {
+              "text": "a",
+              "start": 14.39,
+              "end": 14.69
+            },
+            {
+              "text": "set",
+              "start": 14.69,
+              "end": 14.69
+            },
+            {
+              "text": "of",
+              "start": 14.69,
+              "end": 14.99
+            },
+            {
+              "text": "predefined",
+              "start": 14.99,
+              "end": 15.39
+            },
+            {
+              "text": "responses.",
+              "start": 15.39,
+              "end": 15.87
+            }
+          ]
+        },
+        {
+          "text": "They work well within a certain context",
+          "start": 16.51,
+          "end": 18.53,
+          "words": [
+            {
+              "text": "They",
+              "start": 16.51,
+              "end": 16.79
+            },
+            {
+              "text": "work",
+              "start": 16.79,
+              "end": 17.07
+            },
+            {
+              "text": "well",
+              "start": 17.07,
+              "end": 17.35
+            },
+            {
+              "text": "within",
+              "start": 17.35,
+              "end": 17.55
+            },
+            {
+              "text": "a",
+              "start": 17.55,
+              "end": 17.75
+            },
+            {
+              "text": "certain",
+              "start": 17.75,
+              "end": 18.03
+            },
+            {
+              "text": "context",
+              "start": 18.03,
+              "end": 18.53
+            }
+          ]
+        },
+        {
+          "text": "but can struggle if you ask them",
+          "start": 18.95,
+          "end": 20.39,
+          "words": [
+            {
+              "text": "but",
+              "start": 18.95,
+              "end": 19.07
+            },
+            {
+              "text": "can",
+              "start": 19.07,
+              "end": 19.31
+            },
+            {
+              "text": "struggle",
+              "start": 19.31,
+              "end": 19.57
+            },
+            {
+              "text": "if",
+              "start": 19.57,
+              "end": 19.77
+            },
+            {
+              "text": "you",
+              "start": 19.77,
+              "end": 20.07
+            },
+            {
+              "text": "ask",
+              "start": 20.07,
+              "end": 20.17
+            },
+            {
+              "text": "them",
+              "start": 20.17,
+              "end": 20.39
+            }
+          ]
+        },
+        {
+          "text": "something outside their programmed",
+          "start": 20.39,
+          "end": 21.83,
+          "words": [
+            {
+              "text": "something",
+              "start": 20.39,
+              "end": 20.79
+            },
+            {
+              "text": "outside",
+              "start": 20.79,
+              "end": 21.09
+            },
+            {
+              "text": "their",
+              "start": 21.09,
+              "end": 21.37
+            },
+            {
+              "text": "programmed",
+              "start": 21.37,
+              "end": 21.83
+            }
+          ]
+        },
+        {
+          "text": "knowledge base.",
+          "start": 21.83,
+          "end": 22.61,
+          "words": [
+            {
+              "text": "knowledge",
+              "start": 21.83,
+              "end": 22.21
+            },
+            {
+              "text": "base.",
+              "start": 22.21,
+              "end": 22.61
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-ai-agents-intro",
+      "type": "concept-card",
+      "eyebrow": "",
+      "headline": "",
+      "term": "AI Agents",
+      "tagline": "Beyond Chatbots",
+      "definition": "AI agents are more autonomous and proactive, capable of making decisions and taking actions.",
+      "glyph": "🤖",
+      "captions": [
+        "Now, AI agents take things",
+        "a step further."
+      ],
+      "start": 63.09,
+      "duration": 3.54,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Now, AI agents take things",
+          "start": 0.15,
+          "end": 2.23,
+          "words": [
+            {
+              "text": "Now,",
+              "start": 0.15,
+              "end": 0.71
+            },
+            {
+              "text": "AI",
+              "start": 1.09,
+              "end": 1.39
+            },
+            {
+              "text": "agents",
+              "start": 1.39,
+              "end": 1.71
+            },
+            {
+              "text": "take",
+              "start": 1.71,
+              "end": 2.01
+            },
+            {
+              "text": "things",
+              "start": 2.01,
+              "end": 2.23
+            }
+          ]
+        },
+        {
+          "text": "a step further.",
+          "start": 2.23,
+          "end": 2.95,
+          "words": [
+            {
+              "text": "a",
+              "start": 2.23,
+              "end": 2.51
+            },
+            {
+              "text": "step",
+              "start": 2.51,
+              "end": 2.63
+            },
+            {
+              "text": "further.",
+              "start": 2.63,
+              "end": 2.95
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-chatbots-vs-ai-agents",
+      "type": "comparison",
+      "eyebrow": "Chatbots vs. AI Agents",
+      "headline": "What’s the Real Difference?",
+      "captions": [
+        "While chatbots are often rule-based and reactive,",
+        "AI agents are more autonomous and proactive.",
+        "They don't just respond to questions;",
+        "they can make decisions and take actions on their own."
+      ],
+      "leftTitle": "Chatbots",
+      "rightTitle": "AI Agents",
+      "leftItems": [
+        "Rule-based",
+        "Reactive"
+      ],
+      "rightItems": [
+        "Autonomous",
+        "Proactive"
+      ],
+      "leftAccent": "#ff5733",
+      "rightAccent": "#33c1ff",
+      "start": 66.63,
+      "duration": 11.34,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "While chatbots are often rule-based and reactive,",
+          "start": 0.15,
+          "end": 2.47,
+          "words": [
+            {
+              "text": "While",
+              "start": 0.15,
+              "end": 0.23
+            },
+            {
+              "text": "chatbots",
+              "start": 0.23,
+              "end": 0.71
+            },
+            {
+              "text": "are",
+              "start": 0.71,
+              "end": 0.91
+            },
+            {
+              "text": "often",
+              "start": 0.91,
+              "end": 1.25
+            },
+            {
+              "text": "rule-based",
+              "start": 1.25,
+              "end": 1.73
+            },
+            {
+              "text": "and",
+              "start": 1.73,
+              "end": 1.97
+            },
+            {
+              "text": "reactive,",
+              "start": 1.97,
+              "end": 2.47
+            }
+          ]
+        },
+        {
+          "text": "AI agents are more autonomous and proactive.",
+          "start": 3.11,
+          "end": 5.31,
+          "words": [
+            {
+              "text": "AI",
+              "start": 3.11,
+              "end": 3.31
+            },
+            {
+              "text": "agents",
+              "start": 3.31,
+              "end": 3.63
+            },
+            {
+              "text": "are",
+              "start": 3.63,
+              "end": 3.83
+            },
+            {
+              "text": "more",
+              "start": 3.83,
+              "end": 4.11
+            },
+            {
+              "text": "autonomous",
+              "start": 4.11,
+              "end": 4.55
+            },
+            {
+              "text": "and",
+              "start": 4.55,
+              "end": 4.89
+            },
+            {
+              "text": "proactive.",
+              "start": 4.89,
+              "end": 5.31
+            }
+          ]
+        },
+        {
+          "text": "They don't just respond to questions;",
+          "start": 6.11,
+          "end": 7.59,
+          "words": [
+            {
+              "text": "They",
+              "start": 6.11,
+              "end": 6.17
+            },
+            {
+              "text": "don't",
+              "start": 6.17,
+              "end": 6.41
+            },
+            {
+              "text": "just",
+              "start": 6.41,
+              "end": 6.95
+            },
+            {
+              "text": "respond",
+              "start": 6.95,
+              "end": 6.95
+            },
+            {
+              "text": "to",
+              "start": 6.95,
+              "end": 7.59
+            },
+            {
+              "text": "questions;",
+              "start": 7.59,
+              "end": 7.59
+            }
+          ]
+        },
+        {
+          "text": "they can make decisions and take actions on their own.",
+          "start": 8.11,
+          "end": 10.65,
+          "words": [
+            {
+              "text": "they",
+              "start": 8.11,
+              "end": 8.17
+            },
+            {
+              "text": "can",
+              "start": 8.17,
+              "end": 8.37
+            },
+            {
+              "text": "make",
+              "start": 8.37,
+              "end": 8.57
+            },
+            {
+              "text": "decisions",
+              "start": 8.57,
+              "end": 9.03
+            },
+            {
+              "text": "and",
+              "start": 9.03,
+              "end": 9.47
+            },
+            {
+              "text": "take",
+              "start": 9.47,
+              "end": 9.73
+            },
+            {
+              "text": "actions",
+              "start": 9.73,
+              "end": 10.09
+            },
+            {
+              "text": "on",
+              "start": 10.09,
+              "end": 10.33
+            },
+            {
+              "text": "their",
+              "start": 10.33,
+              "end": 10.41
+            },
+            {
+              "text": "own.",
+              "start": 10.41,
+              "end": 10.65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-ai-agent-capabilities",
+      "type": "bullet-list",
+      "eyebrow": "AI Agent Capabilities",
+      "headline": "Beyond Simple Responses",
+      "captions": [
+        "Think of an AI agent as a digital assistant",
+        "that can manage complex tasks, learn from interactions,",
+        "and even predict your needs.",
+        "They're built with advanced algorithms",
+        "that allow them to understand context,",
+        "learn from data, and adapt over time."
+      ],
+      "title": "AI Agent Capabilities",
+      "items": [
+        "Manage **complex tasks**",
+        "Learn from **interactions**",
+        "Predict **your needs**"
+      ],
+      "start": 77.97,
+      "duration": 14.12,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Think of an AI agent as a digital assistant",
+          "start": 0.15,
+          "end": 2.25,
+          "words": [
+            {
+              "text": "Think",
+              "start": 0.15,
+              "end": 0.25
+            },
+            {
+              "text": "of",
+              "start": 0.25,
+              "end": 0.37
+            },
+            {
+              "text": "an",
+              "start": 0.37,
+              "end": 0.55
+            },
+            {
+              "text": "AI",
+              "start": 0.55,
+              "end": 0.87
+            },
+            {
+              "text": "agent",
+              "start": 0.87,
+              "end": 1.19
+            },
+            {
+              "text": "as",
+              "start": 1.19,
+              "end": 1.37
+            },
+            {
+              "text": "a",
+              "start": 1.37,
+              "end": 1.61
+            },
+            {
+              "text": "digital",
+              "start": 1.61,
+              "end": 1.87
+            },
+            {
+              "text": "assistant",
+              "start": 1.87,
+              "end": 2.25
+            }
+          ]
+        },
+        {
+          "text": "that can manage complex tasks, learn from interactions,",
+          "start": 2.25,
+          "end": 5.45,
+          "words": [
+            {
+              "text": "that",
+              "start": 2.25,
+              "end": 2.53
+            },
+            {
+              "text": "can",
+              "start": 2.53,
+              "end": 2.75
+            },
+            {
+              "text": "manage",
+              "start": 2.75,
+              "end": 2.97
+            },
+            {
+              "text": "complex",
+              "start": 2.97,
+              "end": 3.53
+            },
+            {
+              "text": "tasks,",
+              "start": 3.53,
+              "end": 4.03
+            },
+            {
+              "text": "learn",
+              "start": 4.67,
+              "end": 4.69
+            },
+            {
+              "text": "from",
+              "start": 4.69,
+              "end": 4.95
+            },
+            {
+              "text": "interactions,",
+              "start": 4.95,
+              "end": 5.45
+            }
+          ]
+        },
+        {
+          "text": "and even predict your needs.",
+          "start": 5.63,
+          "end": 7.01,
+          "words": [
+            {
+              "text": "and",
+              "start": 5.63,
+              "end": 5.95
+            },
+            {
+              "text": "even",
+              "start": 5.95,
+              "end": 6.51
+            },
+            {
+              "text": "predict",
+              "start": 6.51,
+              "end": 6.51
+            },
+            {
+              "text": "your",
+              "start": 6.51,
+              "end": 6.79
+            },
+            {
+              "text": "needs.",
+              "start": 6.79,
+              "end": 7.01
+            }
+          ]
+        },
+        {
+          "text": "They're built with advanced algorithms",
+          "start": 7.59,
+          "end": 9.21,
+          "words": [
+            {
+              "text": "They're",
+              "start": 7.59,
+              "end": 7.89
+            },
+            {
+              "text": "built",
+              "start": 7.89,
+              "end": 8.05
+            },
+            {
+              "text": "with",
+              "start": 8.05,
+              "end": 8.29
+            },
+            {
+              "text": "advanced",
+              "start": 8.29,
+              "end": 8.73
+            },
+            {
+              "text": "algorithms",
+              "start": 8.73,
+              "end": 9.21
+            }
+          ]
+        },
+        {
+          "text": "that allow them to understand context,",
+          "start": 9.21,
+          "end": 11.17,
+          "words": [
+            {
+              "text": "that",
+              "start": 9.21,
+              "end": 9.55
+            },
+            {
+              "text": "allow",
+              "start": 9.55,
+              "end": 9.77
+            },
+            {
+              "text": "them",
+              "start": 9.77,
+              "end": 9.91
+            },
+            {
+              "text": "to",
+              "start": 9.91,
+              "end": 10.21
+            },
+            {
+              "text": "understand",
+              "start": 10.21,
+              "end": 10.59
+            },
+            {
+              "text": "context,",
+              "start": 10.59,
+              "end": 11.17
+            }
+          ]
+        },
+        {
+          "text": "learn from data, and adapt over time.",
+          "start": 11.79,
+          "end": 13.69,
+          "words": [
+            {
+              "text": "learn",
+              "start": 11.79,
+              "end": 11.79
+            },
+            {
+              "text": "from",
+              "start": 11.79,
+              "end": 12.03
+            },
+            {
+              "text": "data,",
+              "start": 12.03,
+              "end": 12.31
+            },
+            {
+              "text": "and",
+              "start": 12.67,
+              "end": 12.89
+            },
+            {
+              "text": "adapt",
+              "start": 12.89,
+              "end": 13.15
+            },
+            {
+              "text": "over",
+              "start": 13.15,
+              "end": 13.49
+            },
+            {
+              "text": "time.",
+              "start": 13.49,
+              "end": 13.69
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-powerful-tools",
+      "type": "concept-card",
+      "eyebrow": "Powerful Tools",
+      "headline": "More than Q&A",
+      "captions": [
+        "This makes them incredibly powerful tools",
+        "for tasks that require more than",
+        "just a simple question-and-answer exchange."
+      ],
+      "term": "AI Agent",
+      "tagline": "Beyond Q&A",
+      "definition": "A digital assistant that manages complex tasks.",
+      "glyph": "🤖",
+      "start": 92.09,
+      "duration": 6.22,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This makes them incredibly powerful tools",
+          "start": 0.15,
+          "end": 2.23,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.47
+            },
+            {
+              "text": "makes",
+              "start": 0.47,
+              "end": 0.67
+            },
+            {
+              "text": "them",
+              "start": 0.67,
+              "end": 0.89
+            },
+            {
+              "text": "incredibly",
+              "start": 0.89,
+              "end": 1.45
+            },
+            {
+              "text": "powerful",
+              "start": 1.45,
+              "end": 1.83
+            },
+            {
+              "text": "tools",
+              "start": 1.83,
+              "end": 2.23
+            }
+          ]
+        },
+        {
+          "text": "for tasks that require more than",
+          "start": 2.23,
+          "end": 4.01,
+          "words": [
+            {
+              "text": "for",
+              "start": 2.23,
+              "end": 2.55
+            },
+            {
+              "text": "tasks",
+              "start": 2.55,
+              "end": 2.87
+            },
+            {
+              "text": "that",
+              "start": 2.87,
+              "end": 3.19
+            },
+            {
+              "text": "require",
+              "start": 3.19,
+              "end": 3.47
+            },
+            {
+              "text": "more",
+              "start": 3.47,
+              "end": 3.83
+            },
+            {
+              "text": "than",
+              "start": 3.83,
+              "end": 4.01
+            }
+          ]
+        },
+        {
+          "text": "just a simple question-and-answer exchange.",
+          "start": 4.01,
+          "end": 6.01,
+          "words": [
+            {
+              "text": "just",
+              "start": 4.01,
+              "end": 4.21
+            },
+            {
+              "text": "a",
+              "start": 4.21,
+              "end": 4.39
+            },
+            {
+              "text": "simple",
+              "start": 4.39,
+              "end": 4.67
+            },
+            {
+              "text": "question-and-answer",
+              "start": 4.67,
+              "end": 5.49
+            },
+            {
+              "text": "exchange.",
+              "start": 5.49,
+              "end": 6.01
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-travel-booking-scenario",
+      "type": "pipeline",
+      "eyebrow": "Travel Booking Scenario",
+      "headline": "AI Agent in Action",
+      "captions": [
+        "For example, let's consider a travel booking scenario.",
+        "A chatbot might help you find flights by asking you",
+        "a series of questions and then presenting you",
+        "with options based on your answers.",
+        "An AI agent, on the other hand, could go beyond this.",
+        "It might learn your travel preferences over time,",
+        "automatically monitor flight prices for your favorite destinations,",
+        "and even book the best option for you when prices drop."
+      ],
+      "title": "AI Agent in Travel",
+      "nodes": [
+        {
+          "label": "Learn Preferences",
+          "glyph": "📚"
+        },
+        {
+          "label": "Monitor Prices",
+          "glyph": "💰"
+        },
+        {
+          "label": "Book Flights",
+          "glyph": "✈️"
+        }
+      ],
+      "highlightNode": 0,
+      "start": 98.31,
+      "duration": 23.82,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "For example, let's consider a travel booking scenario.",
+          "start": 0.15,
+          "end": 3.51,
+          "words": [
+            {
+              "text": "For",
+              "start": 0.15,
+              "end": 0.75
+            },
+            {
+              "text": "example,",
+              "start": 0.75,
+              "end": 1.05
+            },
+            {
+              "text": "let's",
+              "start": 1.31,
+              "end": 1.85
+            },
+            {
+              "text": "consider",
+              "start": 1.85,
+              "end": 2.17
+            },
+            {
+              "text": "a",
+              "start": 2.17,
+              "end": 2.69
+            },
+            {
+              "text": "travel",
+              "start": 2.69,
+              "end": 2.69
+            },
+            {
+              "text": "booking",
+              "start": 2.69,
+              "end": 2.97
+            },
+            {
+              "text": "scenario.",
+              "start": 2.97,
+              "end": 3.51
+            }
+          ]
+        },
+        {
+          "text": "A chatbot might help you find flights by asking you",
+          "start": 4.15,
+          "end": 6.71,
+          "words": [
+            {
+              "text": "A",
+              "start": 4.15,
+              "end": 4.39
+            },
+            {
+              "text": "chatbot",
+              "start": 4.39,
+              "end": 4.69
+            },
+            {
+              "text": "might",
+              "start": 4.69,
+              "end": 4.93
+            },
+            {
+              "text": "help",
+              "start": 4.93,
+              "end": 5.19
+            },
+            {
+              "text": "you",
+              "start": 5.19,
+              "end": 5.45
+            },
+            {
+              "text": "find",
+              "start": 5.45,
+              "end": 5.61
+            },
+            {
+              "text": "flights",
+              "start": 5.61,
+              "end": 5.89
+            },
+            {
+              "text": "by",
+              "start": 5.89,
+              "end": 6.21
+            },
+            {
+              "text": "asking",
+              "start": 6.21,
+              "end": 6.49
+            },
+            {
+              "text": "you",
+              "start": 6.49,
+              "end": 6.71
+            }
+          ]
+        },
+        {
+          "text": "a series of questions and then presenting you",
+          "start": 6.71,
+          "end": 8.95,
+          "words": [
+            {
+              "text": "a",
+              "start": 6.71,
+              "end": 7.07
+            },
+            {
+              "text": "series",
+              "start": 7.07,
+              "end": 7.07
+            },
+            {
+              "text": "of",
+              "start": 7.07,
+              "end": 7.65
+            },
+            {
+              "text": "questions",
+              "start": 7.65,
+              "end": 7.65
+            },
+            {
+              "text": "and",
+              "start": 7.65,
+              "end": 8.19
+            },
+            {
+              "text": "then",
+              "start": 8.19,
+              "end": 8.73
+            },
+            {
+              "text": "presenting",
+              "start": 8.73,
+              "end": 8.75
+            },
+            {
+              "text": "you",
+              "start": 8.75,
+              "end": 8.95
+            }
+          ]
+        },
+        {
+          "text": "with options based on your answers.",
+          "start": 8.95,
+          "end": 10.45,
+          "words": [
+            {
+              "text": "with",
+              "start": 8.95,
+              "end": 9.55
+            },
+            {
+              "text": "options",
+              "start": 9.55,
+              "end": 9.55
+            },
+            {
+              "text": "based",
+              "start": 9.55,
+              "end": 9.81
+            },
+            {
+              "text": "on",
+              "start": 9.81,
+              "end": 9.95
+            },
+            {
+              "text": "your",
+              "start": 9.95,
+              "end": 10.19
+            },
+            {
+              "text": "answers.",
+              "start": 10.19,
+              "end": 10.45
+            }
+          ]
+        },
+        {
+          "text": "An AI agent, on the other hand, could go beyond this.",
+          "start": 10.93,
+          "end": 14.07,
+          "words": [
+            {
+              "text": "An",
+              "start": 10.93,
+              "end": 11.35
+            },
+            {
+              "text": "AI",
+              "start": 11.35,
+              "end": 11.67
+            },
+            {
+              "text": "agent,",
+              "start": 11.67,
+              "end": 12.01
+            },
+            {
+              "text": "on",
+              "start": 12.11,
+              "end": 12.23
+            },
+            {
+              "text": "the",
+              "start": 12.23,
+              "end": 12.33
+            },
+            {
+              "text": "other",
+              "start": 12.33,
+              "end": 12.57
+            },
+            {
+              "text": "hand,",
+              "start": 12.57,
+              "end": 12.77
+            },
+            {
+              "text": "could",
+              "start": 13.09,
+              "end": 13.23
+            },
+            {
+              "text": "go",
+              "start": 13.23,
+              "end": 13.45
+            },
+            {
+              "text": "beyond",
+              "start": 13.45,
+              "end": 13.69
+            },
+            {
+              "text": "this.",
+              "start": 13.69,
+              "end": 14.07
+            }
+          ]
+        },
+        {
+          "text": "It might learn your travel preferences over time,",
+          "start": 14.07,
+          "end": 16.65,
+          "words": [
+            {
+              "text": "It",
+              "start": 14.07,
+              "end": 14.55
+            },
+            {
+              "text": "might",
+              "start": 14.55,
+              "end": 14.77
+            },
+            {
+              "text": "learn",
+              "start": 14.77,
+              "end": 15.03
+            },
+            {
+              "text": "your",
+              "start": 15.03,
+              "end": 15.27
+            },
+            {
+              "text": "travel",
+              "start": 15.27,
+              "end": 15.57
+            },
+            {
+              "text": "preferences",
+              "start": 15.57,
+              "end": 15.99
+            },
+            {
+              "text": "over",
+              "start": 15.99,
+              "end": 16.35
+            },
+            {
+              "text": "time,",
+              "start": 16.35,
+              "end": 16.65
+            }
+          ]
+        },
+        {
+          "text": "automatically monitor flight prices for your favorite destinations,",
+          "start": 17.57,
+          "end": 19.93,
+          "words": [
+            {
+              "text": "automatically",
+              "start": 17.57,
+              "end": 17.59
+            },
+            {
+              "text": "monitor",
+              "start": 17.59,
+              "end": 18.07
+            },
+            {
+              "text": "flight",
+              "start": 18.07,
+              "end": 18.41
+            },
+            {
+              "text": "prices",
+              "start": 18.41,
+              "end": 18.71
+            },
+            {
+              "text": "for",
+              "start": 18.71,
+              "end": 18.93
+            },
+            {
+              "text": "your",
+              "start": 18.93,
+              "end": 19.19
+            },
+            {
+              "text": "favorite",
+              "start": 19.19,
+              "end": 19.39
+            },
+            {
+              "text": "destinations,",
+              "start": 19.39,
+              "end": 19.93
+            }
+          ]
+        },
+        {
+          "text": "and even book the best option for you when prices drop.",
+          "start": 20.49,
+          "end": 23.23,
+          "words": [
+            {
+              "text": "and",
+              "start": 20.49,
+              "end": 20.61
+            },
+            {
+              "text": "even",
+              "start": 20.61,
+              "end": 21.01
+            },
+            {
+              "text": "book",
+              "start": 21.01,
+              "end": 21.19
+            },
+            {
+              "text": "the",
+              "start": 21.19,
+              "end": 21.37
+            },
+            {
+              "text": "best",
+              "start": 21.37,
+              "end": 21.65
+            },
+            {
+              "text": "option",
+              "start": 21.65,
+              "end": 22.01
+            },
+            {
+              "text": "for",
+              "start": 22.01,
+              "end": 22.25
+            },
+            {
+              "text": "you",
+              "start": 22.25,
+              "end": 22.35
+            },
+            {
+              "text": "when",
+              "start": 22.35,
+              "end": 22.53
+            },
+            {
+              "text": "prices",
+              "start": 22.53,
+              "end": 22.85
+            },
+            {
+              "text": "drop.",
+              "start": 22.85,
+              "end": 23.23
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-active-management",
+      "type": "tool-use",
+      "eyebrow": "Active Management",
+      "headline": "AI Agent's Role",
+      "captions": [
+        "It could integrate with your calendar",
+        "to avoid scheduling conflicts",
+        "and notify you of any travel advisories.",
+        "The key difference here is that the AI agent",
+        "isn't just responding to your input;",
+        "it's actively managing the task for you."
+      ],
+      "agentLabel": "Travel Agent",
+      "tools": [
+        {
+          "glyph": "📅",
+          "label": "Calendar",
+          "sublabel": "Avoid conflicts"
+        },
+        {
+          "glyph": "📢",
+          "label": "Advisories",
+          "sublabel": "Notify changes"
+        },
+        {
+          "glyph": "🔍",
+          "label": "Monitor",
+          "sublabel": "Price drops"
+        }
+      ],
+      "start": 122.13,
+      "duration": 12.86,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "It could integrate with your calendar",
+          "start": 0.15,
+          "end": 1.43,
+          "words": [
+            {
+              "text": "It",
+              "start": 0.15,
+              "end": 0.25
+            },
+            {
+              "text": "could",
+              "start": 0.25,
+              "end": 0.45
+            },
+            {
+              "text": "integrate",
+              "start": 0.45,
+              "end": 0.77
+            },
+            {
+              "text": "with",
+              "start": 0.77,
+              "end": 0.97
+            },
+            {
+              "text": "your",
+              "start": 0.97,
+              "end": 1.25
+            },
+            {
+              "text": "calendar",
+              "start": 1.25,
+              "end": 1.43
+            }
+          ]
+        },
+        {
+          "text": "to avoid scheduling conflicts",
+          "start": 1.43,
+          "end": 3.03,
+          "words": [
+            {
+              "text": "to",
+              "start": 1.43,
+              "end": 1.73
+            },
+            {
+              "text": "avoid",
+              "start": 1.73,
+              "end": 2.03
+            },
+            {
+              "text": "scheduling",
+              "start": 2.03,
+              "end": 2.51
+            },
+            {
+              "text": "conflicts",
+              "start": 2.51,
+              "end": 3.03
+            }
+          ]
+        },
+        {
+          "text": "and notify you of any travel advisories.",
+          "start": 3.03,
+          "end": 5.55,
+          "words": [
+            {
+              "text": "and",
+              "start": 3.03,
+              "end": 3.61
+            },
+            {
+              "text": "notify",
+              "start": 3.61,
+              "end": 3.99
+            },
+            {
+              "text": "you",
+              "start": 3.99,
+              "end": 4.19
+            },
+            {
+              "text": "of",
+              "start": 4.19,
+              "end": 4.37
+            },
+            {
+              "text": "any",
+              "start": 4.37,
+              "end": 4.75
+            },
+            {
+              "text": "travel",
+              "start": 4.75,
+              "end": 4.97
+            },
+            {
+              "text": "advisories.",
+              "start": 4.97,
+              "end": 5.55
+            }
+          ]
+        },
+        {
+          "text": "The key difference here is that the AI agent",
+          "start": 6.39,
+          "end": 8.43,
+          "words": [
+            {
+              "text": "The",
+              "start": 6.39,
+              "end": 6.47
+            },
+            {
+              "text": "key",
+              "start": 6.47,
+              "end": 6.73
+            },
+            {
+              "text": "difference",
+              "start": 6.73,
+              "end": 7.05
+            },
+            {
+              "text": "here",
+              "start": 7.05,
+              "end": 7.25
+            },
+            {
+              "text": "is",
+              "start": 7.25,
+              "end": 7.41
+            },
+            {
+              "text": "that",
+              "start": 7.41,
+              "end": 7.61
+            },
+            {
+              "text": "the",
+              "start": 7.61,
+              "end": 7.77
+            },
+            {
+              "text": "AI",
+              "start": 7.77,
+              "end": 8.09
+            },
+            {
+              "text": "agent",
+              "start": 8.09,
+              "end": 8.43
+            }
+          ]
+        },
+        {
+          "text": "isn't just responding to your input;",
+          "start": 8.43,
+          "end": 10.01,
+          "words": [
+            {
+              "text": "isn't",
+              "start": 8.43,
+              "end": 8.65
+            },
+            {
+              "text": "just",
+              "start": 8.65,
+              "end": 9.29
+            },
+            {
+              "text": "responding",
+              "start": 9.29,
+              "end": 9.29
+            },
+            {
+              "text": "to",
+              "start": 9.29,
+              "end": 9.49
+            },
+            {
+              "text": "your",
+              "start": 9.49,
+              "end": 9.77
+            },
+            {
+              "text": "input;",
+              "start": 9.77,
+              "end": 10.01
+            }
+          ]
+        },
+        {
+          "text": "it's actively managing the task for you.",
+          "start": 10.57,
+          "end": 12.61,
+          "words": [
+            {
+              "text": "it's",
+              "start": 10.57,
+              "end": 10.81
+            },
+            {
+              "text": "actively",
+              "start": 10.81,
+              "end": 11.25
+            },
+            {
+              "text": "managing",
+              "start": 11.25,
+              "end": 11.65
+            },
+            {
+              "text": "the",
+              "start": 11.65,
+              "end": 11.89
+            },
+            {
+              "text": "task",
+              "start": 11.89,
+              "end": 12.19
+            },
+            {
+              "text": "for",
+              "start": 12.19,
+              "end": 12.47
+            },
+            {
+              "text": "you.",
+              "start": 12.47,
+              "end": 12.61
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-intelligence-learning",
+      "type": "bullet-list",
+      "eyebrow": "Intelligence Levels",
+      "headline": "Chatbots vs. AI Agents",
+      "captions": [
+        "This brings us to another important distinction:",
+        "the level of intelligence and learning capability.",
+        "Chatbots typically have limited learning capabilities.",
+        "They might improve over time with more data,",
+        "but their evolution is often constrained",
+        "by how they're programmed.",
+        "AI agents, however, are designed to",
+        "continuously learn and improve.",
+        "They use techniques like machine learning",
+        "to analyze data, recognize patterns,",
+        "and refine their actions."
+      ],
+      "title": "Intelligence Levels",
+      "items": [
+        "Chatbots: Limited learning",
+        "AI Agents: Continuous learning",
+        "AI Agents: Use **ML** techniques"
+      ],
+      "start": 134.99,
+      "duration": 25.2,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This brings us to another important distinction:",
+          "start": 0.15,
+          "end": 2.53,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.75
+            },
+            {
+              "text": "brings",
+              "start": 0.75,
+              "end": 0.99
+            },
+            {
+              "text": "us",
+              "start": 0.99,
+              "end": 1.19
+            },
+            {
+              "text": "to",
+              "start": 1.19,
+              "end": 1.39
+            },
+            {
+              "text": "another",
+              "start": 1.39,
+              "end": 1.69
+            },
+            {
+              "text": "important",
+              "start": 1.69,
+              "end": 2.09
+            },
+            {
+              "text": "distinction:",
+              "start": 2.09,
+              "end": 2.53
+            }
+          ]
+        },
+        {
+          "text": "the level of intelligence and learning capability.",
+          "start": 3.13,
+          "end": 5.35,
+          "words": [
+            {
+              "text": "the",
+              "start": 3.13,
+              "end": 3.19
+            },
+            {
+              "text": "level",
+              "start": 3.19,
+              "end": 3.39
+            },
+            {
+              "text": "of",
+              "start": 3.39,
+              "end": 3.67
+            },
+            {
+              "text": "intelligence",
+              "start": 3.67,
+              "end": 4.13
+            },
+            {
+              "text": "and",
+              "start": 4.13,
+              "end": 4.47
+            },
+            {
+              "text": "learning",
+              "start": 4.47,
+              "end": 4.73
+            },
+            {
+              "text": "capability.",
+              "start": 4.73,
+              "end": 5.35
+            }
+          ]
+        },
+        {
+          "text": "Chatbots typically have limited learning capabilities.",
+          "start": 5.99,
+          "end": 8.69,
+          "words": [
+            {
+              "text": "Chatbots",
+              "start": 5.99,
+              "end": 6.59
+            },
+            {
+              "text": "typically",
+              "start": 6.59,
+              "end": 7.05
+            },
+            {
+              "text": "have",
+              "start": 7.05,
+              "end": 7.35
+            },
+            {
+              "text": "limited",
+              "start": 7.35,
+              "end": 7.71
+            },
+            {
+              "text": "learning",
+              "start": 7.71,
+              "end": 8.07
+            },
+            {
+              "text": "capabilities.",
+              "start": 8.07,
+              "end": 8.69
+            }
+          ]
+        },
+        {
+          "text": "They might improve over time with more data,",
+          "start": 9.41,
+          "end": 11.15,
+          "words": [
+            {
+              "text": "They",
+              "start": 9.41,
+              "end": 9.41
+            },
+            {
+              "text": "might",
+              "start": 9.41,
+              "end": 9.65
+            },
+            {
+              "text": "improve",
+              "start": 9.65,
+              "end": 9.97
+            },
+            {
+              "text": "over",
+              "start": 9.97,
+              "end": 10.27
+            },
+            {
+              "text": "time",
+              "start": 10.27,
+              "end": 10.49
+            },
+            {
+              "text": "with",
+              "start": 10.49,
+              "end": 10.67
+            },
+            {
+              "text": "more",
+              "start": 10.67,
+              "end": 10.95
+            },
+            {
+              "text": "data,",
+              "start": 10.95,
+              "end": 11.15
+            }
+          ]
+        },
+        {
+          "text": "but their evolution is often constrained",
+          "start": 11.51,
+          "end": 13.45,
+          "words": [
+            {
+              "text": "but",
+              "start": 11.51,
+              "end": 11.73
+            },
+            {
+              "text": "their",
+              "start": 11.73,
+              "end": 11.97
+            },
+            {
+              "text": "evolution",
+              "start": 11.97,
+              "end": 12.35
+            },
+            {
+              "text": "is",
+              "start": 12.35,
+              "end": 12.65
+            },
+            {
+              "text": "often",
+              "start": 12.65,
+              "end": 13.03
+            },
+            {
+              "text": "constrained",
+              "start": 13.03,
+              "end": 13.45
+            }
+          ]
+        },
+        {
+          "text": "by how they're programmed.",
+          "start": 13.45,
+          "end": 14.65,
+          "words": [
+            {
+              "text": "by",
+              "start": 13.45,
+              "end": 13.77
+            },
+            {
+              "text": "how",
+              "start": 13.77,
+              "end": 13.97
+            },
+            {
+              "text": "they're",
+              "start": 13.97,
+              "end": 14.23
+            },
+            {
+              "text": "programmed.",
+              "start": 14.23,
+              "end": 14.65
+            }
+          ]
+        },
+        {
+          "text": "AI agents, however, are designed to",
+          "start": 15.49,
+          "end": 17.57,
+          "words": [
+            {
+              "text": "AI",
+              "start": 15.49,
+              "end": 15.81
+            },
+            {
+              "text": "agents,",
+              "start": 15.81,
+              "end": 16.09
+            },
+            {
+              "text": "however,",
+              "start": 16.25,
+              "end": 16.53
+            },
+            {
+              "text": "are",
+              "start": 16.87,
+              "end": 17.03
+            },
+            {
+              "text": "designed",
+              "start": 17.03,
+              "end": 17.23
+            },
+            {
+              "text": "to",
+              "start": 17.23,
+              "end": 17.57
+            }
+          ]
+        },
+        {
+          "text": "continuously learn and improve.",
+          "start": 17.57,
+          "end": 19.25,
+          "words": [
+            {
+              "text": "continuously",
+              "start": 17.57,
+              "end": 18.17
+            },
+            {
+              "text": "learn",
+              "start": 18.17,
+              "end": 18.57
+            },
+            {
+              "text": "and",
+              "start": 18.57,
+              "end": 19.25
+            },
+            {
+              "text": "improve.",
+              "start": 19.25,
+              "end": 19.25
+            }
+          ]
+        },
+        {
+          "text": "They use techniques like machine learning",
+          "start": 19.95,
+          "end": 21.55,
+          "words": [
+            {
+              "text": "They",
+              "start": 19.95,
+              "end": 20.03
+            },
+            {
+              "text": "use",
+              "start": 20.03,
+              "end": 20.25
+            },
+            {
+              "text": "techniques",
+              "start": 20.25,
+              "end": 20.69
+            },
+            {
+              "text": "like",
+              "start": 20.69,
+              "end": 20.97
+            },
+            {
+              "text": "machine",
+              "start": 20.97,
+              "end": 21.31
+            },
+            {
+              "text": "learning",
+              "start": 21.31,
+              "end": 21.55
+            }
+          ]
+        },
+        {
+          "text": "to analyze data, recognize patterns,",
+          "start": 21.55,
+          "end": 23.79,
+          "words": [
+            {
+              "text": "to",
+              "start": 21.55,
+              "end": 21.81
+            },
+            {
+              "text": "analyze",
+              "start": 21.81,
+              "end": 22.13
+            },
+            {
+              "text": "data,",
+              "start": 22.13,
+              "end": 22.51
+            },
+            {
+              "text": "recognize",
+              "start": 23.35,
+              "end": 23.35
+            },
+            {
+              "text": "patterns,",
+              "start": 23.35,
+              "end": 23.79
+            }
+          ]
+        },
+        {
+          "text": "and refine their actions.",
+          "start": 23.97,
+          "end": 24.97,
+          "words": [
+            {
+              "text": "and",
+              "start": 23.97,
+              "end": 24.19
+            },
+            {
+              "text": "refine",
+              "start": 24.19,
+              "end": 24.37
+            },
+            {
+              "text": "their",
+              "start": 24.37,
+              "end": 24.73
+            },
+            {
+              "text": "actions.",
+              "start": 24.73,
+              "end": 24.97
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-interaction-improvement",
+      "type": "concept-card",
+      "eyebrow": "Adaptive Improvement",
+      "headline": "AI Agents Improve",
+      "captions": [
+        "This means that the more you interact",
+        "with an AI agent, the better it becomes",
+        "at serving you."
+      ],
+      "term": "Adaptive Improvement",
+      "tagline": "AI agents evolve",
+      "definition": "AI agents get better with interaction.",
+      "glyph": "🔄",
+      "start": 160.19,
+      "duration": 5,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This means that the more you interact",
+          "start": 0.15,
+          "end": 2.03,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.75
+            },
+            {
+              "text": "means",
+              "start": 0.75,
+              "end": 0.99
+            },
+            {
+              "text": "that",
+              "start": 0.99,
+              "end": 1.21
+            },
+            {
+              "text": "the",
+              "start": 1.21,
+              "end": 1.33
+            },
+            {
+              "text": "more",
+              "start": 1.33,
+              "end": 1.49
+            },
+            {
+              "text": "you",
+              "start": 1.49,
+              "end": 1.73
+            },
+            {
+              "text": "interact",
+              "start": 1.73,
+              "end": 2.03
+            }
+          ]
+        },
+        {
+          "text": "with an AI agent, the better it becomes",
+          "start": 2.03,
+          "end": 4.31,
+          "words": [
+            {
+              "text": "with",
+              "start": 2.03,
+              "end": 2.21
+            },
+            {
+              "text": "an",
+              "start": 2.21,
+              "end": 2.39
+            },
+            {
+              "text": "AI",
+              "start": 2.39,
+              "end": 2.67
+            },
+            {
+              "text": "agent,",
+              "start": 2.67,
+              "end": 3.01
+            },
+            {
+              "text": "the",
+              "start": 3.17,
+              "end": 3.57
+            },
+            {
+              "text": "better",
+              "start": 3.57,
+              "end": 3.79
+            },
+            {
+              "text": "it",
+              "start": 3.79,
+              "end": 3.97
+            },
+            {
+              "text": "becomes",
+              "start": 3.97,
+              "end": 4.31
+            }
+          ]
+        },
+        {
+          "text": "at serving you.",
+          "start": 4.31,
+          "end": 5,
+          "words": [
+            {
+              "text": "at",
+              "start": 4.31,
+              "end": 4.79
+            },
+            {
+              "text": "serving",
+              "start": 4.79,
+              "end": 4.79
+            },
+            {
+              "text": "you.",
+              "start": 4.79,
+              "end": 5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-misconception",
+      "type": "quote",
+      "eyebrow": "Common Misconception",
+      "headline": "AI Agents vs. Chatbots",
+      "captions": [
+        "But let's address a common misconception:",
+        "the idea that AI agents are always better",
+        "than chatbots. The truth is, it depends",
+        "on the context."
+      ],
+      "quote": "AI agents aren't always better than chatbots.",
+      "attribution": "Context matters",
+      "start": 165.19,
+      "duration": 9.04,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "But let's address a common misconception:",
+          "start": 0.15,
+          "end": 2.25,
+          "words": [
+            {
+              "text": "But",
+              "start": 0.15,
+              "end": 0.35
+            },
+            {
+              "text": "let's",
+              "start": 0.35,
+              "end": 0.69
+            },
+            {
+              "text": "address",
+              "start": 0.69,
+              "end": 0.93
+            },
+            {
+              "text": "a",
+              "start": 0.93,
+              "end": 1.25
+            },
+            {
+              "text": "common",
+              "start": 1.25,
+              "end": 1.63
+            },
+            {
+              "text": "misconception:",
+              "start": 1.63,
+              "end": 2.25
+            }
+          ]
+        },
+        {
+          "text": "the idea that AI agents are always better",
+          "start": 2.75,
+          "end": 5.09,
+          "words": [
+            {
+              "text": "the",
+              "start": 2.75,
+              "end": 2.99
+            },
+            {
+              "text": "idea",
+              "start": 2.99,
+              "end": 3.25
+            },
+            {
+              "text": "that",
+              "start": 3.25,
+              "end": 3.55
+            },
+            {
+              "text": "AI",
+              "start": 3.55,
+              "end": 3.89
+            },
+            {
+              "text": "agents",
+              "start": 3.89,
+              "end": 4.21
+            },
+            {
+              "text": "are",
+              "start": 4.21,
+              "end": 4.41
+            },
+            {
+              "text": "always",
+              "start": 4.41,
+              "end": 4.85
+            },
+            {
+              "text": "better",
+              "start": 4.85,
+              "end": 5.09
+            }
+          ]
+        },
+        {
+          "text": "than chatbots. The truth is, it depends",
+          "start": 5.09,
+          "end": 7.67,
+          "words": [
+            {
+              "text": "than",
+              "start": 5.09,
+              "end": 5.31
+            },
+            {
+              "text": "chatbots.",
+              "start": 5.31,
+              "end": 5.67
+            },
+            {
+              "text": "The",
+              "start": 6.23,
+              "end": 6.45
+            },
+            {
+              "text": "truth",
+              "start": 6.45,
+              "end": 6.65
+            },
+            {
+              "text": "is,",
+              "start": 6.65,
+              "end": 7.05
+            },
+            {
+              "text": "it",
+              "start": 7.05,
+              "end": 7.41
+            },
+            {
+              "text": "depends",
+              "start": 7.41,
+              "end": 7.67
+            }
+          ]
+        },
+        {
+          "text": "on the context.",
+          "start": 7.67,
+          "end": 8.51,
+          "words": [
+            {
+              "text": "on",
+              "start": 7.67,
+              "end": 7.91
+            },
+            {
+              "text": "the",
+              "start": 7.91,
+              "end": 8.01
+            },
+            {
+              "text": "context.",
+              "start": 8.01,
+              "end": 8.51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-task-complexity",
+      "type": "comparison",
+      "eyebrow": "Task Complexity",
+      "headline": "Choosing the Right Tool",
+      "captions": [
+        "For straightforward tasks, chatbots can be",
+        "incredibly efficient. They're easier to develop,",
+        "deploy, and maintain. They can handle high",
+        "volumes of interactions with minimal complexity.",
+        "If you just need a tool to answer FAQs or process",
+        "simple transactions, a chatbot might be the",
+        "perfect solution."
+      ],
+      "leftTitle": "Chatbots",
+      "rightTitle": "AI Agents",
+      "leftItems": [
+        "Efficient for simple tasks",
+        "Easy to develop and deploy"
+      ],
+      "rightItems": [
+        "Better for complex tasks",
+        "High personalization"
+      ],
+      "leftAccent": "#4CAF50",
+      "rightAccent": "#FF9800",
+      "verdict": "Choose based on task complexity.",
+      "start": 174.23,
+      "duration": 18.36,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "For straightforward tasks, chatbots can be",
+          "start": 0.15,
+          "end": 2.51,
+          "words": [
+            {
+              "text": "For",
+              "start": 0.15,
+              "end": 0.19
+            },
+            {
+              "text": "straightforward",
+              "start": 0.19,
+              "end": 0.77
+            },
+            {
+              "text": "tasks,",
+              "start": 0.77,
+              "end": 1.29
+            },
+            {
+              "text": "chatbots",
+              "start": 1.85,
+              "end": 2.05
+            },
+            {
+              "text": "can",
+              "start": 2.05,
+              "end": 2.31
+            },
+            {
+              "text": "be",
+              "start": 2.31,
+              "end": 2.51
+            }
+          ]
+        },
+        {
+          "text": "incredibly efficient. They're easier to develop,",
+          "start": 2.51,
+          "end": 5.15,
+          "words": [
+            {
+              "text": "incredibly",
+              "start": 2.51,
+              "end": 2.93
+            },
+            {
+              "text": "efficient.",
+              "start": 2.93,
+              "end": 3.33
+            },
+            {
+              "text": "They're",
+              "start": 3.97,
+              "end": 4.13
+            },
+            {
+              "text": "easier",
+              "start": 4.13,
+              "end": 4.45
+            },
+            {
+              "text": "to",
+              "start": 4.45,
+              "end": 5.15
+            },
+            {
+              "text": "develop,",
+              "start": 5.15,
+              "end": 5.15
+            }
+          ]
+        },
+        {
+          "text": "deploy, and maintain. They can handle high",
+          "start": 5.81,
+          "end": 8.31,
+          "words": [
+            {
+              "text": "deploy,",
+              "start": 5.81,
+              "end": 5.81
+            },
+            {
+              "text": "and",
+              "start": 5.89,
+              "end": 6.71
+            },
+            {
+              "text": "maintain.",
+              "start": 6.71,
+              "end": 6.71
+            },
+            {
+              "text": "They",
+              "start": 7.35,
+              "end": 7.49
+            },
+            {
+              "text": "can",
+              "start": 7.49,
+              "end": 7.81
+            },
+            {
+              "text": "handle",
+              "start": 7.81,
+              "end": 7.85
+            },
+            {
+              "text": "high",
+              "start": 7.85,
+              "end": 8.31
+            }
+          ]
+        },
+        {
+          "text": "volumes of interactions with minimal complexity.",
+          "start": 8.31,
+          "end": 10.85,
+          "words": [
+            {
+              "text": "volumes",
+              "start": 8.31,
+              "end": 8.61
+            },
+            {
+              "text": "of",
+              "start": 8.61,
+              "end": 9.39
+            },
+            {
+              "text": "interactions",
+              "start": 9.39,
+              "end": 9.39
+            },
+            {
+              "text": "with",
+              "start": 9.39,
+              "end": 9.97
+            },
+            {
+              "text": "minimal",
+              "start": 9.97,
+              "end": 10.27
+            },
+            {
+              "text": "complexity.",
+              "start": 10.27,
+              "end": 10.85
+            }
+          ]
+        },
+        {
+          "text": "If you just need a tool to answer FAQs or process",
+          "start": 11.43,
+          "end": 14.79,
+          "words": [
+            {
+              "text": "If",
+              "start": 11.43,
+              "end": 11.85
+            },
+            {
+              "text": "you",
+              "start": 11.85,
+              "end": 11.97
+            },
+            {
+              "text": "just",
+              "start": 11.97,
+              "end": 12.25
+            },
+            {
+              "text": "need",
+              "start": 12.25,
+              "end": 12.37
+            },
+            {
+              "text": "a",
+              "start": 12.37,
+              "end": 12.71
+            },
+            {
+              "text": "tool",
+              "start": 12.71,
+              "end": 12.71
+            },
+            {
+              "text": "to",
+              "start": 12.71,
+              "end": 12.97
+            },
+            {
+              "text": "answer",
+              "start": 12.97,
+              "end": 13.21
+            },
+            {
+              "text": "FAQs",
+              "start": 13.21,
+              "end": 14.03
+            },
+            {
+              "text": "or",
+              "start": 14.03,
+              "end": 14.37
+            },
+            {
+              "text": "process",
+              "start": 14.37,
+              "end": 14.79
+            }
+          ]
+        },
+        {
+          "text": "simple transactions, a chatbot might be the",
+          "start": 14.79,
+          "end": 17.19,
+          "words": [
+            {
+              "text": "simple",
+              "start": 14.79,
+              "end": 15.13
+            },
+            {
+              "text": "transactions,",
+              "start": 15.13,
+              "end": 15.71
+            },
+            {
+              "text": "a",
+              "start": 16.03,
+              "end": 16.45
+            },
+            {
+              "text": "chatbot",
+              "start": 16.45,
+              "end": 16.59
+            },
+            {
+              "text": "might",
+              "start": 16.59,
+              "end": 16.83
+            },
+            {
+              "text": "be",
+              "start": 16.83,
+              "end": 16.95
+            },
+            {
+              "text": "the",
+              "start": 16.95,
+              "end": 17.19
+            }
+          ]
+        },
+        {
+          "text": "perfect solution.",
+          "start": 17.19,
+          "end": 17.91,
+          "words": [
+            {
+              "text": "perfect",
+              "start": 17.19,
+              "end": 17.53
+            },
+            {
+              "text": "solution.",
+              "start": 17.53,
+              "end": 17.91
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-dynamic-environments",
+      "type": "bullet-list",
+      "eyebrow": "Dynamic Environments",
+      "headline": "When to Use AI Agents",
+      "captions": [
+        "On the other hand, if you're dealing with",
+        "complex, dynamic environments where tasks",
+        "require a high degree of personalization",
+        "and adaptability, AI agents are the way to go."
+      ],
+      "title": "When to Use AI Agents",
+      "items": [
+        "Complex environments",
+        "High personalization",
+        "Adaptability required"
+      ],
+      "start": 192.59,
+      "duration": 10.1,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "On the other hand, if you're dealing with",
+          "start": 0.15,
+          "end": 2.67,
+          "words": [
+            {
+              "text": "On",
+              "start": 0.15,
+              "end": 0.49
+            },
+            {
+              "text": "the",
+              "start": 0.49,
+              "end": 0.61
+            },
+            {
+              "text": "other",
+              "start": 0.61,
+              "end": 0.83
+            },
+            {
+              "text": "hand,",
+              "start": 0.83,
+              "end": 1.03
+            },
+            {
+              "text": "if",
+              "start": 1.13,
+              "end": 1.49
+            },
+            {
+              "text": "you're",
+              "start": 1.49,
+              "end": 1.87
+            },
+            {
+              "text": "dealing",
+              "start": 1.87,
+              "end": 1.87
+            },
+            {
+              "text": "with",
+              "start": 1.87,
+              "end": 2.67
+            }
+          ]
+        },
+        {
+          "text": "complex, dynamic environments where tasks",
+          "start": 2.67,
+          "end": 4.59,
+          "words": [
+            {
+              "text": "complex,",
+              "start": 2.67,
+              "end": 2.67
+            },
+            {
+              "text": "dynamic",
+              "start": 3.17,
+              "end": 3.17
+            },
+            {
+              "text": "environments",
+              "start": 3.17,
+              "end": 3.67
+            },
+            {
+              "text": "where",
+              "start": 3.67,
+              "end": 4.13
+            },
+            {
+              "text": "tasks",
+              "start": 4.13,
+              "end": 4.59
+            }
+          ]
+        },
+        {
+          "text": "require a high degree of personalization",
+          "start": 4.59,
+          "end": 6.49,
+          "words": [
+            {
+              "text": "require",
+              "start": 4.59,
+              "end": 5.01
+            },
+            {
+              "text": "a",
+              "start": 5.01,
+              "end": 5.19
+            },
+            {
+              "text": "high",
+              "start": 5.19,
+              "end": 5.41
+            },
+            {
+              "text": "degree",
+              "start": 5.41,
+              "end": 5.65
+            },
+            {
+              "text": "of",
+              "start": 5.65,
+              "end": 5.91
+            },
+            {
+              "text": "personalization",
+              "start": 5.91,
+              "end": 6.49
+            }
+          ]
+        },
+        {
+          "text": "and adaptability, AI agents are the way to go.",
+          "start": 6.49,
+          "end": 9.51,
+          "words": [
+            {
+              "text": "and",
+              "start": 6.49,
+              "end": 6.85
+            },
+            {
+              "text": "adaptability,",
+              "start": 6.85,
+              "end": 7.49
+            },
+            {
+              "text": "AI",
+              "start": 8.15,
+              "end": 8.39
+            },
+            {
+              "text": "agents",
+              "start": 8.39,
+              "end": 8.69
+            },
+            {
+              "text": "are",
+              "start": 8.69,
+              "end": 8.87
+            },
+            {
+              "text": "the",
+              "start": 8.87,
+              "end": 9.01
+            },
+            {
+              "text": "way",
+              "start": 9.01,
+              "end": 9.15
+            },
+            {
+              "text": "to",
+              "start": 9.15,
+              "end": 9.31
+            },
+            {
+              "text": "go.",
+              "start": 9.31,
+              "end": 9.51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-real-time-evolution",
+      "type": "bullet-list",
+      "eyebrow": "AI in Action",
+      "headline": "Real-Time Learning",
+      "title": "Industries Benefiting",
+      "captions": [
+        "They're ideal for scenarios",
+        "where the system needs to learn",
+        "and evolve in real-time, making them",
+        "suitable for industries like finance,",
+        "healthcare, and logistics,",
+        "where decisions are data-driven",
+        "and context-dependent."
+      ],
+      "items": [
+        "Finance",
+        "Healthcare",
+        "Logistics"
+      ],
+      "start": 202.69,
+      "duration": 12.28,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "They're ideal for scenarios",
+          "start": 0.15,
+          "end": 1.35,
+          "words": [
+            {
+              "text": "They're",
+              "start": 0.15,
+              "end": 0.45
+            },
+            {
+              "text": "ideal",
+              "start": 0.45,
+              "end": 0.69
+            },
+            {
+              "text": "for",
+              "start": 0.69,
+              "end": 1.03
+            },
+            {
+              "text": "scenarios",
+              "start": 1.03,
+              "end": 1.35
+            }
+          ]
+        },
+        {
+          "text": "where the system needs to learn",
+          "start": 1.35,
+          "end": 3.07,
+          "words": [
+            {
+              "text": "where",
+              "start": 1.35,
+              "end": 1.91
+            },
+            {
+              "text": "the",
+              "start": 1.91,
+              "end": 2.13
+            },
+            {
+              "text": "system",
+              "start": 2.13,
+              "end": 2.33
+            },
+            {
+              "text": "needs",
+              "start": 2.33,
+              "end": 2.59
+            },
+            {
+              "text": "to",
+              "start": 2.59,
+              "end": 2.85
+            },
+            {
+              "text": "learn",
+              "start": 2.85,
+              "end": 3.07
+            }
+          ]
+        },
+        {
+          "text": "and evolve in real-time, making them",
+          "start": 3.07,
+          "end": 5.39,
+          "words": [
+            {
+              "text": "and",
+              "start": 3.07,
+              "end": 3.63
+            },
+            {
+              "text": "evolve",
+              "start": 3.63,
+              "end": 3.63
+            },
+            {
+              "text": "in",
+              "start": 3.63,
+              "end": 3.83
+            },
+            {
+              "text": "real-time,",
+              "start": 3.83,
+              "end": 5.07
+            },
+            {
+              "text": "making",
+              "start": 5.07,
+              "end": 5.13
+            },
+            {
+              "text": "them",
+              "start": 5.13,
+              "end": 5.39
+            }
+          ]
+        },
+        {
+          "text": "suitable for industries like finance,",
+          "start": 5.39,
+          "end": 7.11,
+          "words": [
+            {
+              "text": "suitable",
+              "start": 5.39,
+              "end": 5.65
+            },
+            {
+              "text": "for",
+              "start": 5.65,
+              "end": 6.05
+            },
+            {
+              "text": "industries",
+              "start": 6.05,
+              "end": 6.35
+            },
+            {
+              "text": "like",
+              "start": 6.35,
+              "end": 6.69
+            },
+            {
+              "text": "finance,",
+              "start": 6.69,
+              "end": 7.11
+            }
+          ]
+        },
+        {
+          "text": "healthcare, and logistics,",
+          "start": 7.71,
+          "end": 8.73,
+          "words": [
+            {
+              "text": "healthcare,",
+              "start": 7.71,
+              "end": 7.91
+            },
+            {
+              "text": "and",
+              "start": 8.13,
+              "end": 8.73
+            },
+            {
+              "text": "logistics,",
+              "start": 8.73,
+              "end": 8.73
+            }
+          ]
+        },
+        {
+          "text": "where decisions are data-driven",
+          "start": 9.07,
+          "end": 10.49,
+          "words": [
+            {
+              "text": "where",
+              "start": 9.07,
+              "end": 9.39
+            },
+            {
+              "text": "decisions",
+              "start": 9.39,
+              "end": 9.69
+            },
+            {
+              "text": "are",
+              "start": 9.69,
+              "end": 10.01
+            },
+            {
+              "text": "data-driven",
+              "start": 10.01,
+              "end": 10.49
+            }
+          ]
+        },
+        {
+          "text": "and context-dependent.",
+          "start": 10.49,
+          "end": 12.28,
+          "words": [
+            {
+              "text": "and",
+              "start": 10.49,
+              "end": 10.95
+            },
+            {
+              "text": "context-dependent.",
+              "start": 10.95,
+              "end": 12.28
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-takeaway",
+      "type": "quote",
+      "eyebrow": "Key Insight",
+      "headline": "",
+      "quote": "Chatbots and AI agents each have their place.",
+      "attribution": "AI Decoded",
+      "captions": [
+        "So, what's the real takeaway here?",
+        "It's that chatbots and AI agents",
+        "each have their place in the tech ecosystem.",
+        "Understanding their differences",
+        "allows us to leverage their strengths",
+        "appropriately."
+      ],
+      "start": 214.97,
+      "duration": 11.86,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "So, what's the real takeaway here?",
+          "start": 0.15,
+          "end": 2.27,
+          "words": [
+            {
+              "text": "So,",
+              "start": 0.15,
+              "end": 0.75
+            },
+            {
+              "text": "what's",
+              "start": 0.91,
+              "end": 1.23
+            },
+            {
+              "text": "the",
+              "start": 1.23,
+              "end": 1.39
+            },
+            {
+              "text": "real",
+              "start": 1.39,
+              "end": 1.77
+            },
+            {
+              "text": "takeaway",
+              "start": 1.77,
+              "end": 1.93
+            },
+            {
+              "text": "here?",
+              "start": 1.93,
+              "end": 2.27
+            }
+          ]
+        },
+        {
+          "text": "It's that chatbots and AI agents",
+          "start": 2.51,
+          "end": 4.67,
+          "words": [
+            {
+              "text": "It's",
+              "start": 2.51,
+              "end": 3.05
+            },
+            {
+              "text": "that",
+              "start": 3.05,
+              "end": 3.25
+            },
+            {
+              "text": "chatbots",
+              "start": 3.25,
+              "end": 3.73
+            },
+            {
+              "text": "and",
+              "start": 3.73,
+              "end": 3.99
+            },
+            {
+              "text": "AI",
+              "start": 3.99,
+              "end": 4.33
+            },
+            {
+              "text": "agents",
+              "start": 4.33,
+              "end": 4.67
+            }
+          ]
+        },
+        {
+          "text": "each have their place in the tech ecosystem.",
+          "start": 4.67,
+          "end": 6.65,
+          "words": [
+            {
+              "text": "each",
+              "start": 4.67,
+              "end": 5.05
+            },
+            {
+              "text": "have",
+              "start": 5.05,
+              "end": 5.21
+            },
+            {
+              "text": "their",
+              "start": 5.21,
+              "end": 5.41
+            },
+            {
+              "text": "place",
+              "start": 5.41,
+              "end": 5.65
+            },
+            {
+              "text": "in",
+              "start": 5.65,
+              "end": 5.81
+            },
+            {
+              "text": "the",
+              "start": 5.81,
+              "end": 5.89
+            },
+            {
+              "text": "tech",
+              "start": 5.89,
+              "end": 6.11
+            },
+            {
+              "text": "ecosystem.",
+              "start": 6.11,
+              "end": 6.65
+            }
+          ]
+        },
+        {
+          "text": "Understanding their differences",
+          "start": 7.37,
+          "end": 8.53,
+          "words": [
+            {
+              "text": "Understanding",
+              "start": 7.37,
+              "end": 7.75
+            },
+            {
+              "text": "their",
+              "start": 7.75,
+              "end": 8.09
+            },
+            {
+              "text": "differences",
+              "start": 8.09,
+              "end": 8.53
+            }
+          ]
+        },
+        {
+          "text": "allows us to leverage their strengths",
+          "start": 8.53,
+          "end": 10.45,
+          "words": [
+            {
+              "text": "allows",
+              "start": 8.53,
+              "end": 9.19
+            },
+            {
+              "text": "us",
+              "start": 9.19,
+              "end": 9.37
+            },
+            {
+              "text": "to",
+              "start": 9.37,
+              "end": 9.87
+            },
+            {
+              "text": "leverage",
+              "start": 9.87,
+              "end": 9.87
+            },
+            {
+              "text": "their",
+              "start": 9.87,
+              "end": 10.45
+            },
+            {
+              "text": "strengths",
+              "start": 10.45,
+              "end": 10.45
+            }
+          ]
+        },
+        {
+          "text": "appropriately.",
+          "start": 10.45,
+          "end": 11.05,
+          "words": [
+            {
+              "text": "appropriately.",
+              "start": 10.45,
+              "end": 11.05
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-roles",
+      "type": "comparison",
+      "eyebrow": "Role Comparison",
+      "headline": "",
+      "leftTitle": "Chatbots",
+      "rightTitle": "AI Agents",
+      "leftItems": [
+        "Routine tasks",
+        "Efficient",
+        "Simple"
+      ],
+      "rightItems": [
+        "Intelligent",
+        "Adaptive",
+        "Autonomous"
+      ],
+      "leftAccent": "#4CAF50",
+      "rightAccent": "#FF5722",
+      "verdict": "Choose the right tool for the task.",
+      "captions": [
+        "Chatbots are great for handling routine,",
+        "repetitive tasks efficiently, while AI agents",
+        "shine in situations that demand intelligence,",
+        "adaptability, and a higher degree of autonomy."
+      ],
+      "start": 226.83,
+      "duration": 12.66,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Chatbots are great for handling routine,",
+          "start": 0.15,
+          "end": 2.99,
+          "words": [
+            {
+              "text": "Chatbots",
+              "start": 0.15,
+              "end": 0.69
+            },
+            {
+              "text": "are",
+              "start": 0.69,
+              "end": 1.37
+            },
+            {
+              "text": "great",
+              "start": 1.37,
+              "end": 1.73
+            },
+            {
+              "text": "for",
+              "start": 1.73,
+              "end": 2.33
+            },
+            {
+              "text": "handling",
+              "start": 2.33,
+              "end": 2.33
+            },
+            {
+              "text": "routine,",
+              "start": 2.33,
+              "end": 2.99
+            }
+          ]
+        },
+        {
+          "text": "repetitive tasks efficiently, while AI agents",
+          "start": 3.65,
+          "end": 6.45,
+          "words": [
+            {
+              "text": "repetitive",
+              "start": 3.65,
+              "end": 3.65
+            },
+            {
+              "text": "tasks",
+              "start": 3.65,
+              "end": 4.09
+            },
+            {
+              "text": "efficiently,",
+              "start": 4.09,
+              "end": 4.65
+            },
+            {
+              "text": "while",
+              "start": 5.45,
+              "end": 5.67
+            },
+            {
+              "text": "AI",
+              "start": 5.67,
+              "end": 6.03
+            },
+            {
+              "text": "agents",
+              "start": 6.03,
+              "end": 6.45
+            }
+          ]
+        },
+        {
+          "text": "shine in situations that demand intelligence,",
+          "start": 6.45,
+          "end": 9.19,
+          "words": [
+            {
+              "text": "shine",
+              "start": 6.45,
+              "end": 7.15
+            },
+            {
+              "text": "in",
+              "start": 7.15,
+              "end": 7.37
+            },
+            {
+              "text": "situations",
+              "start": 7.37,
+              "end": 7.81
+            },
+            {
+              "text": "that",
+              "start": 7.81,
+              "end": 8.47
+            },
+            {
+              "text": "demand",
+              "start": 8.47,
+              "end": 8.47
+            },
+            {
+              "text": "intelligence,",
+              "start": 8.47,
+              "end": 9.19
+            }
+          ]
+        },
+        {
+          "text": "adaptability, and a higher degree of autonomy.",
+          "start": 9.69,
+          "end": 12.37,
+          "words": [
+            {
+              "text": "adaptability,",
+              "start": 9.69,
+              "end": 10.35
+            },
+            {
+              "text": "and",
+              "start": 10.75,
+              "end": 11.01
+            },
+            {
+              "text": "a",
+              "start": 11.01,
+              "end": 11.27
+            },
+            {
+              "text": "higher",
+              "start": 11.27,
+              "end": 11.37
+            },
+            {
+              "text": "degree",
+              "start": 11.37,
+              "end": 11.69
+            },
+            {
+              "text": "of",
+              "start": 11.69,
+              "end": 12.37
+            },
+            {
+              "text": "autonomy.",
+              "start": 12.37,
+              "end": 12.37
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-future",
+      "type": "roadmap",
+      "eyebrow": "Looking Ahead",
+      "headline": "The Future of AI",
+      "title": "AI Evolution",
+      "steps": [
+        {
+          "label": "Current Models",
+          "sublabel": "Distinct roles"
+        },
+        {
+          "label": "Hybrid Models",
+          "sublabel": "Best of both worlds"
+        },
+        {
+          "label": "Evolving Tech",
+          "sublabel": "Blurred lines"
+        }
+      ],
+      "captions": [
+        "As AI technology continues to evolve,",
+        "the lines between chatbots and AI agents",
+        "may blur even further.",
+        "We may see hybrid models that combine",
+        "the simplicity of chatbots with the",
+        "intelligence of AI agents, offering",
+        "the best of both worlds."
+      ],
+      "start": 239.49,
+      "duration": 15.3,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "As AI technology continues to evolve,",
+          "start": 0.15,
+          "end": 2.89,
+          "words": [
+            {
+              "text": "As",
+              "start": 0.15,
+              "end": 0.75
+            },
+            {
+              "text": "AI",
+              "start": 0.75,
+              "end": 1.17
+            },
+            {
+              "text": "technology",
+              "start": 1.17,
+              "end": 1.79
+            },
+            {
+              "text": "continues",
+              "start": 1.79,
+              "end": 2.25
+            },
+            {
+              "text": "to",
+              "start": 2.25,
+              "end": 2.89
+            },
+            {
+              "text": "evolve,",
+              "start": 2.89,
+              "end": 2.89
+            }
+          ]
+        },
+        {
+          "text": "the lines between chatbots and AI agents",
+          "start": 3.29,
+          "end": 5.41,
+          "words": [
+            {
+              "text": "the",
+              "start": 3.29,
+              "end": 3.47
+            },
+            {
+              "text": "lines",
+              "start": 3.47,
+              "end": 3.61
+            },
+            {
+              "text": "between",
+              "start": 3.61,
+              "end": 3.99
+            },
+            {
+              "text": "chatbots",
+              "start": 3.99,
+              "end": 4.51
+            },
+            {
+              "text": "and",
+              "start": 4.51,
+              "end": 4.75
+            },
+            {
+              "text": "AI",
+              "start": 4.75,
+              "end": 5.09
+            },
+            {
+              "text": "agents",
+              "start": 5.09,
+              "end": 5.41
+            }
+          ]
+        },
+        {
+          "text": "may blur even further.",
+          "start": 5.41,
+          "end": 6.59,
+          "words": [
+            {
+              "text": "may",
+              "start": 5.41,
+              "end": 5.81
+            },
+            {
+              "text": "blur",
+              "start": 5.81,
+              "end": 5.91
+            },
+            {
+              "text": "even",
+              "start": 5.91,
+              "end": 6.35
+            },
+            {
+              "text": "further.",
+              "start": 6.35,
+              "end": 6.59
+            }
+          ]
+        },
+        {
+          "text": "We may see hybrid models that combine",
+          "start": 7.41,
+          "end": 9.33,
+          "words": [
+            {
+              "text": "We",
+              "start": 7.41,
+              "end": 7.61
+            },
+            {
+              "text": "may",
+              "start": 7.61,
+              "end": 7.81
+            },
+            {
+              "text": "see",
+              "start": 7.81,
+              "end": 8.05
+            },
+            {
+              "text": "hybrid",
+              "start": 8.05,
+              "end": 8.43
+            },
+            {
+              "text": "models",
+              "start": 8.43,
+              "end": 8.73
+            },
+            {
+              "text": "that",
+              "start": 8.73,
+              "end": 9.07
+            },
+            {
+              "text": "combine",
+              "start": 9.07,
+              "end": 9.33
+            }
+          ]
+        },
+        {
+          "text": "the simplicity of chatbots with the",
+          "start": 9.33,
+          "end": 11.63,
+          "words": [
+            {
+              "text": "the",
+              "start": 9.33,
+              "end": 9.63
+            },
+            {
+              "text": "simplicity",
+              "start": 9.63,
+              "end": 9.89
+            },
+            {
+              "text": "of",
+              "start": 9.89,
+              "end": 10.33
+            },
+            {
+              "text": "chatbots",
+              "start": 10.33,
+              "end": 10.67
+            },
+            {
+              "text": "with",
+              "start": 10.67,
+              "end": 11.23
+            },
+            {
+              "text": "the",
+              "start": 11.23,
+              "end": 11.63
+            }
+          ]
+        },
+        {
+          "text": "intelligence of AI agents, offering",
+          "start": 11.63,
+          "end": 13.63,
+          "words": [
+            {
+              "text": "intelligence",
+              "start": 11.63,
+              "end": 11.89
+            },
+            {
+              "text": "of",
+              "start": 11.89,
+              "end": 12.15
+            },
+            {
+              "text": "AI",
+              "start": 12.15,
+              "end": 12.43
+            },
+            {
+              "text": "agents,",
+              "start": 12.43,
+              "end": 12.85
+            },
+            {
+              "text": "offering",
+              "start": 13.63,
+              "end": 13.63
+            }
+          ]
+        },
+        {
+          "text": "the best of both worlds.",
+          "start": 13.63,
+          "end": 14.87,
+          "words": [
+            {
+              "text": "the",
+              "start": 13.63,
+              "end": 13.87
+            },
+            {
+              "text": "best",
+              "start": 13.87,
+              "end": 14.09
+            },
+            {
+              "text": "of",
+              "start": 14.09,
+              "end": 14.27
+            },
+            {
+              "text": "both",
+              "start": 14.27,
+              "end": 14.55
+            },
+            {
+              "text": "worlds.",
+              "start": 14.55,
+              "end": 14.87
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-conclusion",
+      "type": "cta",
+      "eyebrow": "Final Thoughts",
+      "headline": "Harness the Full Potential of AI",
+      "subheadline": "Enhance interactions with technology.",
+      "captions": [
+        "For now, though, it's crucial to recognize",
+        "their distinct roles and choose the right",
+        "tool for the task at hand.",
+        "This way, we can harness the full potential",
+        "of AI to enhance our interactions with technology",
+        "and make our lives just a little bit easier."
+      ],
+      "start": 254.79,
+      "duration": 14.84,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "For now, though, it's crucial to recognize",
+          "start": 0.15,
+          "end": 2.43,
+          "words": [
+            {
+              "text": "For",
+              "start": 0.15,
+              "end": 0.45
+            },
+            {
+              "text": "now,",
+              "start": 0.45,
+              "end": 0.71
+            },
+            {
+              "text": "though,",
+              "start": 0.77,
+              "end": 1.05
+            },
+            {
+              "text": "it's",
+              "start": 1.05,
+              "end": 1.37
+            },
+            {
+              "text": "crucial",
+              "start": 1.37,
+              "end": 1.67
+            },
+            {
+              "text": "to",
+              "start": 1.67,
+              "end": 2.43
+            },
+            {
+              "text": "recognize",
+              "start": 2.43,
+              "end": 2.43
+            }
+          ]
+        },
+        {
+          "text": "their distinct roles and choose the right",
+          "start": 2.43,
+          "end": 4.67,
+          "words": [
+            {
+              "text": "their",
+              "start": 2.43,
+              "end": 2.69
+            },
+            {
+              "text": "distinct",
+              "start": 2.69,
+              "end": 3.07
+            },
+            {
+              "text": "roles",
+              "start": 3.07,
+              "end": 3.45
+            },
+            {
+              "text": "and",
+              "start": 3.45,
+              "end": 3.93
+            },
+            {
+              "text": "choose",
+              "start": 3.93,
+              "end": 4.11
+            },
+            {
+              "text": "the",
+              "start": 4.11,
+              "end": 4.33
+            },
+            {
+              "text": "right",
+              "start": 4.33,
+              "end": 4.67
+            }
+          ]
+        },
+        {
+          "text": "tool for the task at hand.",
+          "start": 4.67,
+          "end": 6.01,
+          "words": [
+            {
+              "text": "tool",
+              "start": 4.67,
+              "end": 4.87
+            },
+            {
+              "text": "for",
+              "start": 4.87,
+              "end": 5.07
+            },
+            {
+              "text": "the",
+              "start": 5.07,
+              "end": 5.21
+            },
+            {
+              "text": "task",
+              "start": 5.21,
+              "end": 5.51
+            },
+            {
+              "text": "at",
+              "start": 5.51,
+              "end": 6.01
+            },
+            {
+              "text": "hand.",
+              "start": 6.01,
+              "end": 6.01
+            }
+          ]
+        },
+        {
+          "text": "This way, we can harness the full potential",
+          "start": 6.73,
+          "end": 8.93,
+          "words": [
+            {
+              "text": "This",
+              "start": 6.73,
+              "end": 6.87
+            },
+            {
+              "text": "way,",
+              "start": 6.87,
+              "end": 7.17
+            },
+            {
+              "text": "we",
+              "start": 7.45,
+              "end": 7.55
+            },
+            {
+              "text": "can",
+              "start": 7.55,
+              "end": 7.87
+            },
+            {
+              "text": "harness",
+              "start": 7.87,
+              "end": 7.95
+            },
+            {
+              "text": "the",
+              "start": 7.95,
+              "end": 8.25
+            },
+            {
+              "text": "full",
+              "start": 8.25,
+              "end": 8.57
+            },
+            {
+              "text": "potential",
+              "start": 8.57,
+              "end": 8.93
+            }
+          ]
+        },
+        {
+          "text": "of AI to enhance our interactions with technology",
+          "start": 8.93,
+          "end": 11.85,
+          "words": [
+            {
+              "text": "of",
+              "start": 8.93,
+              "end": 9.25
+            },
+            {
+              "text": "AI",
+              "start": 9.25,
+              "end": 9.53
+            },
+            {
+              "text": "to",
+              "start": 9.53,
+              "end": 10.07
+            },
+            {
+              "text": "enhance",
+              "start": 10.07,
+              "end": 10.33
+            },
+            {
+              "text": "our",
+              "start": 10.33,
+              "end": 10.69
+            },
+            {
+              "text": "interactions",
+              "start": 10.69,
+              "end": 11.03
+            },
+            {
+              "text": "with",
+              "start": 11.03,
+              "end": 11.37
+            },
+            {
+              "text": "technology",
+              "start": 11.37,
+              "end": 11.85
+            }
+          ]
+        },
+        {
+          "text": "and make our lives just a little bit easier.",
+          "start": 11.85,
+          "end": 14.49,
+          "words": [
+            {
+              "text": "and",
+              "start": 11.85,
+              "end": 12.43
+            },
+            {
+              "text": "make",
+              "start": 12.43,
+              "end": 12.57
+            },
+            {
+              "text": "our",
+              "start": 12.57,
+              "end": 13.11
+            },
+            {
+              "text": "lives",
+              "start": 13.11,
+              "end": 13.11
+            },
+            {
+              "text": "just",
+              "start": 13.11,
+              "end": 13.63
+            },
+            {
+              "text": "a",
+              "start": 13.63,
+              "end": 13.83
+            },
+            {
+              "text": "little",
+              "start": 13.83,
+              "end": 13.97
+            },
+            {
+              "text": "bit",
+              "start": 13.97,
+              "end": 14.27
+            },
+            {
+              "text": "easier.",
+              "start": 14.27,
+              "end": 14.49
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

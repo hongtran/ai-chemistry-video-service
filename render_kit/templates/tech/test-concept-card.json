@@ -1,0 +1,9 @@
+{
+  "config": { "slug": "test-tech-concept-card", "topic": "tech concept-card test", "totalDuration": 5 },
+  "scenes": [{
+    "id": "s1", "type": "concept-card", "start": 0, "duration": 5,
+    "term": "Embedding", "tagline": "text → numbers", "glyph": "🧭",
+    "definition": "A list of numbers that captures the **meaning** of text.",
+    "captions": ["Similar meaning,", "similar **numbers**."]
+  }]
+}

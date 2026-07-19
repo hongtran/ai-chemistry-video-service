@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --node-label:50px; --node-sub:28px; --conn-len:76px; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --node-label:42px; --node-sub:26px; --conn-len:80px; --cap-size:44px; --cap-bottom:70px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:250px; text-align:center; }
+#main-clip.horizontal .title { top:120px; text-align:left; }
+
+.flow { position:absolute; z-index:2; display:flex; align-items:center; justify-content:center; }
+#main-clip.vertical .flow   { flex-direction:column; left:var(--pad); right:var(--pad); top:440px; bottom:340px; }
+#main-clip.horizontal .flow { flex-direction:row; left:var(--pad); right:var(--pad); top:330px; height:420px; }
+
+.node { position:relative; background:#161B22; border:2px solid rgba(230,237,243,.16); border-radius:26px; text-align:center; padding:30px 40px; box-shadow:0 16px 44px rgba(0,0,0,.4); }
+#main-clip.vertical .node   { width:min(760px, 100%); }
+#main-clip.horizontal .node { flex:1 1 0; max-width:330px; min-height:220px; display:flex; flex-direction:column; justify-content:center; }
+.node.focus { border-color:{{accent}}; background:#12202A; box-shadow:0 0 60px {{accent}}44; }
+.node-glyph { font-size:54px; line-height:1.1; margin-bottom:8px; }
+.node-label { font-weight:700; font-size:var(--node-label); line-height:1.1; }
+.node-sub { font-family:'JetBrains Mono',monospace; font-size:var(--node-sub); opacity:.6; margin-top:10px; }
+.node-ring { position:absolute; inset:-3px; border-radius:28px; border:3px solid {{accent}}; opacity:0; }
+
+.conn { position:relative; overflow:hidden; flex:0 0 auto; }
+#main-clip.vertical .conn   { width:10px; height:var(--conn-len); border-radius:5px; }
+#main-clip.horizontal .conn { height:10px; width:var(--conn-len); border-radius:5px; }
+.conn-dash { position:absolute; }
+#main-clip.vertical .conn-dash   { left:0; width:100%; top:-56px; height:calc(100% + 112px); background:repeating-linear-gradient(180deg, {{accent}} 0 16px, {{accent}}33 16px 28px); }
+#main-clip.horizontal .conn-dash { top:0; height:100%; left:-56px; width:calc(100% + 112px); background:repeating-linear-gradient(90deg, {{accent}} 0 16px, {{accent}}33 16px 28px); }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <div class="flow"></div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var DUR = parseFloat('{{duration}}') || 4;
+  var VERT = '{{orientation}}' === 'vertical';
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var NODES = {{nodes}};
+  var FOCUS = Number('{{highlightNode}}');
+  var flow = $('.flow');
+  var nodeEls = [], connEls = [];
+  NODES.forEach(function(n, i){
+    if (i > 0) {
+      var conn = document.createElement('div');
+      conn.className = 'conn';
+      // The dash strip is oversized on purpose (±56px) so it can slide one
+      // 28px dash period in a loop while the clipped parent hides the edges.
+      conn.innerHTML = '<div class="conn-dash" data-layout-allow-overflow></div>';
+      flow.appendChild(conn);
+      connEls.push(conn);
+    }
+    var node = document.createElement('div');
+    node.className = 'node' + (i === FOCUS ? ' focus' : '');
+    node.innerHTML = '<div class="node-ring"></div>' +
+      (n.glyph ? '<div class="node-glyph">' + esc(n.glyph) + '<\/div>' : '') +
+      '<div class="node-label">' + hl(n.label || '') + '<\/div>' +
+      (n.sublabel ? '<div class="node-sub">' + esc(n.sublabel) + '<\/div>' : '');
+    flow.appendChild(node);
+    nodeEls.push(node);
+  });
+
+  // Defensive fit: the flow is a fixed center-justified box, so oversized
+  // content spills BOTH ways (into title and caption band) — scale to fit.
+  (function(){
+    var kids = flow.children; if (!kids.length) return;
+    function apply(){
+      gsap.set(flow, { clearProps:'transform' }); // re-measure from natural layout
+      var k = (root.getBoundingClientRect().width / parseFloat('{{width}}')) || 1;
+      var first = kids[0].getBoundingClientRect();
+      var last = kids[kids.length - 1].getBoundingClientRect();
+      var needed = (last.bottom - first.top) / k;
+      var avail = flow.getBoundingClientRect().height / k;
+      if (needed > avail && avail > 0) gsap.set(flow, { scale: Math.max(0.6, avail / needed), transformOrigin: '50% 50%' });
+    }
+    apply(); // pre-font metrics can under-measure wraps — re-run when fonts land
+    if (document.fonts) {
+      document.fonts.ready.then(function(){ apply(); });
+      if (document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', function(){ apply(); });
+    }
+  })();
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+
+  // Nodes pop in sequence with the connector drawing between each pair;
+  // the first node lands early so the flow never sits fully empty at the
+  // inspector's first sample.
+  var span = Math.min(DUR * 0.5, Math.max(1.2, NODES.length * 0.42));
+  var per = span / Math.max(1, NODES.length);
+  nodeEls.forEach(function(node, i){
+    var at = 0.28 + i * per;
+    tl.fromTo(node, { opacity:0, scale:0.6 }, { opacity:1, scale:1, duration:0.34, ease:'back.out(1.8)' }, at);
+    if (i > 0) {
+      var conn = connEls[i - 1];
+      tl.fromTo(conn,
+        VERT ? { scaleY:0, transformOrigin:'center top' } : { scaleX:0, transformOrigin:'left center' },
+        VERT ? { scaleY:1, duration:0.26, ease:'power2.out' } : { scaleX:1, duration:0.26, ease:'power2.out' },
+        at - 0.14);
+    }
+  });
+
+  // B-roll: data flows along the connectors (dash pattern marching) and the
+  // focus node pulses. Dash period is 28px, so translating by 28 loops cleanly.
+  var flowAt = 0.28 + span + 0.2;
+  var cycles = Math.max(1, Math.floor((DUR - flowAt) / 0.5));
+  connEls.forEach(function(conn){
+    var dash = conn.querySelector('.conn-dash');
+    tl.fromTo(dash,
+      VERT ? { y:-28 } : { x:-28 },
+      VERT ? { y:28, duration:1.0, ease:'none', repeat:cycles - 1 } : { x:28, duration:1.0, ease:'none', repeat:cycles - 1 },
+      flowAt);
+  });
+  if (nodeEls[FOCUS]) {
+    var ring = nodeEls[FOCUS].querySelector('.node-ring');
+    var pulses = Math.max(1, Math.floor((DUR - flowAt) / 0.9));
+    tl.fromTo(ring, { opacity:0, scale:1 }, { opacity:0.85, scale:1.03, duration:0.45, ease:'sine.inOut', repeat:pulses * 2 - 1, yoyo:true }, flowAt);
+  }
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

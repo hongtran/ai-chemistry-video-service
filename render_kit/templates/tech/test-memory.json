@@ -1,0 +1,10 @@
+{
+  "config": { "slug": "test-tech-memory", "topic": "tech memory test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "memory", "start": 0, "duration": 6,
+    "title": "Agents **remember**",
+    "shortItems": ["Asked about order #482", "Wants a refund"],
+    "longItems": ["Prefers email replies", "VIP customer since 2023"],
+    "captions": ["No more starting **from scratch**", "every single chat."]
+  }]
+}

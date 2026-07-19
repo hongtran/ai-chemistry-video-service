@@ -1,9 +1,13 @@
 .env
 .venv/
+myenv/
 __pycache__/
 *.pyc
 artifacts/
 .DS_Store
+
+# Browser-test artifacts (Playwright MCP screenshots/downloads)
+.playwright-mcp/
 
 # render_kit generated output / deps (populate.js writes videos/<slug>/, npx caches here)
 render_kit/videos/

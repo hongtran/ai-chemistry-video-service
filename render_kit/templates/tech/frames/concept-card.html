@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --term-size:120px; --tag-size:36px; --def-size:56px; --glyph-size:120px; --cap-size:58px; --cap-bottom:200px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --term-size:110px; --tag-size:32px; --def-size:50px; --glyph-size:110px; --cap-size:44px; --cap-bottom:80px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+.bg-glow { pointer-events:none; position:absolute; inset:0; opacity:0;
+  background:radial-gradient(ellipse 60% 40% at 42% 40%, {{accent}}20, transparent 70%); }
+
+.hero { position:absolute; z-index:2; left:var(--pad); right:var(--pad); }
+#main-clip.vertical .hero   { top:420px; display:flex; flex-direction:column; gap:56px; }
+#main-clip.horizontal .hero { top:0; bottom:140px; display:flex; flex-direction:row; align-items:center; gap:90px; }
+
+.card { position:relative; background:#161B22; border:1px solid {{accent}}44; border-radius:32px; padding:70px 60px; text-align:center; box-shadow:0 30px 80px rgba(0,0,0,.45); }
+#main-clip.horizontal .card { flex:0 0 44%; }
+.card-glow { position:absolute; inset:-3px; border-radius:34px; border:3px solid {{accent}}; opacity:0; }
+.glyph { font-size:var(--glyph-size); line-height:1; margin-bottom:34px; }
+.term { font-weight:700; font-size:var(--term-size); line-height:1.02; letter-spacing:-1px; color:{{accent}}; }
+.tagline { font-family:'JetBrains Mono',monospace; font-size:var(--tag-size); font-weight:700; letter-spacing:2px; opacity:.65; margin-top:26px; }
+
+.definition { font-family:'Inter',sans-serif; font-weight:700; font-size:var(--def-size); line-height:1.4; }
+#main-clip.vertical .definition { text-align:center; padding:0 20px; }
+.definition .w { display:inline-block; white-space:pre; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+    <div class="hero">
+      <div class="card">
+        <div class="card-glow"></div>
+        <div class="glyph">{{glyph}}</div>
+        <div class="term">{{term}}</div>
+        <div class="tagline">{{tagline}}</div>
+      </div>
+      <div class="definition">{{definition}}</div>
+    </div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var DUR = parseFloat('{{duration}}') || 4;
+  function $(s){ return root.querySelector(s); }
+  function $all(s){ return Array.prototype.slice.call(root.querySelectorAll(s)); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var glyphEl = $('.glyph');
+  if (!glyphEl.textContent.trim()) glyphEl.style.display = 'none';
+  var tagEl = $('.tagline');
+  if (!tagEl.textContent.trim()) tagEl.style.display = 'none';
+  else tagEl.innerHTML = hl(tagEl.textContent.trim());
+
+  // Multi-word **spans** must survive word-splitting: re-mark each word
+  function splitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g, function(_m, inner){
+    return inner.split(/\s+/).map(function(w){ return '**' + w + '**'; }).join(' ');
+  }); }
+
+  // Definition reveals word by word after the card lands
+  var defEl = $('.definition');
+  defEl.innerHTML = splitMarks(defEl.textContent.trim()).split(/\s+/).map(function(w){
+    return '<span class="w">' + hl(w) + ' </span>';
+  }).join('');
+
+  var tl = gsap.timeline({ paused:true });
+
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.to($('.bg-glow'), { opacity:1, duration:0.7, ease:'power2.out' }, 0);
+
+  // Card entrance: scale + slight tilt settle, glyph pop, term slam
+  tl.fromTo($('.card'), { opacity:0, scale:0.78, rotation:-3 }, { opacity:1, scale:1, rotation:0, duration:0.45, ease:'back.out(1.6)' }, 0.1);
+  tl.fromTo(glyphEl, { opacity:0, scale:0.3 }, { opacity:1, scale:1, duration:0.35, ease:'back.out(2.2)' }, 0.35);
+  tl.fromTo($('.term'), { opacity:0, y:24 }, { opacity:1, y:0, duration:0.3, ease:'power2.out' }, 0.45);
+  tl.fromTo(tagEl, { opacity:0 }, { opacity:0.65, duration:0.25 }, 0.6);
+
+  var words = $all('.definition .w');
+  var revealSpan = Math.min(1.4, DUR * 0.35);
+  var per = words.length > 1 ? revealSpan / words.length : revealSpan;
+  words.forEach(function(w, i){
+    tl.fromTo(w, { opacity:0, y:18 }, { opacity:1, y:0, duration:0.26, ease:'power2.out' }, 0.85 + i * per);
+  });
+
+  // B-roll: accent ring pulses on the card
+  var pulseStart = 0.85 + revealSpan + 0.3;
+  var pulses = Math.max(1, Math.floor((DUR - pulseStart) / 0.9));
+  tl.fromTo($('.card-glow'), { opacity:0 }, { opacity:0.7, duration:0.45, ease:'sine.inOut', repeat:pulses * 2 - 1, yoyo:true }, pulseStart);
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

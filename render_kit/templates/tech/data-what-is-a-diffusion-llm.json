@@ -1,0 +1,1168 @@
+{
+  "config": {
+    "topic": "Diffusion LLMs",
+    "slug": "what-is-a-diffusion-llm",
+    "totalDuration": 61.11,
+    "orientation": "vertical",
+    "description": "Explore the concept of diffusion large language models (LLMs) and how they combine diffusion models with large language models to enhance text generation. Learn about their applications in natural language processing.",
+    "hashtags": [
+      "diffusionllm",
+      "nlp",
+      "aigeneration",
+      "chatbots"
+    ],
+    "tags": [
+      "diffusion llm",
+      "large language model",
+      "nlp",
+      "ai generation",
+      "chatbots",
+      "content creation",
+      "text generation",
+      "diffusion models",
+      "ai"
+    ],
+    "audio": "assets/tts/narration.mp3"
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "type": "cover",
+      "eyebrow": "Understanding AI",
+      "headline": "What is a **Diffusion LLM**?",
+      "captions": [
+        "A diffusion LLM, or diffusion large language model,",
+        "is a type of advanced AI."
+      ],
+      "start": 0,
+      "duration": 4.75,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "A diffusion LLM, or diffusion large language model,",
+          "start": 0,
+          "end": 3.12,
+          "words": [
+            {
+              "text": "A",
+              "start": 0,
+              "end": 0.56
+            },
+            {
+              "text": "diffusion",
+              "start": 0.56,
+              "end": 0.9
+            },
+            {
+              "text": "LLM,",
+              "start": 0.9,
+              "end": 1.44
+            },
+            {
+              "text": "or",
+              "start": 1.58,
+              "end": 2.2
+            },
+            {
+              "text": "diffusion",
+              "start": 2.2,
+              "end": 2.2
+            },
+            {
+              "text": "large",
+              "start": 2.2,
+              "end": 2.54
+            },
+            {
+              "text": "language",
+              "start": 2.54,
+              "end": 2.86
+            },
+            {
+              "text": "model,",
+              "start": 2.86,
+              "end": 3.12
+            }
+          ]
+        },
+        {
+          "text": "is a type of advanced AI.",
+          "start": 3.54,
+          "end": 4.75,
+          "words": [
+            {
+              "text": "is",
+              "start": 3.54,
+              "end": 3.62
+            },
+            {
+              "text": "a",
+              "start": 3.62,
+              "end": 3.88
+            },
+            {
+              "text": "type",
+              "start": 3.88,
+              "end": 3.96
+            },
+            {
+              "text": "of",
+              "start": 3.96,
+              "end": 4.2
+            },
+            {
+              "text": "advanced",
+              "start": 4.2,
+              "end": 4.52
+            },
+            {
+              "text": "AI.",
+              "start": 4.52,
+              "end": 4.75
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "definition",
+      "type": "concept-card",
+      "eyebrow": "",
+      "headline": "",
+      "term": "Diffusion LLM",
+      "tagline": "AI meets diffusion",
+      "definition": "Combines diffusion models with large language models.",
+      "glyph": "🌀",
+      "captions": [
+        "It combines the principles of diffusion models",
+        "with the capabilities of large language models."
+      ],
+      "start": 4.75,
+      "duration": 5.86,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "It combines the principles of diffusion models",
+          "start": 0.15,
+          "end": 2.67,
+          "words": [
+            {
+              "text": "It",
+              "start": 0.15,
+              "end": 0.71
+            },
+            {
+              "text": "combines",
+              "start": 0.71,
+              "end": 1.05
+            },
+            {
+              "text": "the",
+              "start": 1.05,
+              "end": 1.53
+            },
+            {
+              "text": "principles",
+              "start": 1.53,
+              "end": 1.67
+            },
+            {
+              "text": "of",
+              "start": 1.67,
+              "end": 2.37
+            },
+            {
+              "text": "diffusion",
+              "start": 2.37,
+              "end": 2.37
+            },
+            {
+              "text": "models",
+              "start": 2.37,
+              "end": 2.67
+            }
+          ]
+        },
+        {
+          "text": "with the capabilities of large language models.",
+          "start": 2.67,
+          "end": 5.13,
+          "words": [
+            {
+              "text": "with",
+              "start": 2.67,
+              "end": 3.13
+            },
+            {
+              "text": "the",
+              "start": 3.13,
+              "end": 3.47
+            },
+            {
+              "text": "capabilities",
+              "start": 3.47,
+              "end": 3.87
+            },
+            {
+              "text": "of",
+              "start": 3.87,
+              "end": 4.21
+            },
+            {
+              "text": "large",
+              "start": 4.21,
+              "end": 4.47
+            },
+            {
+              "text": "language",
+              "start": 4.47,
+              "end": 4.75
+            },
+            {
+              "text": "models.",
+              "start": 4.75,
+              "end": 5.13
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "diffusion-models",
+      "type": "bullet-list",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Diffusion Models",
+      "items": [
+        "Generative models",
+        "Transform noise to data",
+        "Produce high-quality outputs"
+      ],
+      "captions": [
+        "Diffusion models are a class of **generative models**",
+        "that have gained popularity for their ability",
+        "to produce high-quality data, such as images,",
+        "by gradually transforming random noise",
+        "into coherent outputs."
+      ],
+      "start": 10.61,
+      "duration": 11.5,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Diffusion models are a class of **generative models**",
+          "start": 0.15,
+          "end": 2.13,
+          "words": [
+            {
+              "text": "Diffusion",
+              "start": 0.15,
+              "end": 0.25
+            },
+            {
+              "text": "models",
+              "start": 0.25,
+              "end": 0.53
+            },
+            {
+              "text": "are",
+              "start": 0.53,
+              "end": 0.77
+            },
+            {
+              "text": "a",
+              "start": 0.77,
+              "end": 1.17
+            },
+            {
+              "text": "class",
+              "start": 1.17,
+              "end": 1.17
+            },
+            {
+              "text": "of",
+              "start": 1.17,
+              "end": 1.79
+            },
+            {
+              "text": "**generative**",
+              "start": 1.79,
+              "end": 1.79
+            },
+            {
+              "text": "**models**",
+              "start": 1.79,
+              "end": 2.13
+            }
+          ]
+        },
+        {
+          "text": "that have gained popularity for their ability",
+          "start": 2.13,
+          "end": 4.49,
+          "words": [
+            {
+              "text": "that",
+              "start": 2.13,
+              "end": 2.71
+            },
+            {
+              "text": "have",
+              "start": 2.71,
+              "end": 3.11
+            },
+            {
+              "text": "gained",
+              "start": 3.11,
+              "end": 3.11
+            },
+            {
+              "text": "popularity",
+              "start": 3.11,
+              "end": 3.73
+            },
+            {
+              "text": "for",
+              "start": 3.73,
+              "end": 4.05
+            },
+            {
+              "text": "their",
+              "start": 4.05,
+              "end": 4.29
+            },
+            {
+              "text": "ability",
+              "start": 4.29,
+              "end": 4.49
+            }
+          ]
+        },
+        {
+          "text": "to produce high-quality data, such as images,",
+          "start": 4.49,
+          "end": 7.17,
+          "words": [
+            {
+              "text": "to",
+              "start": 4.49,
+              "end": 4.95
+            },
+            {
+              "text": "produce",
+              "start": 4.95,
+              "end": 4.95
+            },
+            {
+              "text": "high-quality",
+              "start": 4.95,
+              "end": 5.69
+            },
+            {
+              "text": "data,",
+              "start": 5.69,
+              "end": 6.01
+            },
+            {
+              "text": "such",
+              "start": 6.57,
+              "end": 6.63
+            },
+            {
+              "text": "as",
+              "start": 6.63,
+              "end": 7.17
+            },
+            {
+              "text": "images,",
+              "start": 7.17,
+              "end": 7.17
+            }
+          ]
+        },
+        {
+          "text": "by gradually transforming random noise",
+          "start": 7.65,
+          "end": 9.69,
+          "words": [
+            {
+              "text": "by",
+              "start": 7.65,
+              "end": 7.83
+            },
+            {
+              "text": "gradually",
+              "start": 7.83,
+              "end": 8.29
+            },
+            {
+              "text": "transforming",
+              "start": 8.29,
+              "end": 8.89
+            },
+            {
+              "text": "random",
+              "start": 8.89,
+              "end": 9.35
+            },
+            {
+              "text": "noise",
+              "start": 9.35,
+              "end": 9.69
+            }
+          ]
+        },
+        {
+          "text": "into coherent outputs.",
+          "start": 9.69,
+          "end": 10.93,
+          "words": [
+            {
+              "text": "into",
+              "start": 9.69,
+              "end": 9.99
+            },
+            {
+              "text": "coherent",
+              "start": 9.99,
+              "end": 10.45
+            },
+            {
+              "text": "outputs.",
+              "start": 10.45,
+              "end": 10.93
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "language-application",
+      "type": "pipeline",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Applying to Language",
+      "nodes": [
+        {
+          "label": "Noise",
+          "glyph": "🌫️"
+        },
+        {
+          "label": "Refinement",
+          "glyph": "🔄"
+        },
+        {
+          "label": "Text",
+          "glyph": "📝"
+        }
+      ],
+      "highlightNode": 1,
+      "captions": [
+        "When applied to language, these models help generate text",
+        "by iteratively refining it,",
+        "much like how they would refine noise into a clear image."
+      ],
+      "start": 22.11,
+      "duration": 7.98,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "When applied to language, these models help generate text",
+          "start": 0.15,
+          "end": 2.99,
+          "words": [
+            {
+              "text": "When",
+              "start": 0.15,
+              "end": 0.29
+            },
+            {
+              "text": "applied",
+              "start": 0.29,
+              "end": 0.49
+            },
+            {
+              "text": "to",
+              "start": 0.49,
+              "end": 1.11
+            },
+            {
+              "text": "language,",
+              "start": 1.11,
+              "end": 1.11
+            },
+            {
+              "text": "these",
+              "start": 1.53,
+              "end": 1.77
+            },
+            {
+              "text": "models",
+              "start": 1.77,
+              "end": 2.01
+            },
+            {
+              "text": "help",
+              "start": 2.01,
+              "end": 2.33
+            },
+            {
+              "text": "generate",
+              "start": 2.33,
+              "end": 2.69
+            },
+            {
+              "text": "text",
+              "start": 2.69,
+              "end": 2.99
+            }
+          ]
+        },
+        {
+          "text": "by iteratively refining it,",
+          "start": 2.99,
+          "end": 4.45,
+          "words": [
+            {
+              "text": "by",
+              "start": 2.99,
+              "end": 3.33
+            },
+            {
+              "text": "iteratively",
+              "start": 3.33,
+              "end": 3.77
+            },
+            {
+              "text": "refining",
+              "start": 3.77,
+              "end": 4.23
+            },
+            {
+              "text": "it,",
+              "start": 4.23,
+              "end": 4.45
+            }
+          ]
+        },
+        {
+          "text": "much like how they would refine noise into a clear image.",
+          "start": 4.79,
+          "end": 7.55,
+          "words": [
+            {
+              "text": "much",
+              "start": 4.79,
+              "end": 5.13
+            },
+            {
+              "text": "like",
+              "start": 5.13,
+              "end": 5.35
+            },
+            {
+              "text": "how",
+              "start": 5.35,
+              "end": 5.53
+            },
+            {
+              "text": "they",
+              "start": 5.53,
+              "end": 5.65
+            },
+            {
+              "text": "would",
+              "start": 5.65,
+              "end": 5.89
+            },
+            {
+              "text": "refine",
+              "start": 5.89,
+              "end": 6.11
+            },
+            {
+              "text": "noise",
+              "start": 6.11,
+              "end": 6.57
+            },
+            {
+              "text": "into",
+              "start": 6.57,
+              "end": 6.79
+            },
+            {
+              "text": "a",
+              "start": 6.79,
+              "end": 7.05
+            },
+            {
+              "text": "clear",
+              "start": 7.05,
+              "end": 7.25
+            },
+            {
+              "text": "image.",
+              "start": 7.25,
+              "end": 7.55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "integration",
+      "type": "stack-layers",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Integration Process",
+      "layers": [
+        {
+          "label": "Diffusion Process"
+        },
+        {
+          "label": "Language Model"
+        },
+        {
+          "label": "Enhanced Text"
+        }
+      ],
+      "highlightIndex": 0,
+      "annotation": "Combining strengths",
+      "captions": [
+        "The integration of diffusion techniques into language models",
+        "aims to enhance their ability",
+        "to produce more coherent and contextually accurate text."
+      ],
+      "start": 30.09,
+      "duration": 8.2,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "The integration of diffusion techniques into language models",
+          "start": 0.15,
+          "end": 2.79,
+          "words": [
+            {
+              "text": "The",
+              "start": 0.15,
+              "end": 0.31
+            },
+            {
+              "text": "integration",
+              "start": 0.31,
+              "end": 0.67
+            },
+            {
+              "text": "of",
+              "start": 0.67,
+              "end": 1.03
+            },
+            {
+              "text": "diffusion",
+              "start": 1.03,
+              "end": 1.33
+            },
+            {
+              "text": "techniques",
+              "start": 1.33,
+              "end": 1.79
+            },
+            {
+              "text": "into",
+              "start": 1.79,
+              "end": 2.13
+            },
+            {
+              "text": "language",
+              "start": 2.13,
+              "end": 2.47
+            },
+            {
+              "text": "models",
+              "start": 2.47,
+              "end": 2.79
+            }
+          ]
+        },
+        {
+          "text": "aims to enhance their ability",
+          "start": 2.79,
+          "end": 4.55,
+          "words": [
+            {
+              "text": "aims",
+              "start": 2.79,
+              "end": 3.39
+            },
+            {
+              "text": "to",
+              "start": 3.39,
+              "end": 3.97
+            },
+            {
+              "text": "enhance",
+              "start": 3.97,
+              "end": 3.97
+            },
+            {
+              "text": "their",
+              "start": 3.97,
+              "end": 4.27
+            },
+            {
+              "text": "ability",
+              "start": 4.27,
+              "end": 4.55
+            }
+          ]
+        },
+        {
+          "text": "to produce more coherent and contextually accurate text.",
+          "start": 4.55,
+          "end": 7.89,
+          "words": [
+            {
+              "text": "to",
+              "start": 4.55,
+              "end": 5.01
+            },
+            {
+              "text": "produce",
+              "start": 5.01,
+              "end": 5.01
+            },
+            {
+              "text": "more",
+              "start": 5.01,
+              "end": 5.33
+            },
+            {
+              "text": "coherent",
+              "start": 5.33,
+              "end": 5.77
+            },
+            {
+              "text": "and",
+              "start": 5.77,
+              "end": 6.37
+            },
+            {
+              "text": "contextually",
+              "start": 6.37,
+              "end": 7.05
+            },
+            {
+              "text": "accurate",
+              "start": 7.05,
+              "end": 7.45
+            },
+            {
+              "text": "text.",
+              "start": 7.45,
+              "end": 7.89
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "advantages",
+      "type": "bullet-list",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Hybrid Model Benefits",
+      "items": [
+        "Nuanced generation",
+        "Sophisticated outputs",
+        "More human-like interactions"
+      ],
+      "captions": [
+        "This approach leverages the strengths",
+        "of both diffusion processes",
+        "and the extensive training of large language models,",
+        "allowing for more nuanced and sophisticated text generation."
+      ],
+      "start": 38.29,
+      "duration": 10.36,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This approach leverages the strengths",
+          "start": 0.15,
+          "end": 2.01,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.73
+            },
+            {
+              "text": "approach",
+              "start": 0.73,
+              "end": 1.07
+            },
+            {
+              "text": "leverages",
+              "start": 1.07,
+              "end": 1.47
+            },
+            {
+              "text": "the",
+              "start": 1.47,
+              "end": 2.01
+            },
+            {
+              "text": "strengths",
+              "start": 2.01,
+              "end": 2.01
+            }
+          ]
+        },
+        {
+          "text": "of both diffusion processes",
+          "start": 2.01,
+          "end": 3.51,
+          "words": [
+            {
+              "text": "of",
+              "start": 2.01,
+              "end": 2.27
+            },
+            {
+              "text": "both",
+              "start": 2.27,
+              "end": 2.59
+            },
+            {
+              "text": "diffusion",
+              "start": 2.59,
+              "end": 2.93
+            },
+            {
+              "text": "processes",
+              "start": 2.93,
+              "end": 3.51
+            }
+          ]
+        },
+        {
+          "text": "and the extensive training of large language models,",
+          "start": 3.51,
+          "end": 6.37,
+          "words": [
+            {
+              "text": "and",
+              "start": 3.51,
+              "end": 4.23
+            },
+            {
+              "text": "the",
+              "start": 4.23,
+              "end": 4.87
+            },
+            {
+              "text": "extensive",
+              "start": 4.87,
+              "end": 4.87
+            },
+            {
+              "text": "training",
+              "start": 4.87,
+              "end": 5.21
+            },
+            {
+              "text": "of",
+              "start": 5.21,
+              "end": 5.47
+            },
+            {
+              "text": "large",
+              "start": 5.47,
+              "end": 5.71
+            },
+            {
+              "text": "language",
+              "start": 5.71,
+              "end": 6.01
+            },
+            {
+              "text": "models,",
+              "start": 6.01,
+              "end": 6.37
+            }
+          ]
+        },
+        {
+          "text": "allowing for more nuanced and sophisticated text generation.",
+          "start": 7.15,
+          "end": 9.87,
+          "words": [
+            {
+              "text": "allowing",
+              "start": 7.15,
+              "end": 7.15
+            },
+            {
+              "text": "for",
+              "start": 7.15,
+              "end": 7.47
+            },
+            {
+              "text": "more",
+              "start": 7.47,
+              "end": 7.73
+            },
+            {
+              "text": "nuanced",
+              "start": 7.73,
+              "end": 7.99
+            },
+            {
+              "text": "and",
+              "start": 7.99,
+              "end": 8.99
+            },
+            {
+              "text": "sophisticated",
+              "start": 8.99,
+              "end": 8.99
+            },
+            {
+              "text": "text",
+              "start": 8.99,
+              "end": 9.31
+            },
+            {
+              "text": "generation.",
+              "start": 9.31,
+              "end": 9.87
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "applications",
+      "type": "task-breakdown",
+      "eyebrow": "",
+      "headline": "",
+      "goal": "NLP Applications",
+      "subtasks": [
+        {
+          "label": "Chatbots",
+          "sublabel": "Seamless interaction"
+        },
+        {
+          "label": "Content Creation",
+          "sublabel": "Human-like text"
+        },
+        {
+          "label": "AI Interactions",
+          "sublabel": "Natural language"
+        }
+      ],
+      "captions": [
+        "As developers explore this hybrid model,",
+        "it opens up new possibilities for applications",
+        "in natural language processing,",
+        "from chatbots to content creation,",
+        "making interactions with AI even more seamless and human-like."
+      ],
+      "start": 48.65,
+      "duration": 12.46,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "As developers explore this hybrid model,",
+          "start": 0.15,
+          "end": 2.29,
+          "words": [
+            {
+              "text": "As",
+              "start": 0.15,
+              "end": 0.49
+            },
+            {
+              "text": "developers",
+              "start": 0.49,
+              "end": 0.93
+            },
+            {
+              "text": "explore",
+              "start": 0.93,
+              "end": 1.41
+            },
+            {
+              "text": "this",
+              "start": 1.41,
+              "end": 1.69
+            },
+            {
+              "text": "hybrid",
+              "start": 1.69,
+              "end": 2.01
+            },
+            {
+              "text": "model,",
+              "start": 2.01,
+              "end": 2.29
+            }
+          ]
+        },
+        {
+          "text": "it opens up new possibilities for applications",
+          "start": 2.69,
+          "end": 4.91,
+          "words": [
+            {
+              "text": "it",
+              "start": 2.69,
+              "end": 2.83
+            },
+            {
+              "text": "opens",
+              "start": 2.83,
+              "end": 2.99
+            },
+            {
+              "text": "up",
+              "start": 2.99,
+              "end": 3.33
+            },
+            {
+              "text": "new",
+              "start": 3.33,
+              "end": 3.63
+            },
+            {
+              "text": "possibilities",
+              "start": 3.63,
+              "end": 4.07
+            },
+            {
+              "text": "for",
+              "start": 4.07,
+              "end": 4.45
+            },
+            {
+              "text": "applications",
+              "start": 4.45,
+              "end": 4.91
+            }
+          ]
+        },
+        {
+          "text": "in natural language processing,",
+          "start": 4.91,
+          "end": 6.37,
+          "words": [
+            {
+              "text": "in",
+              "start": 4.91,
+              "end": 5.19
+            },
+            {
+              "text": "natural",
+              "start": 5.19,
+              "end": 5.55
+            },
+            {
+              "text": "language",
+              "start": 5.55,
+              "end": 5.89
+            },
+            {
+              "text": "processing,",
+              "start": 5.89,
+              "end": 6.37
+            }
+          ]
+        },
+        {
+          "text": "from chatbots to content creation,",
+          "start": 6.91,
+          "end": 8.91,
+          "words": [
+            {
+              "text": "from",
+              "start": 6.91,
+              "end": 7.07
+            },
+            {
+              "text": "chatbots",
+              "start": 7.07,
+              "end": 7.63
+            },
+            {
+              "text": "to",
+              "start": 7.63,
+              "end": 8.09
+            },
+            {
+              "text": "content",
+              "start": 8.09,
+              "end": 8.41
+            },
+            {
+              "text": "creation,",
+              "start": 8.41,
+              "end": 8.91
+            }
+          ]
+        },
+        {
+          "text": "making interactions with AI even more seamless and human-like.",
+          "start": 9.43,
+          "end": 12.11,
+          "words": [
+            {
+              "text": "making",
+              "start": 9.43,
+              "end": 9.61
+            },
+            {
+              "text": "interactions",
+              "start": 9.61,
+              "end": 10.17
+            },
+            {
+              "text": "with",
+              "start": 10.17,
+              "end": 10.51
+            },
+            {
+              "text": "AI",
+              "start": 10.51,
+              "end": 10.81
+            },
+            {
+              "text": "even",
+              "start": 10.81,
+              "end": 11.19
+            },
+            {
+              "text": "more",
+              "start": 11.19,
+              "end": 11.47
+            },
+            {
+              "text": "seamless",
+              "start": 11.47,
+              "end": 11.81
+            },
+            {
+              "text": "and",
+              "start": 11.81,
+              "end": 12.11
+            },
+            {
+              "text": "human-like.",
+              "start": 12.11,
+              "end": 12.11
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

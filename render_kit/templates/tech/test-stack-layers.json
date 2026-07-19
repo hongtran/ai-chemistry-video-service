@@ -1,0 +1,16 @@
+{
+  "config": { "slug": "test-tech-stack-layers", "topic": "tech stack-layers test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "stack-layers", "start": 0, "duration": 6,
+    "title": "Where does an **AI engineer** work?",
+    "layers": [
+      { "label": "Product & UI", "sublabel": "what users touch" },
+      { "label": "Orchestration", "sublabel": "agents · RAG · evals" },
+      { "label": "Model APIs", "sublabel": "GPT · Claude · Llama" },
+      { "label": "Infra", "sublabel": "GPUs · serving" }
+    ],
+    "highlightIndex": 1,
+    "annotation": "you work HERE",
+    "captions": ["Right **between** the product", "and the models."]
+  }]
+}

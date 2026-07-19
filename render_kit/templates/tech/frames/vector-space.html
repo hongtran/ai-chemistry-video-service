@@ -1,0 +1,207 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --legend-size:32px; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --legend-size:30px; --cap-size:44px; --cap-bottom:70px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:250px; text-align:center; }
+#main-clip.horizontal .title { top:120px; text-align:left; }
+
+.plot { position:absolute; z-index:2; border:2px solid rgba(230,237,243,.14); border-radius:30px; background:rgba(230,237,243,.02); }
+#main-clip.vertical .plot   { left:var(--pad); width:912px; top:440px; height:880px; }
+#main-clip.horizontal .plot { left:var(--pad); width:1000px; top:300px; height:640px; }
+.axis { position:absolute; background:rgba(230,237,243,.10); }
+.axis.x { left:26px; right:26px; bottom:26px; height:3px; }
+.axis.y { top:26px; bottom:26px; left:26px; width:3px; }
+
+.dot { position:absolute; width:26px; height:26px; margin:-13px 0 0 -13px; border-radius:50%; }
+.edge { position:absolute; height:5px; margin-top:-2.5px; border-radius:3px; background:{{accent}}; transform-origin:left center; opacity:.85; }
+.query { position:absolute; z-index:3; width:44px; height:44px; margin:-22px 0 0 -22px; border-radius:50%; background:{{accent}}; box-shadow:0 0 40px {{accent}}; }
+.query-tag { position:absolute; z-index:3; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px; background:{{accent}}; color:{{bg}}; padding:10px 22px; border-radius:999px; }
+
+.legend { position:absolute; z-index:2; display:flex; gap:28px; }
+#main-clip.vertical .legend   { left:var(--pad); right:var(--pad); top:1360px; justify-content:center; flex-wrap:wrap; }
+#main-clip.horizontal .legend { left:1260px; top:340px; flex-direction:column; }
+.chip { display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono',monospace; font-size:var(--legend-size); font-weight:700; background:rgba(230,237,243,.05); border:1px solid rgba(230,237,243,.1); border-radius:999px; padding:12px 26px; white-space:nowrap; }
+.chip-dot { width:20px; height:20px; border-radius:50%; flex:0 0 auto; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <div class="plot"><div class="axis x"></div><div class="axis y"></div></div>
+    <span class="q-label" hidden>{{queryLabel}}</span>
+    <div class="legend"></div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var DUR = parseFloat('{{duration}}') || 4;
+  var VERT = '{{orientation}}' === 'vertical';
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var LABELS = {{clusterLabels}};
+  // Free-text tokens ride in via hidden DOM nodes (apostrophe-safe), never
+  // inside JS string literals.
+  var QLABEL = $('.q-label').textContent.trim() || 'query';
+  var nClusters = Math.max(2, Math.min(3, LABELS.length || 2));
+
+  // Hand-placed deterministic scatter: cluster centers + per-dot offsets as
+  // fractions of the plot box, scaled to this orientation's plot size.
+  var PW = VERT ? 912 : 1000, PH = VERT ? 880 : 640;
+  var COLORS = ['#4ADE80', '#A78BFA', '#FFB224'];
+  var CENTERS = [[0.30, 0.30], [0.72, 0.62], [0.32, 0.78]];
+  var OFFS = [
+    [[0,0],[.09,-.05],[-.07,.06],[.05,.10],[-.10,-.07],[.13,.04],[-.03,-.11]],
+    [[0,0],[-.09,-.06],[.08,.05],[.04,-.10],[-.05,.09],[.12,-.02],[-.12,.03]],
+    [[0,0],[.08,.06],[-.08,-.05],[.11,-.03],[-.04,.09],[.03,-.09]]
+  ];
+  var QUERY = [0.58, 0.47];
+
+  var plot = $('.plot');
+  var dots = [];
+  for (var c = 0; c < nClusters; c++) {
+    CENTERS[c].cx = CENTERS[c][0] * PW; CENTERS[c].cy = CENTERS[c][1] * PH;
+    OFFS[c].forEach(function(o){
+      var x = (CENTERS[c][0] + o[0]) * PW, y = (CENTERS[c][1] + o[1]) * PH;
+      var d = document.createElement('div');
+      d.className = 'dot';
+      d.style.cssText = 'left:' + x + 'px; top:' + y + 'px; background:' + COLORS[c] + ';';
+      plot.appendChild(d);
+      dots.push({ el:d, x:x, y:y, cluster:c });
+    });
+  }
+  var qx = QUERY[0] * PW, qy = QUERY[1] * PH;
+  // Top-3 nearest neighbours, computed once from the static coordinates
+  var nearest = dots.slice().sort(function(a, b){
+    return ((a.x-qx)*(a.x-qx)+(a.y-qy)*(a.y-qy)) - ((b.x-qx)*(b.x-qx)+(b.y-qy)*(b.y-qy));
+  }).slice(0, 3);
+  var edges = nearest.map(function(n){
+    var dx = n.x - qx, dy = n.y - qy;
+    var len = Math.sqrt(dx*dx + dy*dy);
+    var ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    var e = document.createElement('div');
+    e.className = 'edge';
+    e.style.cssText = 'left:' + qx + 'px; top:' + qy + 'px; width:' + len + 'px;';
+    plot.appendChild(e);
+    // Rotation must live in GSAP's transform state — an inline transform
+    // would be overwritten by the scaleX draw tween.
+    gsap.set(e, { rotation:ang, scaleX:0, transformOrigin:'left center' });
+    return e;
+  });
+  var query = document.createElement('div');
+  query.className = 'query';
+  query.style.cssText = 'left:' + qx + 'px; top:' + qy + 'px;';
+  plot.appendChild(query);
+  var qtag = document.createElement('div');
+  qtag.className = 'query-tag';
+  qtag.textContent = QLABEL;
+  qtag.style.cssText = 'left:' + (qx + 40) + 'px; top:' + (qy - 70) + 'px;';
+  plot.appendChild(qtag);
+
+  var legend = $('.legend');
+  var chips = [];
+  for (var i = 0; i < nClusters; i++) {
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.innerHTML = '<span class="chip-dot" style="background:' + COLORS[i] + '"></span>' + esc(LABELS[i] || ('cluster ' + (i + 1)));
+    legend.appendChild(chip);
+    chips.push(chip);
+  }
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+  tl.fromTo(plot, { opacity:0, scale:0.96 }, { opacity:1, scale:1, duration:0.35, ease:'power2.out' }, 0.2);
+
+  // Clusters populate one at a time; legend chips follow their cluster
+  dots.forEach(function(d, i){
+    var at = 0.45 + d.cluster * 0.35 + (i % 7) * 0.035;
+    tl.fromTo(d.el, { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.25, ease:'back.out(2)' }, at);
+  });
+  chips.forEach(function(chip, i){
+    tl.fromTo(chip, { opacity:0, y:16 }, { opacity:1, y:0, duration:0.25, ease:'power2.out' }, 0.6 + i * 0.35);
+  });
+
+  // The retrieval beat: query drops in, edges shoot to the top-k dots
+  var qAt = 0.55 + nClusters * 0.35 + 0.2;
+  tl.fromTo(query, { opacity:0, y:-90, scale:0.4 }, { opacity:1, y:0, scale:1, duration:0.4, ease:'back.out(1.7)' }, qAt);
+  tl.fromTo(qtag, { opacity:0, x:-14 }, { opacity:1, x:0, duration:0.25, ease:'power2.out' }, qAt + 0.25);
+  edges.forEach(function(e, i){
+    tl.to(e, { scaleX:1, duration:0.3, ease:'power3.out' }, qAt + 0.45 + i * 0.12);
+  });
+  nearest.forEach(function(n, i){
+    tl.fromTo(n.el, { scale:1 }, { scale:1.7, duration:0.2, ease:'power2.out' }, qAt + 0.7 + i * 0.12);
+    tl.to(n.el, { scale:1.3, duration:0.2 }, qAt + 0.9 + i * 0.12);
+  });
+  // B-roll: query glow breathes for the rest of the scene
+  var idleAt = qAt + 1.3;
+  var pulses = Math.max(1, Math.floor((DUR - idleAt) / 0.8));
+  tl.to(query, { scale:1.18, duration:0.4, ease:'sine.inOut', repeat:pulses * 2 - 1, yoyo:true }, idleAt);
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "config": { "slug": "test-tech-tool-use", "topic": "tech tool-use test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "tool-use", "start": 0, "duration": 6,
+    "title": "Agents use **tools**",
+    "agentLabel": "Agent",
+    "tools": [
+      { "glyph": "🔍", "label": "Web search", "sublabel": "live info" },
+      { "glyph": "🧮", "label": "Calculator", "sublabel": "exact math" },
+      { "glyph": "🗄️", "label": "Database", "sublabel": "your data" },
+      { "glyph": "✉️", "label": "Email", "sublabel": "take action" }
+    ],
+    "captions": ["Not trapped in a **chat box** —", "it reaches out."]
+  }]
+}

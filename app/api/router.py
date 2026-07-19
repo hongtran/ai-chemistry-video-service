@@ -3,9 +3,10 @@ from fastapi.responses import FileResponse
 
 from app.api.schemas import CreateVideoRequest, CreateVideoResponse, JobDetail, JobSummary
 from app.domain.models import Job, JobStatus
-from app.llm.client import ChemistryGuard, GuardMisconfiguredError, GuardUnavailableError
+from app.llm.client import GuardMisconfiguredError, GuardUnavailableError, SubjectGuard
 from app.storage.artifacts import ArtifactStore
 from app.storage.jobs import JobRepository
+from app.subjects import get_subject_config
 from app.worker.queue import JobQueue
 
 router = APIRouter(prefix="/api/v1", tags=["videos"])
@@ -17,11 +18,12 @@ ALLOWED_ARTIFACTS = {
     "transcript.json",
     "scenes.json",
     "data.json",
+    "meta.json",
     "video.mp4",
 }
 
 
-def _deps(request: Request) -> tuple[JobRepository, ArtifactStore, JobQueue, ChemistryGuard]:
+def _deps(request: Request) -> tuple[JobRepository, ArtifactStore, JobQueue, SubjectGuard]:
     s = request.app.state
     return s.jobs, s.artifacts, s.queue, s.guard
 
@@ -33,6 +35,7 @@ async def request_video(body: CreateVideoRequest, request: Request) -> CreateVid
     jobs, _, queue, guard = _deps(request)
 
     query = body.query.strip()
+    subject_config = get_subject_config(body.subject, request.app.state.settings)
     max_len = request.app.state.settings.max_query_length
     if not query:
         raise HTTPException(status_code=400, detail="Query must not be empty.")
@@ -42,27 +45,32 @@ async def request_video(body: CreateVideoRequest, request: Request) -> CreateVid
         )
 
     try:
-        verdict = await guard.check(query)
+        verdict = await guard.check(query, body.subject)
     except GuardMisconfiguredError as exc:
         raise HTTPException(
             status_code=500,
-            detail="Chemistry validation is misconfigured. Contact support.",
+            detail="Subject validation is misconfigured. Contact support.",
         ) from exc
     except GuardUnavailableError as exc:
         raise HTTPException(
             status_code=503,
-            detail=f"Chemistry validation is temporarily unavailable: {exc}",
+            detail=f"Subject validation is temporarily unavailable: {exc}",
         ) from exc
-    if not verdict.is_chemistry:
+    if not verdict.is_valid:
         raise HTTPException(
             status_code=400,
-            detail=f"Query is not a chemistry concept: {verdict.reason}",
+            detail=(
+                f"Query is not a {subject_config.display_name} concept: "
+                f"{verdict.reason}"
+            ),
         )
 
-    job = Job(query=query)
+    job = Job(query=query, subject=body.subject, orientation=body.orientation)
     await jobs.create(job)
     await queue.enqueue(job.id)
-    return CreateVideoResponse(id=job.id, status=job.status)
+    return CreateVideoResponse(
+        id=job.id, subject=job.subject, orientation=job.orientation, status=job.status
+    )
 
 
 @router.get("/videos", response_model=list[JobSummary])
@@ -113,7 +121,7 @@ async def download_video(job_id: str, request: Request) -> FileResponse:
     if not artifacts.exists(job_id, "video.mp4"):
         raise HTTPException(status_code=404, detail="Video file missing from artifact store.")
     return FileResponse(
-        job.video_path, media_type="video/mp4", filename=f"chemistry-{job_id}.mp4"
+        job.video_path, media_type="video/mp4", filename=f"{job.subject}-{job_id}.mp4"
     )
 
 

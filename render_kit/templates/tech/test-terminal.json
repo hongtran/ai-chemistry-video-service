@@ -1,0 +1,13 @@
+{
+  "config": { "slug": "test-tech-terminal", "topic": "tech terminal test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "terminal", "start": 0, "duration": 6,
+    "headline": "Ship it in **one command**",
+    "eyebrow": "~/my-agent",
+    "commands": [
+      { "cmd": "pip install langchain", "output": ["Collecting langchain...", "✓ Installed in 2.1s"] },
+      { "cmd": "python agent.py", "output": ["Agent ready on :8000"] }
+    ],
+    "captions": ["Two commands,", "and the agent is **live**."]
+  }]
+}

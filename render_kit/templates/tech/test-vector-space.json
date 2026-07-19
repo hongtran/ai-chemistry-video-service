@@ -1,0 +1,10 @@
+{
+  "config": { "slug": "test-tech-vector-space", "topic": "tech vector-space test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "vector-space", "start": 0, "duration": 6,
+    "title": "How **retrieval** finds answers",
+    "clusterLabels": ["billing docs", "api docs", "faq"],
+    "queryLabel": "your question",
+    "captions": ["Close in space =", "close in **meaning**."]
+  }]
+}

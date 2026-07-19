@@ -1,0 +1,8 @@
+{
+  "config": { "slug": "test-tech-cover", "topic": "tech cover test", "totalDuration": 4 },
+  "scenes": [{
+    "id": "s1", "type": "cover", "start": 0, "duration": 4,
+    "eyebrow": "~/ai-engineering", "headline": "What is **RAG** really?",
+    "captions": ["Your AI has a **memory problem**.", "Here is the fix."]
+  }]
+}

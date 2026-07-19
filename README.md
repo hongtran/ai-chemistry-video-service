@@ -1,9 +1,11 @@
-# AI Chemistry Video Request Service
+# AI Subject Video Request Service
 
-Backend prototype: a learner submits a chemistry-concept query, the service runs it as an
+Backend prototype: a learner submits a subject-scoped educational query, the service runs it as an
 async video-generation job (LLM narration → TTS → word-level transcript → typed scene
 split → data.json → hyperframes render), and the client polls status and downloads the
-finished video.
+finished video. Chemistry is the only enabled subject today; the pipeline is structured
+so additional subjects can be added through subject config, prompts, schemas, and
+renderer templates.
 
 ## Architecture
 
@@ -27,8 +29,9 @@ single `video_path` pointer set on completion.
 scene_split → alignment → compose → render) → `COMPLETED` | `FAILED` (`error_message`
 formatted `"<step>: <reason>"`).
 
-Chemistry validation is **not** part of the job lifecycle: the LLM guard runs synchronously
-in the POST handler — a non-chemistry query gets an immediate `400` and no job is created.
+Subject validation is **not** part of the job lifecycle: the LLM guard runs synchronously
+in the POST handler — a query outside the requested subject gets an immediate `400` and
+no job is created. Today, only `subject="chemistry"` is accepted.
 
 ## Run local
 
@@ -85,7 +88,7 @@ Notes:
 
 | Method & path | Purpose | Responses |
 |---|---|---|
-| `POST /videos` `{"query": "..."}` | request a video | `202` `{id, status}` · `400` not chemistry / bad query · `503` guard unavailable |
+| `POST /videos` `{"query": "...", "subject": "chemistry"}` | request a video | `202` `{id, subject, status}` · `400` outside subject / bad query · `422` unsupported subject · `503` guard unavailable |
 | `GET /videos?status=` | list jobs | `200` summaries · `400` bad status value |
 | `GET /videos/{id}` | job detail + artifact names | `200` · `404` |
 | `GET /videos/{id}/video` | download finished mp4 | `200` mp4 · `409` not ready (includes status/step/error) · `404` |
@@ -95,8 +98,8 @@ Notes:
 
 ```bash
 curl -s -X POST localhost:8000/api/v1/videos -H 'content-type: application/json' \
-  -d '{"query": "How does the pH scale work?"}'
-# → {"id": "…", "status": "PENDING"}
+  -d '{"query": "How does the pH scale work?", "subject": "chemistry"}'
+# → {"id": "…", "subject": "chemistry", "status": "PENDING"}
 
 curl -s localhost:8000/api/v1/videos/<id>          # poll: watch current_step advance
 curl -sO localhost:8000/api/v1/videos/<id>/video   # when COMPLETED
@@ -112,20 +115,20 @@ app/
   api/               router.py (endpoints), schemas.py (DTOs)
   storage/           jobs.py (JobRepository), artifacts.py (ArtifactStore)
   worker/queue.py    JobQueue + asyncio worker loop
-  llm/client.py      OpenAI wrapper, retry/backoff, chemistry guard
+  llm/client.py      OpenAI wrapper, retry/backoff, subject guard
+  subjects/          enabled subject registry and subject-owned prompts
   pipeline/          base.py (protocol), stub.py; orchestrator + steps arrive in Phase 2
-schemas/scene_schema.json   scene schema slot (user-provided)
-render_kit/                 vendored hyperframes render toolkit (build-video.sh + templates)
+render_kit/                 vendored render toolkit; templates/<subject>/schema.json is canonical
 artifacts/<job_id>/         per-job files (gitignored)
 ```
 
 ## Pipeline (real mode)
 
 narration (LLM, TTS-friendly script) → tts (OpenAI TTS) → transcription (whisper-1 word
-timestamps) → scene_split (LLM, validated against `schemas/scene_schema.json` with one
+timestamps) → scene_split (LLM, validated against the subject schema with one
 corrective re-prompt on schema errors) → alignment (Python-native greedy word matcher; on
 failure, ONE retry that re-runs scene_split with the alignment error as feedback, then a
-clear FAILED) → compose (data.json, 1080×1920, validated against the full schema) → render
+clear FAILED) → compose (data.json, 1080×1920, validated against the subject schema) → render
 (subprocess `build-video.sh`, timeout-guarded).
 
 All OpenAI calls share one retry helper: exponential backoff + jitter, 3 attempts, only on

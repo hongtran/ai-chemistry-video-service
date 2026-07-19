@@ -1,0 +1,10 @@
+{
+  "config": { "slug": "test-tech-neural-net", "topic": "tech neural-net test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "neural-net", "start": 0, "duration": 6,
+    "title": "Inside a **neural network**",
+    "layerLabels": ["tokens in", "layers", "next word"],
+    "outputLabel": "prediction",
+    "captions": ["Signals ripple through the layers", "until a **prediction** comes out."]
+  }]
+}

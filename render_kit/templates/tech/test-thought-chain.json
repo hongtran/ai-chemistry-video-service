@@ -1,0 +1,15 @@
+{
+  "config": { "slug": "test-tech-thought-chain", "topic": "tech thought-chain test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "thought-chain", "start": 0, "duration": 6,
+    "title": "Thinking **out loud**",
+    "question": "Should we refund order #482?",
+    "thoughts": [
+      "My goal is to check the refund policy first.",
+      "Policy says 30 days — order is 12 days old.",
+      "Customer is eligible. Next: issue the refund."
+    ],
+    "conclusion": "Refund **approved** — within the 30-day window.",
+    "captions": ["Plan first,", "**then** act."]
+  }]
+}

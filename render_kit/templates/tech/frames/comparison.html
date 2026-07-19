@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --ptitle-size:74px; --item-size:42px; --vs-size:56px; --verdict-size:52px; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --ptitle-size:64px; --item-size:38px; --vs-size:52px; --verdict-size:48px; --cap-size:44px; --cap-bottom:70px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.headline { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:64px; line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .headline   { top:210px; text-align:center; }
+#main-clip.horizontal .headline { top:110px; text-align:left; font-size:58px; }
+
+.duel { position:absolute; z-index:2; left:var(--pad); right:var(--pad); display:flex; gap:44px; }
+#main-clip.vertical .duel   { top:400px; bottom:450px; flex-direction:column; }
+#main-clip.horizontal .duel { top:290px; height:540px; flex-direction:row; }
+
+.panel { flex:1 1 0; position:relative; background:#161B22; border:2px solid rgba(230,237,243,.14); border-radius:30px; padding:44px 50px; box-shadow:0 20px 60px rgba(0,0,0,.45); }
+#main-clip.horizontal .panel.left  { padding-right:130px; }
+#main-clip.horizontal .panel.right { padding-left:130px; }
+#main-clip.vertical .panel.left  { padding-bottom:100px; }
+#main-clip.vertical .panel.right { padding-top:100px; }
+.panel-title { font-weight:700; font-size:var(--ptitle-size); line-height:1.05; margin-bottom:28px; }
+.panel.left  .panel-title { color:{{leftAccent}}; }
+.panel.right .panel-title { color:{{rightAccent}}; }
+.panel-bar { height:8px; width:130px; border-radius:4px; margin-bottom:30px; transform-origin:left center; }
+.panel.left  .panel-bar { background:{{leftAccent}}; }
+.panel.right .panel-bar { background:{{rightAccent}}; }
+.trait { display:flex; align-items:flex-start; gap:20px; font-family:'Inter',sans-serif; font-weight:700; font-size:var(--item-size); line-height:1.3; margin-bottom:20px; }
+.tick { flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-weight:700; }
+.panel.left  .tick { color:{{leftAccent}}; }
+.panel.right .tick { color:{{rightAccent}}; }
+
+.vs { position:absolute; z-index:3; left:50%; top:50%; width:150px; height:150px; margin-left:-75px; margin-top:-75px; border-radius:50%; background:{{fg}}; color:{{bg}}; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:var(--vs-size); letter-spacing:1px; box-shadow:0 14px 50px rgba(0,0,0,.5); }
+
+.verdict { position:absolute; z-index:2; left:var(--pad); right:var(--pad); text-align:center; font-family:'Inter',sans-serif; font-weight:800; font-size:var(--verdict-size); }
+#main-clip.vertical .verdict   { bottom:310px; }
+#main-clip.horizontal .verdict { top:870px; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="headline">{{headline}}</div>
+    <div class="duel">
+      <div class="panel left"><div class="panel-title">{{leftTitle}}</div><div class="panel-bar"></div><div class="traits"></div></div>
+      <div class="panel right"><div class="panel-title">{{rightTitle}}</div><div class="panel-bar"></div><div class="traits"></div></div>
+      <div class="vs">VS</div>
+    </div>
+    <div class="verdict">{{verdict}}</div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var DUR = parseFloat('{{duration}}') || 4;
+  var VERT = '{{orientation}}' === 'vertical';
+  function $(s){ return root.querySelector(s); }
+  function $all(s){ return Array.prototype.slice.call(root.querySelectorAll(s)); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var headEl = $('.headline');
+  var ht = headEl.textContent.trim();
+  if (!ht) headEl.style.display = 'none'; else headEl.innerHTML = hl(ht);
+
+  var LEFT = {{leftItems}};
+  var RIGHT = {{rightItems}};
+  function fillTraits(sel, items){
+    var host = $(sel + ' .traits');
+    return items.map(function(it){
+      var d = document.createElement('div');
+      d.className = 'trait';
+      d.innerHTML = '<span class="tick">▸<\/span><span>' + hl(it) + '<\/span>';
+      host.appendChild(d);
+      return d;
+    });
+  }
+  var leftTraits = fillTraits('.panel.left', LEFT);
+  var rightTraits = fillTraits('.panel.right', RIGHT);
+
+  var verdictEl = $('.verdict');
+  if (!verdictEl.textContent.trim()) verdictEl.style.display = 'none';
+  else verdictEl.innerHTML = hl(verdictEl.textContent.trim());
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(headEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.3, ease:'power3.out' }, 0.06);
+
+  // Panels charge in from opposite sides, VS badge punches between them
+  tl.fromTo($('.panel.left'),
+    VERT ? { opacity:0, y:-90 } : { opacity:0, x:-100 },
+    VERT ? { opacity:1, y:0, duration:0.42, ease:'power3.out' } : { opacity:1, x:0, duration:0.42, ease:'power3.out' }, 0.25);
+  tl.fromTo($('.panel.right'),
+    VERT ? { opacity:0, y:90 } : { opacity:0, x:100 },
+    VERT ? { opacity:1, y:0, duration:0.42, ease:'power3.out' } : { opacity:1, x:0, duration:0.42, ease:'power3.out' }, 0.25);
+  tl.fromTo($('.vs'), { opacity:0, scale:2.4, rotation:-14 }, { opacity:1, scale:1, rotation:0, duration:0.4, ease:'back.out(1.6)' }, 0.6);
+  $all('.panel-bar').forEach(function(bar){
+    tl.fromTo(bar, { scaleX:0 }, { scaleX:1, duration:0.3, ease:'power2.out' }, 0.7);
+  });
+
+  // Trait rows alternate sides while revealing
+  var traitSpan = Math.min(DUR * 0.3, Math.max(0.8, Math.max(leftTraits.length, rightTraits.length) * 0.35));
+  var per = traitSpan / Math.max(1, Math.max(leftTraits.length, rightTraits.length));
+  leftTraits.forEach(function(el, i){
+    tl.fromTo(el, { opacity:0, x:-30 }, { opacity:1, x:0, duration:0.28, ease:'power2.out' }, 0.9 + i * per);
+  });
+  rightTraits.forEach(function(el, i){
+    tl.fromTo(el, { opacity:0, x:30 }, { opacity:1, x:0, duration:0.28, ease:'power2.out' }, 0.9 + per / 2 + i * per);
+  });
+
+  var verdictAt = 0.9 + traitSpan + 0.3;
+  if (verdictEl.style.display !== 'none') {
+    tl.fromTo(verdictEl, { opacity:0, scale:0.8 }, { opacity:1, scale:1, duration:0.32, ease:'back.out(1.8)' }, verdictAt);
+  }
+  // B-roll: VS badge keeps a slow heartbeat
+  var pulses = Math.max(1, Math.floor((DUR - verdictAt - 0.3) / 0.9));
+  tl.to($('.vs'), { scale:1.08, duration:0.45, ease:'sine.inOut', repeat:pulses * 2 - 1, yoyo:true }, verdictAt + 0.3);
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

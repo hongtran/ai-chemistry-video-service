@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --cap-size:44px; --cap-bottom:70px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:250px; text-align:center; }
+#main-clip.horizontal .title { top:120px; text-align:left; }
+
+.rig { position:absolute; z-index:2; inset:0; }
+.agent-node { position:absolute; background:#12202A; border:3px solid {{accent}}; border-radius:32px; text-align:center; padding:30px 44px; box-shadow:0 0 60px {{accent}}44; }
+.agent-glyph { font-size:58px; line-height:1.1; margin-bottom:6px; }
+.agent-label { font-weight:700; font-size:40px; line-height:1.1; white-space:nowrap; }
+.agent-ring { position:absolute; inset:-4px; border-radius:34px; border:3px solid {{accent}}; opacity:0; }
+
+.tool-chip { position:absolute; display:flex; flex-direction:column; align-items:center; gap:8px; background:#161B22; border:1px solid rgba(230,237,243,.14); border-radius:22px; padding:22px 26px; text-align:center; box-shadow:0 12px 34px rgba(0,0,0,.4); }
+.tool-glyph { font-size:48px; line-height:1.1; }
+.tool-label { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:26px; white-space:nowrap; }
+.tool-sub { font-family:'JetBrains Mono',monospace; font-size:21px; opacity:.5; white-space:nowrap; }
+
+.spoke { position:absolute; height:6px; margin-top:-3px; border-radius:3px; background:rgba(230,237,243,.18); }
+.pulse { position:absolute; width:24px; height:24px; margin:-12px 0 0 -12px; border-radius:50%; background:{{accent}}; box-shadow:0 0 26px {{accent}}; opacity:0; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <span class="agent-src" hidden>{{agentLabel}}</span>
+    <div class="rig"></div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var W = {{width}}, H = {{height}};
+  var DUR = parseFloat('{{duration}}') || 4;
+  var VERT = '{{orientation}}' === 'vertical';
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var TOOLS = {{tools}};
+  var agentLabel = $('.agent-src').textContent.trim() || 'Agent';
+  var rig = $('.rig');
+  var n = Math.max(1, TOOLS.length);
+
+  // Hub-and-spoke geometry from canvas constants (no DOM reads).
+  // Vertical: tools ring the agent on an ellipse; horizontal: tools fan out
+  // to the right of the agent.
+  var A, toolPos = [];
+  if (VERT) {
+    A = { x: W/2, y: 1010 };
+    var rx = 380, ry = 420;
+    for (var i = 0; i < n; i++) {
+      var a = -Math.PI/2 + (i * 2 * Math.PI / n);
+      toolPos.push({ x: A.x + rx * Math.cos(a), y: A.y + ry * Math.sin(a) });
+    }
+  } else {
+    A = { x: 520, y: 590 };
+    var fan = Math.min(110, 220 / Math.max(1, n - 1)) * (Math.PI / 180) * (n - 1);
+    for (var j = 0; j < n; j++) {
+      var t = n > 1 ? j / (n - 1) : 0.5;
+      var ang = -fan/2 + t * fan;
+      // 240 vertical amplitude keeps the lowest card above the caption band (~928+)
+      toolPos.push({ x: A.x + 880 * Math.cos(ang * 0.55), y: A.y + 240 * Math.sin(ang * 1.35) });
+    }
+  }
+
+  function place(el, cx, cy){
+    el.style.left = cx + 'px'; el.style.top = cy + 'px';
+    gsap.set(el, { xPercent:-50, yPercent:-50 });
+  }
+  var spokes = [], pulses = [];
+  toolPos.forEach(function(p){
+    var dx = p.x - A.x, dy = p.y - A.y;
+    var len = Math.sqrt(dx*dx + dy*dy);
+    var ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    var s = document.createElement('div');
+    s.className = 'spoke';
+    s.style.left = A.x + 'px'; s.style.top = A.y + 'px'; s.style.width = len + 'px';
+    rig.insertBefore(s, rig.firstChild); // beneath the cards
+    gsap.set(s, { rotation:ang, scaleX:0, transformOrigin:'left center' });
+    spokes.push(s);
+    var d = document.createElement('div');
+    d.className = 'pulse';
+    d.style.left = A.x + 'px'; d.style.top = A.y + 'px';
+    rig.appendChild(d);
+    pulses.push(d);
+  });
+
+  var chips = TOOLS.map(function(t, i){
+    var chip = document.createElement('div');
+    chip.className = 'tool-chip';
+    chip.innerHTML = (t.glyph ? '<div class="tool-glyph">' + esc(t.glyph) + '<\/div>' : '') +
+      '<div class="tool-label">' + esc(t.label || '') + '<\/div>' +
+      (t.sublabel ? '<div class="tool-sub">' + esc(t.sublabel) + '<\/div>' : '');
+    rig.appendChild(chip);
+    place(chip, toolPos[i].x, toolPos[i].y);
+    return chip;
+  });
+
+  var agent = document.createElement('div');
+  agent.className = 'agent-node';
+  agent.innerHTML = '<div class="agent-ring"></div><div class="agent-glyph">🤖<\/div><div class="agent-label">' + esc(agentLabel) + '<\/div>';
+  rig.appendChild(agent);
+  place(agent, A.x, A.y);
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+
+  // Agent lands, spokes extend, toolbox pops open
+  tl.fromTo(agent, { opacity:0, scale:0.6 }, { opacity:1, scale:1, duration:0.36, ease:'back.out(1.8)' }, 0.18);
+  spokes.forEach(function(s, i){
+    tl.to(s, { scaleX:1, duration:0.24, ease:'power2.out' }, 0.5 + i * 0.08);
+  });
+  chips.forEach(function(c, i){
+    tl.fromTo(c, { opacity:0, scale:0.5 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(2)' }, 0.62 + i * 0.08);
+  });
+
+  // B-roll: request pulse out, response pulse back — tool after tool
+  var callAt = 0.62 + n * 0.08 + 0.4;
+  var per = Math.max(0.5, Math.min(0.9, (DUR - callAt - 0.3) / n));
+  toolPos.forEach(function(p, i){
+    var at = callAt + i * per;
+    var dx = p.x - A.x, dy = p.y - A.y;
+    var out = per * 0.38, back = per * 0.34;
+    tl.fromTo(pulses[i], { opacity:0, x:0, y:0 }, { opacity:1, duration:0.1 }, at);
+    tl.to(pulses[i], { x:dx, y:dy, duration:out, ease:'power1.inOut' }, at);
+    tl.fromTo(chips[i], { scale:1 }, { scale:1.08, duration:0.12, ease:'power2.out' }, at + out);
+    tl.to(chips[i], { scale:1, duration:0.15, ease:'power2.inOut' }, at + out + 0.12);
+    tl.to(pulses[i], { x:0, y:0, duration:back, ease:'power1.inOut' }, at + out + 0.08);
+    tl.to(pulses[i], { opacity:0, duration:0.12 }, at + out + 0.08 + back);
+    tl.fromTo($('.agent-ring'), { opacity:0 }, { opacity:0.8, duration:0.12 }, at + out + 0.08 + back);
+    tl.to($('.agent-ring'), { opacity:0, duration:0.2 }, at + out + 0.2 + back);
+  });
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

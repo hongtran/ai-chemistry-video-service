@@ -1,0 +1,13 @@
+{
+  "config": { "slug": "test-tech-chat", "topic": "tech chat test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "chat", "start": 0, "duration": 6,
+    "title": "Agents **ask back**",
+    "messages": [
+      { "role": "user", "text": "Book me a flight to Tokyo next week." },
+      { "role": "assistant", "text": "Found 3 options. **Cheapest** is Tuesday 6am — book it?" },
+      { "role": "user", "text": "Yes, do it." }
+    ],
+    "captions": ["An agent keeps **state**", "across the whole task."]
+  }]
+}

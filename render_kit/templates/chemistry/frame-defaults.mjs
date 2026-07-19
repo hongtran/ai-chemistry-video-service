@@ -58,8 +58,22 @@ export const TYPE_CONTENT_FIELDS = {
   'tug-of-war': ['leftSymbol', 'rightSymbol', 'leftColor', 'rightColor', 'mode', 'electrons', 'verb'],
 };
 
-// Types safe to use in a 9:16 vertical composition.
+// Types safe to use in a 9:16 vertical composition. Retained for back-compat;
+// every type now also ships a 16:9 layout — see SUPPORTED_ORIENTATIONS.
 export const VERTICAL_TYPES = Object.keys(TYPE_CONTENT_FIELDS);
+
+// Canvas orientations. populate.js resolves width/height from
+// config.orientation ('vertical' → 1080×1920, 'horizontal' → 1920×1080) and
+// injects an {{orientation}} token every frame uses as a root class to switch
+// between its two hand-tuned layouts.
+export const ORIENTATIONS = ['vertical', 'horizontal'];
+
+// Which orientations each type supports. All chemistry frames now ship with
+// both layouts authored; kept as a map so a future type can opt out of one
+// orientation without new machinery.
+export const SUPPORTED_ORIENTATIONS = Object.fromEntries(
+  VALID_TYPES.map((t) => [t, [...ORIENTATIONS]])
+);
 
 // Which of a type's content fields actually break/degrade visibly if left
 // empty. Not derivable from FRAME_DEFAULTS alone — a blank default means
@@ -95,6 +109,8 @@ export function validateData(data) {
   const errors = [];
   if (!data.config?.slug) errors.push('config.slug is required');
   if (!data.config?.totalDuration) errors.push('config.totalDuration is required');
+  if (data.config?.orientation && !ORIENTATIONS.includes(data.config.orientation))
+    errors.push(`config.orientation "${data.config.orientation}" is invalid — must be one of: ${ORIENTATIONS.join(', ')}`);
   if (!Array.isArray(data.scenes) || data.scenes.length === 0)
     errors.push('scenes[] must be a non-empty array');
   for (const scene of data.scenes ?? []) {

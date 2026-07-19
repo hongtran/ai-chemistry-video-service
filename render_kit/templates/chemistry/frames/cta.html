@@ -12,13 +12,26 @@
 #caption { position:relative; width:100%; height:2.4em; }
 .hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
 /* CTA overrides — headline centered within #hero zone */
-#hero { position:absolute; top:0; left:0; right:0; bottom:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:36px; }
-#headline { font-family:'Anton',sans-serif; font-weight:400; font-size:150px; line-height:.98; text-transform:uppercase; text-align:center; padding:0 80px; }
-#subheadline { font-family:'Inter',sans-serif; font-size:40px; font-weight:800; text-align:center; padding:0 80px; opacity:.85; }
+#hero { position:absolute; top:0; left:80px; right:80px; bottom:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:36px; overflow:hidden; }
+#headline { width:100%; max-width:920px; min-width:0; font-family:'Anton',sans-serif; font-weight:400; font-size:132px; line-height:1; text-transform:uppercase; text-align:center; overflow-wrap:break-word; }
+#subheadline { width:100%; max-width:860px; min-width:0; font-family:'Inter',sans-serif; font-size:40px; font-weight:800; line-height:1.2; text-align:center; opacity:.85; overflow-wrap:break-word; }
+
+/* Karaoke caption chunk (built by hfBuildCaptions; one .cw span per word) */
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:900; text-align:center; line-height:1.25; font-size:var(--cap-size,66px); opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+
+#main-clip.vertical   { --cap-size:66px; }
+#main-clip.horizontal { --cap-size:44px; }
+#main-clip.horizontal #caption-zone { bottom:60px; padding:0 160px; }
+#main-clip.horizontal #caption { max-width:1360px; margin:0 auto; }
+
+#main-clip.horizontal #hero        { bottom:210px; left:160px; right:160px; }
+#main-clip.horizontal #headline    { font-size:118px; max-width:1500px; }
+#main-clip.horizontal #subheadline { max-width:1200px; }
 </style>
 
 <div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
-  <section class="clip" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
     <div id="hero">
       <div id="headline">{{headline}}</div>
       <div id="subheadline">{{subheadline}}</div>
@@ -34,14 +47,18 @@ window.__timelines = window.__timelines || {};
 function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
 ['eyebrow','headline'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hfHighlight(t); });
-function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.style.cssText='position:absolute;width:100%;left:0;top:50%;transform:translateY(-50%);font-family:Inter,sans-serif;font-size:66px;font-weight:900;text-align:center;line-height:1.25;opacity:0;'; d.innerHTML=hfHighlight(c.text); host.appendChild(d); return d; }); }
-function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); } }); }
+function hfSplitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g,function(_m,inner){ return inner.split(/\s+/).map(function(w){ return '**'+w+'**'; }).join(' '); }); }
+function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.className='cap-chunk'; var ws=Array.isArray(c.words)?c.words:[]; d.innerHTML= ws.length ? ws.map(function(w){ return '<span class="cw">'+hfHighlight(w.text)+' </span>'; }).join('') : hfHighlight(hfSplitMarks(c.text)); host.appendChild(d); return d; }); }
+function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); }
+  // Karaoke: only the word being spoken holds capHighlight; every other word
+  // keeps the caption color. Emphasis pills (.hl) opt out.
+  var ws=Array.isArray(t.words)?t.words:[]; var spans=el.querySelectorAll('.cw'); ws.forEach(function(w,wi){ var span=spans[wi]; if(!span||span.querySelector('.hl'))return; tl.to(span,{color:'{{capHighlight}}',duration:0.12,ease:'power2.out'},w.start); tl.to(span,{color:'{{fg}}',duration:0.15},Math.max(w.start+0.12,w.end)); }); }); }
 
-gsap.set('#headline',   { opacity:0, scale:1.25 });
+gsap.set('#headline',   { opacity:0, y:18 });
 gsap.set('#subheadline',{ opacity:0, y:16 });
 
 var tl = gsap.timeline({ paused:true });
-tl.to('#headline',    { opacity:1, scale:1, duration:0.35, ease:'back.out(1.6)' }, 0.15);
+tl.to('#headline',    { opacity:1, y:0, duration:0.35, ease:'power3.out' }, 0.15);
 tl.to('#subheadline', { opacity:1, y:0,    duration:0.5,  ease:'power3.out'     }, 0.65);
 
 var captionTiming = {{captionTiming}};

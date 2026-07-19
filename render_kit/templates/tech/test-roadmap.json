@@ -1,0 +1,14 @@
+{
+  "config": { "slug": "test-tech-roadmap", "topic": "tech roadmap test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "roadmap", "start": 0, "duration": 6,
+    "title": "Path to **AI engineer**",
+    "steps": [
+      { "label": "Python basics", "sublabel": "3 months" },
+      { "label": "APIs & prompts", "sublabel": "LLM 101" },
+      { "label": "Build with RAG", "sublabel": "ship a project" },
+      { "label": "Evals & agents", "sublabel": "production" }
+    ],
+    "captions": ["You can walk this path", "in under a **year**."]
+  }]
+}

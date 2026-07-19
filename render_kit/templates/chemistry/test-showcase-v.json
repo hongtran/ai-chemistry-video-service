@@ -1,31 +1,59 @@
 {
-  "note": "GOLDEN EXAMPLES — one well-formed scene per frame type with ALL content params filled. Colors follow each type's native palette. 'captions' here are ILLUSTRATIVE ONLY: real captions must copy the job's transcript verbatim, in order. start/duration/captionTiming are always omitted — the system computes them from the audio.",
-  "examples": [
+  "config": {
+    "slug": "test-showcase-v",
+    "topic": "Chemistry showcase (horizontal)",
+    "totalDuration": 56,
+    "orientation": "vertical",
+    "description": "A tour of every chemistry frame type in 16:9.",
+    "hashtags": [
+      "chemistry",
+      "science"
+    ],
+    "tags": [
+      "chemistry basics",
+      "ph scale"
+    ]
+  },
+  "scenes": [
     {
-      "id": "example-cover",
+      "id": "s-cover",
       "type": "cover",
+      "start": 0,
+      "duration": 4,
       "bg": "#0B0E14",
       "fg": "#FFFFFF",
       "accent": "#FFD60A",
       "eyebrow": "CHEMISTRY BASICS",
       "headline": "The pH Scale",
-      "captions": ["Have you ever wondered", "why lemons taste sour", "and soap feels slippery?"]
+      "captions": [
+        "Have you ever",
+        "wondered why",
+        "lemons taste sour?"
+      ]
     },
     {
-      "id": "example-stats",
+      "id": "s-stats",
       "type": "stats",
+      "start": 4,
+      "duration": 4,
       "bg": "#FFD60A",
       "fg": "#0B0E14",
       "accent": "#0B0E14",
       "eyebrow": "THE NUMBERS",
       "headline": "A Giant Leap Per Step",
-      "stat": "10,000×",
+      "stat": "10,000x",
       "statLabel": "more acidic",
-      "captions": ["Each step on the scale", "means ten times the acidity."]
+      "captions": [
+        "Each step means",
+        "ten times the",
+        "acidity."
+      ]
     },
     {
-      "id": "example-quote",
+      "id": "s-quote",
       "type": "quote",
+      "start": 8,
+      "duration": 4,
       "bg": "#EDE8E0",
       "fg": "#1A1A1A",
       "accent": "#B8A98C",
@@ -33,37 +61,61 @@
       "headline": "A Founding Idea",
       "quote": "Nothing is lost, nothing is created, everything is transformed.",
       "attribution": "Antoine Lavoisier",
-      "captions": ["As Lavoisier famously said,", "nothing is lost,", "everything is transformed."]
+      "captions": [
+        "As Lavoisier said,",
+        "nothing is lost."
+      ]
     },
     {
-      "id": "example-diagram",
+      "id": "s-diagram",
       "type": "diagram",
+      "start": 12,
+      "duration": 4,
       "bg": "#0B0E14",
       "fg": "#FFFFFF",
       "accent": "#FFD60A",
       "eyebrow": "HOW IT WORKS",
       "headline": "Reading the Scale",
       "items": [
-        { "label": "0 — Battery acid", "color": "#FF3B30" },
-        { "label": "7 — Pure water", "color": "#FFFFFF" },
-        { "label": "14 — Drain cleaner", "color": "#3B82F6" }
+        {
+          "label": "0 \u2014 Battery acid",
+          "color": "#FF3B30"
+        },
+        {
+          "label": "7 \u2014 Pure water",
+          "color": "#FFFFFF"
+        },
+        {
+          "label": "14 \u2014 Drain cleaner",
+          "color": "#3B82F6"
+        }
       ],
-      "captions": ["The scale runs from zero,", "through neutral seven,", "all the way to fourteen."]
+      "captions": [
+        "The scale runs",
+        "zero to fourteen."
+      ]
     },
     {
-      "id": "example-cta",
+      "id": "s-cta",
       "type": "cta",
+      "start": 16,
+      "duration": 4,
       "bg": "#0B0E14",
       "fg": "#FFFFFF",
       "accent": "#FFD60A",
       "eyebrow": "THE TAKEAWAY",
       "headline": "Chemistry Is Everywhere",
-      "subheadline": "Every sip, every bite — the pH scale is at work.",
-      "captions": ["So next time you taste something sour,", "you'll know exactly why."]
+      "subheadline": "Every sip, every bite \u2014 the pH scale is at work.",
+      "captions": [
+        "So next time,",
+        "you'll know why."
+      ]
     },
     {
-      "id": "example-atom",
+      "id": "s-atom",
       "type": "atom",
+      "start": 20,
+      "duration": 4,
       "bg": "#1ABC9C",
       "fg": "#0B0E14",
       "accent": "#0B0E14",
@@ -73,12 +125,17 @@
       "shell1": 2,
       "shell2": 8,
       "shell3": 1,
-      "title": "Sodium — Na",
-      "captions": ["Sodium carries eleven electrons,", "with one alone in its outer shell."]
+      "title": "Sodium \u2014 Na",
+      "captions": [
+        "Sodium carries",
+        "eleven electrons."
+      ]
     },
     {
-      "id": "example-element-card",
+      "id": "s-element-card",
       "type": "element-card",
+      "start": 24,
+      "duration": 4,
       "bg": "#EDE8E0",
       "fg": "#1A1A1A",
       "accent": "#B8A98C",
@@ -89,11 +146,16 @@
       "atomicMass": "22.99",
       "name": "Sodium",
       "color": "#E2DBD1",
-      "captions": ["Element eleven, sodium,", "a soft metal that explodes in water."]
+      "captions": [
+        "Element eleven,",
+        "sodium."
+      ]
     },
     {
-      "id": "example-reaction-equation",
+      "id": "s-reaction",
       "type": "reaction-equation",
+      "start": 28,
+      "duration": 4,
       "bg": "#EDE8E0",
       "fg": "#1A1A1A",
       "accent": "#B8A98C",
@@ -101,14 +163,19 @@
       "headline": "Making Table Salt",
       "eqTitle": "Salt Formation",
       "r1": "2Na",
-      "r2": "Cl₂",
+      "r2": "Cl2",
       "p1": "2NaCl",
       "label": "ionic bond",
-      "captions": ["Sodium meets chlorine,", "and together they form", "sodium chloride — table salt."]
+      "captions": [
+        "Sodium meets",
+        "chlorine."
+      ]
     },
     {
-      "id": "example-molecule",
+      "id": "s-molecule",
       "type": "molecule",
+      "start": 32,
+      "duration": 4,
       "bg": "#1ABC9C",
       "fg": "#0B0E14",
       "accent": "#0B0E14",
@@ -121,11 +188,16 @@
       "rightColor": "#10B981",
       "angle": 180,
       "bondOrder": 1,
-      "captions": ["One sodium, one chlorine,", "locked side by side."]
+      "captions": [
+        "One sodium,",
+        "one chlorine."
+      ]
     },
     {
-      "id": "example-ph-bar",
+      "id": "s-ph-bar",
       "type": "ph-bar",
+      "start": 36,
+      "duration": 4,
       "bg": "#34C759",
       "fg": "#0B0E14",
       "accent": "#0B0E14",
@@ -133,11 +205,16 @@
       "headline": "Perfectly Neutral",
       "title": "THE pH SCALE",
       "targetPh": 7,
-      "captions": ["Pure water sits at seven —", "the exact middle of the scale."]
+      "captions": [
+        "Pure water sits",
+        "at seven."
+      ]
     },
     {
-      "id": "example-orbital-overlap",
+      "id": "s-orbital",
       "type": "orbital-overlap",
+      "start": 40,
+      "duration": 4,
       "bg": "#1ABC9C",
       "fg": "#0B0E14",
       "accent": "#0B0E14",
@@ -145,11 +222,16 @@
       "headline": "Orbitals Overlap",
       "atom1": "H",
       "atom2": "H",
-      "captions": ["Two hydrogen atoms drift close,", "and their orbitals begin to overlap."]
+      "captions": [
+        "Two hydrogen atoms",
+        "drift close."
+      ]
     },
     {
-      "id": "example-bond-comparison",
+      "id": "s-bond-comparison",
       "type": "bond-comparison",
+      "start": 44,
+      "duration": 4,
       "bg": "#0B0E14",
       "fg": "#FFFFFF",
       "accent": "#FFD60A",
@@ -159,26 +241,36 @@
       "ionicAtom2": "Cl",
       "covalentAtom1": "H",
       "covalentAtom2": "H",
-      "captions": ["Ionic bonds hand electrons over.", "Covalent bonds share them."]
+      "captions": [
+        "Ionic bonds hand",
+        "electrons over."
+      ]
     },
     {
-      "id": "example-particle-count",
+      "id": "s-particle-count",
       "type": "particle-count",
+      "start": 48,
+      "duration": 4,
       "bg": "#FF3B30",
       "fg": "#FFFFFF",
       "accent": "#FFD60A",
       "eyebrow": "COUNTING IONS",
       "headline": "Packed With Protons",
-      "particleLabel": "H⁺",
+      "particleLabel": "H+",
       "particleColor": "#FFFFFF",
       "targetCount": 12,
       "containerLabel": "Lemon juice, pH 2",
       "result": "Highly acidic",
-      "captions": ["Lemon juice swarms", "with hydrogen ions."]
+      "captions": [
+        "Lemon juice swarms",
+        "with hydrogen ions."
+      ]
     },
     {
-      "id": "example-tug-of-war",
+      "id": "s-tug-of-war",
       "type": "tug-of-war",
+      "start": 52,
+      "duration": 4,
       "bg": "#1ABC9C",
       "fg": "#0B0E14",
       "accent": "#0B0E14",
@@ -191,7 +283,10 @@
       "mode": "unequal",
       "electrons": 1,
       "verb": "winning",
-      "captions": ["Chlorine pulls far harder,", "and rips the electron away."]
+      "captions": [
+        "Chlorine pulls",
+        "far harder."
+      ]
     }
   ]
 }

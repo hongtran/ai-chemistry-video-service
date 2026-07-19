@@ -1,0 +1,18 @@
+{
+  "config": { "slug": "test-tech-code-snippet", "topic": "tech code-snippet test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "code-snippet", "start": 0, "duration": 6,
+    "headline": "A RAG call in **5 lines**",
+    "filename": "rag.py", "language": "python",
+    "code": [
+      "docs = db.search(query, top_k=3)",
+      "context = \"\\n\".join(d.text for d in docs)",
+      "# ground the model in your data",
+      "answer = llm.ask(",
+      "    prompt=f\"{context}\\n\\nQ: {query}\"",
+      ")"
+    ],
+    "highlightLines": [1, 5],
+    "captions": ["Retrieve first,", "then let the model **answer**."]
+  }]
+}

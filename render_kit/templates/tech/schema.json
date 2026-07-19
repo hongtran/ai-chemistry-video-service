@@ -1,0 +1,268 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tech (Software & AI) HyperFrames Data",
+  "type": "object",
+  "required": ["config", "scenes"],
+  "properties": {
+    "config": {
+      "type": "object",
+      "required": ["topic", "slug", "totalDuration"],
+      "properties": {
+        "topic":         { "type": "string", "description": "Human-readable topic title" },
+        "slug":          { "type": "string", "description": "kebab-case output directory name" },
+        "totalDuration": { "type": "number", "description": "Total video duration in seconds" },
+        "orientation":   { "type": "string", "enum": ["vertical", "horizontal"], "description": "Canvas orientation: 'vertical' = 9:16 1080×1920 (default, shorts/reels), 'horizontal' = 16:9 1920×1080 (YouTube). Every frame type supports both." },
+        "width":         { "type": "number", "description": "Explicit canvas width; overrides the orientation default" },
+        "height":        { "type": "number", "description": "Explicit canvas height; overrides the orientation default" },
+        "bgm":           { "type": "string", "description": "BGM path relative to videos/<slug>/" },
+        "audio":         { "type": "string", "description": "Single full-script narration path relative to videos/<slug>/" },
+        "voiceStyle":    { "type": "string", "description": "Metadata for LLM pipeline; not used at render" },
+        "capHighlight":  { "type": "string", "description": "Karaoke highlight color (hex) for the caption word currently being spoken; independent of per-frame accent. Default #FFD24A (gold)." }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "start", "duration"],
+        "properties": {
+          "id":         { "type": "string", "description": "Unique kebab-case id → filename and composition-id" },
+          "type": {
+            "type": "string",
+            "description": "Frame type selector. All types render in both orientations at the canvas size resolved from config.orientation.",
+            "enum": ["cover", "stats", "quote", "bullet-list", "cta",
+                     "concept-card", "code-snippet", "terminal", "chat",
+                     "pipeline", "comparison", "roadmap", "stack-layers",
+                     "vector-space", "neural-net",
+                     "task-breakdown", "thought-chain", "tool-use",
+                     "memory", "reflection-loop", "mcp-hub"],
+            "typeUsage": {
+              "cover": "DEFAULT for the opening scene / topic intro hook. A safe general choice.",
+              "stats": "use when the scene centers on ONE striking number, percentage, or figure.",
+              "quote": "use ONLY when the narration is a pull quote, bold claim, or citation. Shows quote text and attribution styled as a code comment.",
+              "bullet-list": "DEFAULT for general explanatory content — a titled list of 3-5 points/steps/skills with no dedicated visual. A safe general choice when nothing more specific fits.",
+              "cta": "DEFAULT for the closing scene / takeaway / call to action.",
+              "concept-card": "use when the narration defines ONE named term or concept (e.g. 'an embedding is…', 'an agent is…'). Term + tagline + short definition card.",
+              "code-snippet": "use ONLY when the narration walks through actual code. Shows an editor window revealing code line by line with key lines highlighted.",
+              "terminal": "use ONLY when the narration is about running commands / CLI tools (install, deploy, run). Shows a terminal typing commands and printing output. Fits 1-3 short interactions.",
+              "chat": "use ONLY when the narration describes a prompt/response exchange with an LLM or agent. Shows user/assistant chat bubbles. Fits 2-4 short messages.",
+              "pipeline": "use when the narration describes a system as a FLOW of stages (e.g. RAG: query → retrieve → augment → generate). Boxes-and-arrows with an animated pulse traveling the path.",
+              "comparison": "use ONLY when directly contrasting two named approaches/technologies (RAG vs fine-tuning, SQL vs NoSQL). Two panels with trait rows and a VS badge.",
+              "roadmap": "use when the narration describes ordered milestones over time or a learning path (path to AI engineer, model evolution). Numbered nodes along a drawn line.",
+              "stack-layers": "use when the narration describes layered architecture (UI / orchestration / model / infra) and especially when highlighting WHERE something sits in the stack.",
+              "vector-space": "use ONLY when the narration is about embeddings, vector similarity, or retrieval/nearest-neighbor search. Animated 2D embedding scatter with a query point and top-k matches.",
+              "neural-net": "use ONLY when the narration is about neural networks / how models process signals through layers. Animated layered network with signal pulses.",
+              "task-breakdown": "use ONLY when the narration is about an agent decomposing a big goal into smaller steps / planning a to-do list. Goal card fans out into a checklist that ticks itself.",
+              "thought-chain": "use ONLY when the narration is about chain-of-thought / the agent reasoning step by step before answering. Question pill → thinking cards → answer card.",
+              "tool-use": "use ONLY when the narration is about an agent calling external tools (web search, calculator, database, APIs). Agent hub with tool spokes and request/response pulses.",
+              "memory": "use ONLY when the narration contrasts or explains agent memory — short-term conversation context vs long-term preferences/rules. Two stores fill up, then items are recalled.",
+              "reflection-loop": "use ONLY when the narration is about self-reflection / the agent checking its own work, catching an error and retrying. Cycle ring: first lap fails at the check, second lap passes.",
+              "mcp-hub": "use ONLY when the narration is about Model Context Protocol or standardized integrations — one plug connecting the agent to many external apps. Agent → MCP hub → app chips."
+            }
+          },
+          "start":    { "type": "number", "description": "Scene start in seconds (hand-authored until a caption-alignment pipeline is wired in)." },
+          "duration": { "type": "number", "description": "Scene duration in seconds." },
+          "sfx":      { "anyOf": [{ "type": "string" }, { "type": "null" }] },
+          "transition": { "type": "string", "enum": ["fade", "slide", "cut", "punch", "shake"], "description": "Transition into the NEXT scene" },
+          "overrides": {
+            "type": "object",
+            "description": "Per-scene style token overrides",
+            "properties": {
+              "quoteFontSize": { "type": "string" }
+            }
+          },
+
+          "bg":     { "type": "string", "description": "Full-bleed background color (hex). Default is the dark developer canvas #0D1117 — override sparingly." },
+          "fg":     { "type": "string", "description": "Foreground/text color (hex)" },
+          "accent": { "type": "string", "description": "Keyword highlight / glow color (hex)" },
+
+          "eyebrow":  { "type": "string", "description": "Small mono badge above the headline, ≤24 chars, e.g. '~/ai-engineering' or 'EP.01 — RAG'" },
+          "headline": { "type": "string", "description": "Main display text, ≤44 chars; wrap key words in **double asterisks** for accent highlight" },
+          "captions": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Naturally-split caption chunks displayed sequentially during the scene, 2-6 words and ≤55 chars each. Doubles as the scene's expected narration text (chunks joined with spaces)."
+          },
+          "captionTiming": {
+            "type": "array",
+            "description": "Populate/align-computed, not hand-authored: one {text,start,end,words} per captions[] chunk in scene-local seconds. words[] holds one {text,start,end} per whitespace token for the karaoke spoken-word highlight — real Whisper timestamps from align-captions.mjs, or evenly spaced within the chunk span when populate.js synthesizes them. If captionTiming is absent, populate.js evenly spaces captions[] across the scene duration.",
+            "items": {
+              "type": "object",
+              "required": ["text", "start", "end"],
+              "properties": {
+                "text":  { "type": "string" },
+                "start": { "type": "number" },
+                "end":   { "type": "number" },
+                "words": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["text", "start", "end"],
+                    "properties": {
+                      "text":  { "type": "string" },
+                      "start": { "type": "number" },
+                      "end":   { "type": "number" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "stat":      { "type": "string", "description": "Large stat figure, digits/symbols only, ≤5 chars, e.g. '80' or '10x' — count-up animates numeric parts (stats)" },
+          "statLabel": { "type": "string", "description": "Short label under the stat, ≤44 chars, e.g. 'of AI projects never ship' (stats)" },
+          "prefix":    { "type": "string", "description": "Small text before the stat, e.g. '$' or '~' — optional (stats)" },
+          "suffix":    { "type": "string", "description": "Small text after the stat, e.g. '%' or 'ms' — optional (stats)" },
+
+          "quote":       { "type": "string", "description": "Pull quote text, ≤130 chars (quote)" },
+          "attribution": { "type": "string", "description": "Who said it / source, ≤36 chars, rendered as a mono comment line (quote)" },
+
+          "title": { "type": "string", "description": "Short heading label above the visual, ≤26 chars — meaning per type: list title (bullet-list), conversation topic (chat), diagram name e.g. 'RAG PIPELINE' (pipeline), path name e.g. 'PATH TO AI ENGINEER' (roadmap), stack name (stack-layers), plot name e.g. 'EMBEDDING SPACE' (vector-space), network name (neural-net)" },
+          "items": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "3-5 short point strings revealed sequentially, ≤38 chars each; wrap key words in ** for accent (bullet-list)"
+          },
+
+          "subheadline": { "type": "string", "description": "Secondary line under the headline, one short sentence ≤60 chars (cta)" },
+
+          "term":       { "type": "string", "description": "The concept being defined, 1-3 words ≤18 chars, e.g. 'Embedding' (concept-card)" },
+          "tagline":    { "type": "string", "description": "Short mono subtitle under the term, ≤26 chars, e.g. 'text → numbers' — optional (concept-card)" },
+          "definition": { "type": "string", "description": "One-sentence plain-language definition, ≤110 chars; wrap key words in ** for accent (concept-card)" },
+          "glyph":      { "type": "string", "description": "Single emoji/character badge for the concept, e.g. '🧭' — optional (concept-card)" },
+
+          "filename": { "type": "string", "description": "Filename shown in the editor tab, e.g. 'rag.py' (code-snippet)" },
+          "language": { "type": "string", "description": "Language hint for the syntax highlighter: python, javascript, typescript, bash, json (code-snippet)" },
+          "code": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Code as an array of line strings (4-10 lines, keep each ≤46 chars so it fits both orientations). Revealed line by line. (code-snippet)"
+          },
+          "highlightLines": {
+            "type": "array",
+            "items": { "type": "number" },
+            "description": "1-based line numbers to sweep the accent highlight bar onto after the reveal — the 'look here' moment (code-snippet)"
+          },
+
+          "commands": {
+            "type": "array",
+            "description": "1-3 terminal interactions: each {cmd, output[]} — cmd is typed character by character, output lines cascade in. Keep cmd and every output line ≤34 chars, and total lines (cmds + outputs) ≤9. (terminal)",
+            "items": {
+              "type": "object",
+              "required": ["cmd"],
+              "properties": {
+                "cmd":    { "type": "string" },
+                "output": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          },
+
+          "messages": {
+            "type": "array",
+            "description": "2-4 chat messages: {role: 'user'|'assistant', text}. User bubbles enter right, assistant left with typing indicator then word-by-word reveal. Keep each text ≤72 chars and the whole conversation ≤290 chars. (chat)",
+            "items": {
+              "type": "object",
+              "required": ["role", "text"],
+              "properties": {
+                "role": { "type": "string", "enum": ["user", "assistant"] },
+                "text": { "type": "string" }
+              }
+            }
+          },
+
+          "nodes": {
+            "type": "array",
+            "description": "3-5 pipeline stages in flow order: {label, sublabel?, glyph?} — label 1-2 words ≤12 chars (e.g. 'Vector DB'), sublabel a tiny mono annotation ≤15 chars (e.g. 'top-k docs'), glyph a single emoji. (pipeline)",
+            "items": {
+              "type": "object",
+              "required": ["label"],
+              "properties": {
+                "label":    { "type": "string" },
+                "sublabel": { "type": "string" },
+                "glyph":    { "type": "string" }
+              }
+            }
+          },
+          "highlightNode": { "type": "number", "description": "0-based index of the node to accent-glow as the focus of the scene; -1/omit for none (pipeline)" },
+
+          "leftTitle":  { "type": "string", "description": "Left/top panel title, ≤14 chars, e.g. 'RAG' (comparison)" },
+          "rightTitle": { "type": "string", "description": "Right/bottom panel title, ≤14 chars, e.g. 'Fine-tuning' (comparison)" },
+          "leftItems":  { "type": "array", "items": { "type": "string" }, "description": "2-3 short trait rows for the left/top panel, ≤28 chars each (comparison)" },
+          "rightItems": { "type": "array", "items": { "type": "string" }, "description": "2-3 short trait rows for the right/bottom panel, ≤28 chars each (comparison)" },
+          "leftAccent":  { "type": "string", "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", "description": "Left panel accent color (comparison)" },
+          "rightAccent": { "type": "string", "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$", "description": "Right panel accent color (comparison)" },
+          "verdict":    { "type": "string", "description": "Short concluding line shown after both panels, ≤60 chars, e.g. 'Use both.' — optional (comparison)" },
+
+          "steps": {
+            "type": "array",
+            "description": "Ordered steps — meaning per type: for roadmap, 3-5 milestones {label, sublabel?} (label 1-4 words ≤20 chars, sublabel a tiny detail line ≤21 chars); for reflection-loop, 3-4 cycle stages {label, glyph?} (label ≤9 chars, e.g. Attempt ✍️ / Check 🔎 / Fix 🔧 — the SECOND step is treated as the check point). (roadmap, reflection-loop)",
+            "items": {
+              "type": "object",
+              "required": ["label"],
+              "properties": {
+                "label":    { "type": "string" },
+                "sublabel": { "type": "string" },
+                "glyph":    { "type": "string" }
+              }
+            }
+          },
+
+          "layers": {
+            "type": "array",
+            "description": "3-5 stack layers TOP-first: {label, sublabel?} — label ≤18 chars, sublabel ≤25 chars, e.g. [{label:'UI'},{label:'Orchestration'},{label:'Model'},{label:'Infra'}]. (stack-layers)",
+            "items": {
+              "type": "object",
+              "required": ["label"],
+              "properties": {
+                "label":    { "type": "string" },
+                "sublabel": { "type": "string" }
+              }
+            }
+          },
+          "highlightIndex": { "type": "number", "description": "0-based index of the layer to highlight with glow + annotation callout; -1/omit for none (stack-layers)" },
+          "annotation":     { "type": "string", "description": "Short callout text pointing at the highlighted layer, ≤22 chars, e.g. 'you work HERE' (stack-layers)" },
+
+          "clusterLabels": { "type": "array", "items": { "type": "string" }, "description": "2-3 cluster names for the embedding scatter, e.g. ['docs about cats','docs about code'] — keep each ≤19 chars (vector-space)" },
+          "queryLabel":    { "type": "string", "description": "Label on the query point that drops in, ≤14 chars, e.g. 'your question' (vector-space)" },
+
+          "layerLabels": { "type": "array", "items": { "type": "string" }, "description": "Optional labels for input/hidden/output layers, e.g. ['tokens','layers','next word'] — max 3, each ≤12 chars (neural-net)" },
+          "outputLabel": { "type": "string", "description": "Text shown at the output side once signals arrive, ≤13 chars, e.g. 'prediction' — optional (neural-net)" },
+
+          "goal": { "type": "string", "description": "The big goal being decomposed, one short phrase ≤28 chars shown on the goal card, e.g. 'Plan a product launch' (task-breakdown)" },
+          "subtasks": {
+            "type": "array",
+            "description": "3-5 checklist steps the goal breaks into: {label, sublabel?} — label 2-5 words ≤26 chars, sublabel a tiny mono detail ≤19 chars. Checked off sequentially. (task-breakdown)",
+            "items": { "type": "object", "required": ["label"], "properties": { "label": { "type": "string" }, "sublabel": { "type": "string" } } }
+          },
+
+          "question":   { "type": "string", "description": "The prompt the agent is reasoning about, ≤40 chars, shown in the top pill, e.g. 'Should we refund order #482?' (thought-chain)" },
+          "thoughts":   { "type": "array", "items": { "type": "string" }, "description": "2-4 short internal reasoning steps, first person, e.g. 'My goal is to check the policy first.' Keep each ≤70 chars. (thought-chain)" },
+          "conclusion": { "type": "string", "description": "The final decision/answer card text, ≤80 chars; wrap key words in ** for accent (thought-chain)" },
+
+          "agentLabel": { "type": "string", "description": "Label on the agent node, 1-3 words ≤13 chars, e.g. 'Support Agent' (tool-use, mcp-hub)" },
+          "tools": {
+            "type": "array",
+            "description": "3-5 tools the agent can call: {glyph, label, sublabel?} — glyph a single emoji (🔍 🧮 🗄️), label 1-2 words ≤12 chars, sublabel ≤14 chars. (tool-use)",
+            "items": { "type": "object", "required": ["label"], "properties": { "glyph": { "type": "string" }, "label": { "type": "string" }, "sublabel": { "type": "string" } } }
+          },
+
+          "shortLabel": { "type": "string", "description": "Heading for the short-term store — defaults to 'SHORT-TERM' (memory)" },
+          "longLabel":  { "type": "string", "description": "Heading for the long-term store — defaults to 'LONG-TERM' (memory)" },
+          "shortItems": { "type": "array", "items": { "type": "string" }, "description": "2-3 recent-context snippets, e.g. 'User asked about order #482' — keep each ≤36 chars (memory)" },
+          "longItems":  { "type": "array", "items": { "type": "string" }, "description": "2-3 persistent preferences/rules, e.g. 'Prefers email replies' — keep each ≤36 chars (memory)" },
+
+          "failLabel": { "type": "string", "description": "Short status shown when the first pass fails the check, ≤12 chars, e.g. 'error found' — defaults to 'error found' (reflection-loop)" },
+          "passLabel": { "type": "string", "description": "Short status shown when the retry passes, ≤12 chars, e.g. 'fixed' — defaults to 'fixed' (reflection-loop)" },
+
+          "hubLabel": { "type": "string", "description": "Label on the protocol hub — defaults to 'MCP' (mcp-hub)" },
+          "apps": {
+            "type": "array",
+            "description": "2-5 external apps the hub connects to: {glyph, label} — glyph a single emoji, label 1-2 words ≤10 chars, e.g. {glyph:'💬', label:'Slack'}. (mcp-hub)",
+            "items": { "type": "object", "required": ["label"], "properties": { "glyph": { "type": "string" }, "label": { "type": "string" } } }
+          }
+        }
+      }
+    }
+  }
+}

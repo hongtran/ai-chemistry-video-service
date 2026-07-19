@@ -1,0 +1,209 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --label-size:30px; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --label-size:28px; --cap-size:44px; --cap-bottom:70px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:250px; text-align:center; }
+#main-clip.horizontal .title { top:120px; text-align:left; }
+
+.net { position:absolute; z-index:2; inset:0; }
+.nn-node { position:absolute; width:38px; height:38px; margin:-19px 0 0 -19px; border-radius:50%; background:#161B22; border:3px solid {{accent}}88; }
+.nn-edge { position:absolute; height:3px; margin-top:-1.5px; background:{{fg}}; opacity:.10; transform-origin:left center; border-radius:2px; }
+.nn-label { position:absolute; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:var(--label-size); opacity:.6; white-space:nowrap; transform:translateX(-50%); }
+.out-label { position:absolute; z-index:3; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:34px; background:{{accent}}; color:{{bg}}; padding:12px 26px; border-radius:999px; white-space:nowrap; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <div class="net"></div>
+    <span class="out-src" hidden>{{outputLabel}}</span>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var W = {{width}}, H = {{height}};
+  var DUR = parseFloat('{{duration}}') || 4;
+  var VERT = '{{orientation}}' === 'vertical';
+  var PAD = VERT ? 84 : 130;
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var LAYER_LABELS = {{layerLabels}};
+  var OUT = $('.out-src').textContent.trim(); // via hidden DOM node — apostrophe-safe
+
+  // Fixed 4-4-5-3 network laid out from canvas constants (no DOM reads).
+  // Vertical: signal flows top→bottom; horizontal: left→right.
+  var COUNTS = [4, 5, 5, 3];
+  var net = $('.net');
+  var region = VERT
+    ? { x0:PAD + 60, x1:W - PAD - 60, y0:470, y1:1400 }   // cross-axis = x, flow = y
+    : { x0:PAD + 80, x1:W - PAD - 260, y0:320, y1:800 };  // flow = x, cross-axis = y — y1 keeps labels (y1+60) above the caption band (~928+)
+
+  var layers = COUNTS.map(function(count, li){
+    var flowFrac = li / (COUNTS.length - 1);
+    return Array.apply(null, Array(count)).map(function(_, ni){
+      var crossFrac = count > 1 ? ni / (count - 1) : 0.5;
+      // Center smaller layers on the cross axis
+      var spread = 0.55 + 0.45 * (count - 1) / 4;
+      var cf = 0.5 + (crossFrac - 0.5) * spread;
+      var x = VERT ? region.x0 + cf * (region.x1 - region.x0) : region.x0 + flowFrac * (region.x1 - region.x0);
+      var y = VERT ? region.y0 + flowFrac * (region.y1 - region.y0) : region.y0 + cf * (region.y1 - region.y0);
+      var el = document.createElement('div');
+      el.className = 'nn-node';
+      el.style.cssText = 'left:' + x + 'px; top:' + y + 'px;';
+      net.appendChild(el);
+      return { el:el, x:x, y:y };
+    });
+  });
+
+  // All-pairs connections between consecutive layers
+  var edgeLayers = [];
+  for (var li = 0; li < layers.length - 1; li++) {
+    var group = [];
+    layers[li].forEach(function(a){
+      layers[li + 1].forEach(function(b){
+        var dx = b.x - a.x, dy = b.y - a.y;
+        var len = Math.sqrt(dx*dx + dy*dy);
+        var ang = Math.atan2(dy, dx) * 180 / Math.PI;
+        var e = document.createElement('div');
+        e.className = 'nn-edge';
+        e.style.cssText = 'left:' + a.x + 'px; top:' + a.y + 'px; width:' + len + 'px; transform:rotate(' + ang + 'deg);';
+        net.insertBefore(e, net.firstChild);
+        group.push(e);
+      });
+    });
+    edgeLayers.push(group);
+  }
+
+  // Optional layer labels (first / middle / last)
+  var labelTargets = [0, Math.floor(COUNTS.length / 2), COUNTS.length - 1];
+  (Array.isArray(LAYER_LABELS) ? LAYER_LABELS.slice(0, 3) : []).forEach(function(txt, i){
+    var li = labelTargets[i];
+    var lab = document.createElement('div');
+    lab.className = 'nn-label';
+    lab.textContent = txt;
+    var flowFrac = li / (COUNTS.length - 1);
+    if (VERT) {
+      lab.style.cssText = 'left:' + (W / 2) + 'px; top:' + (region.y0 + flowFrac * (region.y1 - region.y0) - 78) + 'px;';
+    } else {
+      lab.style.cssText = 'left:' + (region.x0 + flowFrac * (region.x1 - region.x0)) + 'px; top:' + (region.y1 + 60) + 'px;';
+    }
+    net.appendChild(lab);
+  });
+
+  var outEl = null;
+  if (OUT) {
+    outEl = document.createElement('div');
+    outEl.className = 'out-label';
+    outEl.textContent = OUT;
+    var lastMid = layers[layers.length - 1][Math.floor(layers[layers.length - 1].length / 2)];
+    if (VERT) outEl.style.cssText = 'left:' + (lastMid.x - 90) + 'px; top:' + (lastMid.y + 60) + 'px;';
+    else outEl.style.cssText = 'left:' + (lastMid.x + 60) + 'px; top:' + (lastMid.y - 30) + 'px;';
+    net.appendChild(outEl);
+  }
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+
+  // Build-up: layers appear in flow order, edges fade under them
+  layers.forEach(function(nodes, li){
+    var at = 0.3 + li * 0.28;
+    nodes.forEach(function(n, ni){
+      tl.fromTo(n.el, { opacity:0, scale:0 }, { opacity:1, scale:1, duration:0.28, ease:'back.out(1.8)' }, at + ni * 0.05);
+    });
+    if (li > 0) tl.fromTo(edgeLayers[li - 1], { opacity:0 }, { opacity:0.10, duration:0.3 }, at);
+  });
+  var labels = Array.prototype.slice.call(net.querySelectorAll('.nn-label'));
+  if (labels.length) tl.fromTo(labels, { opacity:0 }, { opacity:0.6, duration:0.3, stagger:0.1 }, 0.9);
+
+  // Signal waves: edges flash and nodes pulse layer by layer, repeating —
+  // the "thinking" B-roll. Each wave takes 4 × 0.3s.
+  var waveStart = 0.3 + layers.length * 0.28 + 0.2;
+  var waveDur = 0.3 * COUNTS.length;
+  var waves = Math.max(1, Math.floor((DUR - waveStart - 0.4) / (waveDur + 0.2)));
+  for (var w = 0; w < waves; w++) {
+    var base = waveStart + w * (waveDur + 0.2);
+    layers.forEach(function(nodes, li){
+      var at = base + li * 0.3;
+      nodes.forEach(function(n){
+        tl.fromTo(n.el, { scale:1 }, { scale:1.45, duration:0.15, ease:'power2.out' }, at);
+        tl.to(n.el, { scale:1, duration:0.18, ease:'power2.inOut' }, at + 0.15);
+      });
+      if (li < edgeLayers.length) {
+        tl.fromTo(edgeLayers[li], { opacity:0.10 }, { opacity:0.5, duration:0.15 }, at + 0.1);
+        tl.to(edgeLayers[li], { opacity:0.10, duration:0.2 }, at + 0.28);
+      }
+    });
+  }
+  if (outEl) {
+    tl.fromTo(outEl, { opacity:0, scale:0.6 }, { opacity:1, scale:1, duration:0.32, ease:'back.out(1.8)' }, waveStart + waveDur - 0.1);
+  }
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

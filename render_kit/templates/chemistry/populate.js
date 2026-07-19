@@ -45,6 +45,10 @@ function generateAudio(config, scenes) {
       ></audio>`);
   }
 
+  // SFX tracks start at 40, numbered by a counter over sfx-bearing scenes only —
+  // indexing by scene position would collide with the narration track (30) once
+  // the video has 11+ scenes (long-form horizontal easily exceeds that).
+  let sfxCounter = 0;
   scenes.forEach((scene, i) => {
     if (scene.sfx == null) return; // missing or null = no sfx; omit element entirely
     parts.push(`      <audio
@@ -52,7 +56,7 @@ function generateAudio(config, scenes) {
         src="${scene.sfx}"
         data-start="${scene.start}"
         data-duration="${scene.duration}"
-        data-track-index="${20 + i}"
+        data-track-index="${40 + sfxCounter++}"
         data-volume="0.35"
       ></audio>`);
   });
@@ -74,22 +78,47 @@ function generateAudio(config, scenes) {
   return parts.join('\n\n');
 }
 
-// scene.captionTiming ([{text,start,end}], scene-local seconds) is normally
-// written by scripts/align-captions.mjs from real Whisper word timestamps.
+// scene.captionTiming ([{text,start,end,words}], scene-local seconds) is
+// normally written by the alignment step from real Whisper word timestamps.
 // When it's absent (test-*.json fixtures, or a scene authored before running
-// that pipeline), fall back to the old evenly-spaced approximation so every
-// frame template can rely on one payload shape regardless of source.
+// that pipeline), fall back to evenly spacing captions[] across the scene so
+// every frame template can rely on one payload shape regardless of source.
+// Every chunk is guaranteed a words[] array ({text,start,end} per word) for the
+// karaoke highlight — synthesized by evenly dividing the chunk span when the
+// aligner didn't provide real per-word timestamps.
+function synthesizeWords(text, start, end) {
+  // Re-mark multi-word **emphasis** spans word-by-word so each token carries
+  // balanced markers ("**a b**" → "**a** **b**") — same rule as the aligner.
+  const marked = String(text).replace(/\*\*(.+?)\*\*/g, (_m, inner) =>
+    inner.split(/\s+/).map((w) => '**' + w + '**').join(' ')
+  );
+  const tokens = marked.split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return [];
+  const step = Math.max(0, end - start) / tokens.length;
+  return tokens.map((w, i) => ({
+    text: w,
+    start: Number((start + i * step).toFixed(3)),
+    end: Number((start + (i + 1) * step).toFixed(3)),
+  }));
+}
+
 function resolveCaptionTiming(scene) {
-  if (Array.isArray(scene.captionTiming)) return scene.captionTiming;
+  if (Array.isArray(scene.captionTiming)) {
+    return scene.captionTiming.map((c) =>
+      Array.isArray(c.words) && c.words.length > 0
+        ? c
+        : { ...c, words: synthesizeWords(c.text, c.start, c.end) }
+    );
+  }
   const chunks = Array.isArray(scene.captions) ? scene.captions : [];
   if (chunks.length === 0) return [];
   const dur = scene.duration || 4;
   const step = dur / chunks.length;
-  return chunks.map((text, i) => ({
-    text,
-    start: Number(Math.min(dur, 0.3 + i * step).toFixed(3)),
-    end: Number(Math.min(dur, 0.3 + (i + 1) * step).toFixed(3)),
-  }));
+  return chunks.map((text, i) => {
+    const start = Number(Math.min(dur, 0.3 + i * step).toFixed(3));
+    const end = Number(Math.min(dur, 0.3 + (i + 1) * step).toFixed(3));
+    return { text, start, end, words: synthesizeWords(text, start, end) };
+  });
 }
 
 function generateTransitions(scenes, width) {
@@ -131,8 +160,9 @@ if (errors.length) {
 }
 
 const { config, scenes } = data;
-const width  = config.width  ?? 1080;
-const height = config.height ?? 1920;
+const orientation = config.orientation ?? 'vertical';
+const width  = config.width  ?? (orientation === 'horizontal' ? 1920 : 1080);
+const height = config.height ?? (orientation === 'horizontal' ? 1080 : 1920);
 const outDir = join(ROOT, 'videos', config.slug);
 const framesDir = join(outDir, 'compositions', 'frames');
 
@@ -145,7 +175,10 @@ mkdirSync(join(outDir, 'assets', 'sfx'), { recursive: true });
 for (const scene of scenes) {
   const frameTpl = readFileSync(join(__dirname, 'frames', `${scene.type}.html`), 'utf8');
   const tokenData = {
-    width, height,
+    width, height, orientation,
+    // Karaoke spoken-word highlight color — deliberately independent of each
+    // frame's accent so captions read as one system across the video.
+    capHighlight: config.capHighlight ?? '#FFD24A',
     ...FRAME_DEFAULTS[scene.type],
     ...scene,
     captionTiming: resolveCaptionTiming(scene),
@@ -165,11 +198,16 @@ const indexHtml = substituteTokens(
 );
 writeFileSync(join(outDir, 'index.html'), indexHtml);
 
-// Write meta.json
+// Write meta.json — description/hashtags/tags (from the scene-split metadata
+// step) feed a future YouTube-upload step's defaults; omitted entirely when
+// absent so hand-authored videos keep a minimal meta.json.
 writeFileSync(join(outDir, 'meta.json'), JSON.stringify({
   id: config.slug,
   name: config.topic,
   createdAt: new Date().toISOString(),
+  ...(config.description ? { description: config.description } : {}),
+  ...(Array.isArray(config.hashtags) && config.hashtags.length ? { hashtags: config.hashtags } : {}),
+  ...(Array.isArray(config.tags) && config.tags.length ? { tags: config.tags } : {}),
 }, null, 2));
 
 // Copy package.json from repo root
@@ -192,7 +230,7 @@ for (const scene of scenes) {
   if (scene.sfx) stubAudioIfMissing(scene.sfx);
 }
 
-console.log(`\n✓ Generated: videos/${config.slug}/`);
+console.log(`\n✓ Generated: videos/${config.slug}/ (${orientation}, ${width}×${height})`);
 console.log(`\nNext steps:`);
 console.log(`  cd videos/${config.slug} && npm run check`);
 console.log(`  npm run render`);

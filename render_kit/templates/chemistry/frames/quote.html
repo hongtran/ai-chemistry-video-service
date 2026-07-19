@@ -37,13 +37,13 @@
   }
   #scene {
     position: absolute;
-    inset: 0;
+    inset: 250px 90px 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 0 90px;
+    gap: 44px;
   }
   #quote-mark {
     font-family: 'Playfair Display', serif;
@@ -51,9 +51,13 @@
     font-weight: 400;
     color: {{fg}};
     opacity: 0.35;
-    line-height: 0.5;
-    margin-bottom: 24px;
+    line-height: 1;
+    height: 130px;
     user-select: none;
+    flex: 0 0 auto;
+  }
+  #quote-mark::before {
+    content: '"';
   }
   #quote-text {
     font-family: 'Playfair Display', serif;
@@ -62,7 +66,7 @@
     font-style: italic;
     color: {{fg}};
     line-height: 1.4;
-    margin-bottom: 44px;
+    max-width: 860px;
   }
   #quote-text .hl { padding: 0 .1em; border-radius: 6px; background: {{accent}}; color: {{bg}}; font-style: normal; }
   #attribution {
@@ -74,13 +78,17 @@
     letter-spacing: 3px;
     text-transform: uppercase;
   }
+
+#main-clip.horizontal #scene      { inset:120px 260px 120px; gap:36px; }
+#main-clip.horizontal #ring-bg    { width:560px; height:560px; }
+#main-clip.horizontal #quote-text { max-width:1200px; }
 </style>
 
 <div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
-  <section class="clip" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
     <div class="geo-ring" id="ring-bg"></div>
     <div id="scene">
-      <div id="quote-mark">"</div>
+      <div id="quote-mark" aria-hidden="true"></div>
       <div id="quote-text">{{quote}}</div>
       <div id="attribution">{{attribution}}</div>
     </div>

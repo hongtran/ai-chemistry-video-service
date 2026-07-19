@@ -1,0 +1,4457 @@
+{
+  "config": {
+    "topic": "How to “FIX” your AI from hallucination",
+    "slug": "how-to-fix-your-ai-from-hallucination-h",
+    "totalDuration": 256.69,
+    "orientation": "horizontal",
+    "description": "Explore the phenomenon of AI hallucination in large language models. Understand why it happens and discover strategies to mitigate it, ensuring higher accuracy and reliability in AI tasks.",
+    "hashtags": [
+      "ai",
+      "hallucination",
+      "llms",
+      "accuracy",
+      "reliability"
+    ],
+    "tags": [
+      "ai",
+      "ai hallucination",
+      "large language models",
+      "ai accuracy",
+      "ai reliability",
+      "ai strategies"
+    ],
+    "audio": "assets/tts/narration.mp3"
+  },
+  "scenes": [
+    {
+      "id": "s0-intro-hallucination",
+      "type": "cover",
+      "eyebrow": "AI Challenges",
+      "headline": "Understanding AI **Hallucination**",
+      "captions": [
+        "When we talk about artificial intelligence,",
+        "particularly large language models,",
+        "one of the most intriguing",
+        "yet challenging phenomena",
+        "is what we call \"hallucination.\""
+      ],
+      "start": 0,
+      "duration": 9.69,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "When we talk about artificial intelligence,",
+          "start": 0,
+          "end": 2.24,
+          "words": [
+            {
+              "text": "When",
+              "start": 0,
+              "end": 0.24
+            },
+            {
+              "text": "we",
+              "start": 0.24,
+              "end": 0.44
+            },
+            {
+              "text": "talk",
+              "start": 0.44,
+              "end": 0.7
+            },
+            {
+              "text": "about",
+              "start": 0.7,
+              "end": 1.08
+            },
+            {
+              "text": "artificial",
+              "start": 1.08,
+              "end": 1.56
+            },
+            {
+              "text": "intelligence,",
+              "start": 1.56,
+              "end": 2.24
+            }
+          ]
+        },
+        {
+          "text": "particularly large language models,",
+          "start": 2.86,
+          "end": 4.42,
+          "words": [
+            {
+              "text": "particularly",
+              "start": 2.86,
+              "end": 3.18
+            },
+            {
+              "text": "large",
+              "start": 3.18,
+              "end": 3.68
+            },
+            {
+              "text": "language",
+              "start": 3.68,
+              "end": 4.04
+            },
+            {
+              "text": "models,",
+              "start": 4.04,
+              "end": 4.42
+            }
+          ]
+        },
+        {
+          "text": "one of the most intriguing",
+          "start": 5.14,
+          "end": 6.14,
+          "words": [
+            {
+              "text": "one",
+              "start": 5.14,
+              "end": 5.2
+            },
+            {
+              "text": "of",
+              "start": 5.2,
+              "end": 5.42
+            },
+            {
+              "text": "the",
+              "start": 5.42,
+              "end": 5.42
+            },
+            {
+              "text": "most",
+              "start": 5.42,
+              "end": 5.82
+            },
+            {
+              "text": "intriguing",
+              "start": 5.82,
+              "end": 6.14
+            }
+          ]
+        },
+        {
+          "text": "yet challenging phenomena",
+          "start": 6.14,
+          "end": 7.48,
+          "words": [
+            {
+              "text": "yet",
+              "start": 6.14,
+              "end": 6.98
+            },
+            {
+              "text": "challenging",
+              "start": 6.98,
+              "end": 6.98
+            },
+            {
+              "text": "phenomena",
+              "start": 6.98,
+              "end": 7.48
+            }
+          ]
+        },
+        {
+          "text": "is what we call \"hallucination.\"",
+          "start": 7.48,
+          "end": 9.38,
+          "words": [
+            {
+              "text": "is",
+              "start": 7.48,
+              "end": 7.94
+            },
+            {
+              "text": "what",
+              "start": 7.94,
+              "end": 8.08
+            },
+            {
+              "text": "we",
+              "start": 8.08,
+              "end": 8.26
+            },
+            {
+              "text": "call",
+              "start": 8.26,
+              "end": 8.56
+            },
+            {
+              "text": "\"hallucination.\"",
+              "start": 8.56,
+              "end": 9.38
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-hallucination-explained",
+      "type": "concept-card",
+      "eyebrow": "",
+      "headline": "",
+      "term": "Hallucination",
+      "tagline": "AI's false outputs",
+      "definition": "AI generating outputs that are factually incorrect or nonsensical.",
+      "glyph": "🤖",
+      "captions": [
+        "Now, when I say hallucination,",
+        "I'm not talking about your AI seeing pink elephants;",
+        "rather, it's about the AI generating outputs",
+        "that are factually incorrect or nonsensical."
+      ],
+      "start": 9.69,
+      "duration": 11.12,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Now, when I say hallucination,",
+          "start": 0.15,
+          "end": 2.01,
+          "words": [
+            {
+              "text": "Now,",
+              "start": 0.15,
+              "end": 0.79
+            },
+            {
+              "text": "when",
+              "start": 0.79,
+              "end": 0.95
+            },
+            {
+              "text": "I",
+              "start": 0.95,
+              "end": 1.15
+            },
+            {
+              "text": "say",
+              "start": 1.15,
+              "end": 1.35
+            },
+            {
+              "text": "hallucination,",
+              "start": 1.35,
+              "end": 2.01
+            }
+          ]
+        },
+        {
+          "text": "I'm not talking about your AI seeing pink elephants;",
+          "start": 2.25,
+          "end": 4.95,
+          "words": [
+            {
+              "text": "I'm",
+              "start": 2.25,
+              "end": 2.67
+            },
+            {
+              "text": "not",
+              "start": 2.67,
+              "end": 2.87
+            },
+            {
+              "text": "talking",
+              "start": 2.87,
+              "end": 3.13
+            },
+            {
+              "text": "about",
+              "start": 3.13,
+              "end": 3.37
+            },
+            {
+              "text": "your",
+              "start": 3.37,
+              "end": 3.53
+            },
+            {
+              "text": "AI",
+              "start": 3.53,
+              "end": 3.83
+            },
+            {
+              "text": "seeing",
+              "start": 3.83,
+              "end": 4.23
+            },
+            {
+              "text": "pink",
+              "start": 4.23,
+              "end": 4.53
+            },
+            {
+              "text": "elephants;",
+              "start": 4.53,
+              "end": 4.95
+            }
+          ]
+        },
+        {
+          "text": "rather, it's about the AI generating outputs",
+          "start": 5.71,
+          "end": 7.79,
+          "words": [
+            {
+              "text": "rather,",
+              "start": 5.71,
+              "end": 5.71
+            },
+            {
+              "text": "it's",
+              "start": 5.87,
+              "end": 6.05
+            },
+            {
+              "text": "about",
+              "start": 6.05,
+              "end": 6.29
+            },
+            {
+              "text": "the",
+              "start": 6.29,
+              "end": 6.45
+            },
+            {
+              "text": "AI",
+              "start": 6.45,
+              "end": 6.85
+            },
+            {
+              "text": "generating",
+              "start": 6.85,
+              "end": 7.29
+            },
+            {
+              "text": "outputs",
+              "start": 7.29,
+              "end": 7.79
+            }
+          ]
+        },
+        {
+          "text": "that are factually incorrect or nonsensical.",
+          "start": 7.79,
+          "end": 11.12,
+          "words": [
+            {
+              "text": "that",
+              "start": 7.79,
+              "end": 8.31
+            },
+            {
+              "text": "are",
+              "start": 8.31,
+              "end": 8.59
+            },
+            {
+              "text": "factually",
+              "start": 8.59,
+              "end": 8.95
+            },
+            {
+              "text": "incorrect",
+              "start": 8.95,
+              "end": 9.59
+            },
+            {
+              "text": "or",
+              "start": 9.59,
+              "end": 10.17
+            },
+            {
+              "text": "nonsensical.",
+              "start": 10.17,
+              "end": 11.12
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-impact-of-hallucination",
+      "type": "bullet-list",
+      "eyebrow": "",
+      "headline": "",
+      "title": "The Impact",
+      "items": [
+        "Customer support issues",
+        "Content generation errors",
+        "Programming assistance mistakes"
+      ],
+      "captions": [
+        "This can be a major hurdle,",
+        "especially when you're relying on these models",
+        "for tasks that require high accuracy and reliability,",
+        "like customer support, content generation,",
+        "or even programming assistance."
+      ],
+      "start": 20.81,
+      "duration": 11.66,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This can be a major hurdle,",
+          "start": 0.15,
+          "end": 1.71,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.63
+            },
+            {
+              "text": "can",
+              "start": 0.63,
+              "end": 0.79
+            },
+            {
+              "text": "be",
+              "start": 0.79,
+              "end": 0.91
+            },
+            {
+              "text": "a",
+              "start": 0.91,
+              "end": 1.21
+            },
+            {
+              "text": "major",
+              "start": 1.21,
+              "end": 1.39
+            },
+            {
+              "text": "hurdle,",
+              "start": 1.39,
+              "end": 1.71
+            }
+          ]
+        },
+        {
+          "text": "especially when you're relying on these models",
+          "start": 2.41,
+          "end": 4.07,
+          "words": [
+            {
+              "text": "especially",
+              "start": 2.41,
+              "end": 2.69
+            },
+            {
+              "text": "when",
+              "start": 2.69,
+              "end": 2.93
+            },
+            {
+              "text": "you're",
+              "start": 2.93,
+              "end": 3.39
+            },
+            {
+              "text": "relying",
+              "start": 3.39,
+              "end": 3.39
+            },
+            {
+              "text": "on",
+              "start": 3.39,
+              "end": 3.57
+            },
+            {
+              "text": "these",
+              "start": 3.57,
+              "end": 3.83
+            },
+            {
+              "text": "models",
+              "start": 3.83,
+              "end": 4.07
+            }
+          ]
+        },
+        {
+          "text": "for tasks that require high accuracy and reliability,",
+          "start": 4.07,
+          "end": 6.81,
+          "words": [
+            {
+              "text": "for",
+              "start": 4.07,
+              "end": 4.39
+            },
+            {
+              "text": "tasks",
+              "start": 4.39,
+              "end": 4.71
+            },
+            {
+              "text": "that",
+              "start": 4.71,
+              "end": 5.03
+            },
+            {
+              "text": "require",
+              "start": 5.03,
+              "end": 5.25
+            },
+            {
+              "text": "high",
+              "start": 5.25,
+              "end": 5.63
+            },
+            {
+              "text": "accuracy",
+              "start": 5.63,
+              "end": 6.09
+            },
+            {
+              "text": "and",
+              "start": 6.09,
+              "end": 6.35
+            },
+            {
+              "text": "reliability,",
+              "start": 6.35,
+              "end": 6.81
+            }
+          ]
+        },
+        {
+          "text": "like customer support, content generation,",
+          "start": 7.41,
+          "end": 9.59,
+          "words": [
+            {
+              "text": "like",
+              "start": 7.41,
+              "end": 7.53
+            },
+            {
+              "text": "customer",
+              "start": 7.53,
+              "end": 7.85
+            },
+            {
+              "text": "support,",
+              "start": 7.85,
+              "end": 8.29
+            },
+            {
+              "text": "content",
+              "start": 8.87,
+              "end": 9.05
+            },
+            {
+              "text": "generation,",
+              "start": 9.05,
+              "end": 9.59
+            }
+          ]
+        },
+        {
+          "text": "or even programming assistance.",
+          "start": 9.79,
+          "end": 11.51,
+          "words": [
+            {
+              "text": "or",
+              "start": 9.79,
+              "end": 10.19
+            },
+            {
+              "text": "even",
+              "start": 10.19,
+              "end": 10.85
+            },
+            {
+              "text": "programming",
+              "start": 10.85,
+              "end": 10.85
+            },
+            {
+              "text": "assistance.",
+              "start": 10.85,
+              "end": 11.51
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-why-hallucinations-happen",
+      "type": "stack-layers",
+      "eyebrow": "",
+      "headline": "",
+      "title": "How AI Models Work",
+      "layers": [
+        {
+          "label": "Training Data",
+          "sublabel": "vast datasets"
+        },
+        {
+          "label": "Patterns",
+          "sublabel": "structures & associations"
+        },
+        {
+          "label": "Probabilities",
+          "sublabel": "predictive output"
+        }
+      ],
+      "highlightIndex": 2,
+      "annotation": "AI predicts, not understands",
+      "captions": [
+        "To understand why hallucinations happen,",
+        "it's helpful to take a step back",
+        "and consider how these AI models work.",
+        "They're trained on vast datasets,",
+        "absorbing patterns, structures,",
+        "and associations in the data.",
+        "However, they're not truly understanding",
+        "the content in the way a human would.",
+        "Instead, they're predicting what comes next",
+        "based on probabilities."
+      ],
+      "start": 32.47,
+      "duration": 20.06,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "To understand why hallucinations happen,",
+          "start": 0.15,
+          "end": 2.37,
+          "words": [
+            {
+              "text": "To",
+              "start": 0.15,
+              "end": 0.63
+            },
+            {
+              "text": "understand",
+              "start": 0.63,
+              "end": 1.03
+            },
+            {
+              "text": "why",
+              "start": 1.03,
+              "end": 1.39
+            },
+            {
+              "text": "hallucinations",
+              "start": 1.39,
+              "end": 1.95
+            },
+            {
+              "text": "happen,",
+              "start": 1.95,
+              "end": 2.37
+            }
+          ]
+        },
+        {
+          "text": "it's helpful to take a step back",
+          "start": 2.75,
+          "end": 4.07,
+          "words": [
+            {
+              "text": "it's",
+              "start": 2.75,
+              "end": 2.89
+            },
+            {
+              "text": "helpful",
+              "start": 2.89,
+              "end": 3.11
+            },
+            {
+              "text": "to",
+              "start": 3.11,
+              "end": 3.31
+            },
+            {
+              "text": "take",
+              "start": 3.31,
+              "end": 3.45
+            },
+            {
+              "text": "a",
+              "start": 3.45,
+              "end": 3.77
+            },
+            {
+              "text": "step",
+              "start": 3.77,
+              "end": 3.77
+            },
+            {
+              "text": "back",
+              "start": 3.77,
+              "end": 4.07
+            }
+          ]
+        },
+        {
+          "text": "and consider how these AI models work.",
+          "start": 4.07,
+          "end": 6.09,
+          "words": [
+            {
+              "text": "and",
+              "start": 4.07,
+              "end": 4.33
+            },
+            {
+              "text": "consider",
+              "start": 4.33,
+              "end": 4.55
+            },
+            {
+              "text": "how",
+              "start": 4.55,
+              "end": 4.83
+            },
+            {
+              "text": "these",
+              "start": 4.83,
+              "end": 5.15
+            },
+            {
+              "text": "AI",
+              "start": 5.15,
+              "end": 5.47
+            },
+            {
+              "text": "models",
+              "start": 5.47,
+              "end": 5.75
+            },
+            {
+              "text": "work.",
+              "start": 5.75,
+              "end": 6.09
+            }
+          ]
+        },
+        {
+          "text": "They're trained on vast datasets,",
+          "start": 6.61,
+          "end": 8.61,
+          "words": [
+            {
+              "text": "They're",
+              "start": 6.61,
+              "end": 6.99
+            },
+            {
+              "text": "trained",
+              "start": 6.99,
+              "end": 6.99
+            },
+            {
+              "text": "on",
+              "start": 6.99,
+              "end": 7.23
+            },
+            {
+              "text": "vast",
+              "start": 7.23,
+              "end": 7.53
+            },
+            {
+              "text": "datasets,",
+              "start": 7.53,
+              "end": 8.61
+            }
+          ]
+        },
+        {
+          "text": "absorbing patterns, structures,",
+          "start": 8.61,
+          "end": 10.27,
+          "words": [
+            {
+              "text": "absorbing",
+              "start": 8.61,
+              "end": 8.91
+            },
+            {
+              "text": "patterns,",
+              "start": 8.91,
+              "end": 9.49
+            },
+            {
+              "text": "structures,",
+              "start": 10.27,
+              "end": 10.27
+            }
+          ]
+        },
+        {
+          "text": "and associations in the data.",
+          "start": 10.39,
+          "end": 11.99,
+          "words": [
+            {
+              "text": "and",
+              "start": 10.39,
+              "end": 10.85
+            },
+            {
+              "text": "associations",
+              "start": 10.85,
+              "end": 11.31
+            },
+            {
+              "text": "in",
+              "start": 11.31,
+              "end": 11.63
+            },
+            {
+              "text": "the",
+              "start": 11.63,
+              "end": 11.99
+            },
+            {
+              "text": "data.",
+              "start": 11.99,
+              "end": 11.99
+            }
+          ]
+        },
+        {
+          "text": "However, they're not truly understanding",
+          "start": 12.69,
+          "end": 14.39,
+          "words": [
+            {
+              "text": "However,",
+              "start": 12.69,
+              "end": 13.01
+            },
+            {
+              "text": "they're",
+              "start": 13.03,
+              "end": 13.47
+            },
+            {
+              "text": "not",
+              "start": 13.47,
+              "end": 13.69
+            },
+            {
+              "text": "truly",
+              "start": 13.69,
+              "end": 14.03
+            },
+            {
+              "text": "understanding",
+              "start": 14.03,
+              "end": 14.39
+            }
+          ]
+        },
+        {
+          "text": "the content in the way a human would.",
+          "start": 14.39,
+          "end": 16.09,
+          "words": [
+            {
+              "text": "the",
+              "start": 14.39,
+              "end": 14.83
+            },
+            {
+              "text": "content",
+              "start": 14.83,
+              "end": 14.95
+            },
+            {
+              "text": "in",
+              "start": 14.95,
+              "end": 15.25
+            },
+            {
+              "text": "the",
+              "start": 15.25,
+              "end": 15.31
+            },
+            {
+              "text": "way",
+              "start": 15.31,
+              "end": 15.43
+            },
+            {
+              "text": "a",
+              "start": 15.43,
+              "end": 15.83
+            },
+            {
+              "text": "human",
+              "start": 15.83,
+              "end": 15.83
+            },
+            {
+              "text": "would.",
+              "start": 15.83,
+              "end": 16.09
+            }
+          ]
+        },
+        {
+          "text": "Instead, they're predicting what comes next",
+          "start": 16.73,
+          "end": 18.49,
+          "words": [
+            {
+              "text": "Instead,",
+              "start": 16.73,
+              "end": 16.89
+            },
+            {
+              "text": "they're",
+              "start": 16.89,
+              "end": 17.53
+            },
+            {
+              "text": "predicting",
+              "start": 17.53,
+              "end": 17.53
+            },
+            {
+              "text": "what",
+              "start": 17.53,
+              "end": 17.85
+            },
+            {
+              "text": "comes",
+              "start": 17.85,
+              "end": 18.07
+            },
+            {
+              "text": "next",
+              "start": 18.07,
+              "end": 18.49
+            }
+          ]
+        },
+        {
+          "text": "based on probabilities.",
+          "start": 18.49,
+          "end": 19.53,
+          "words": [
+            {
+              "text": "based",
+              "start": 18.49,
+              "end": 18.83
+            },
+            {
+              "text": "on",
+              "start": 18.83,
+              "end": 19.13
+            },
+            {
+              "text": "probabilities.",
+              "start": 19.13,
+              "end": 19.53
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-addressing-hallucination",
+      "type": "bullet-list",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Addressing the Issue",
+      "items": [
+        "Recognize limitations",
+        "Not a bug, but a characteristic",
+        "Mitigation strategies exist"
+      ],
+      "captions": [
+        "This means that sometimes,",
+        "they can string together words or facts",
+        "that seem plausible but are, in fact,",
+        "incorrect or fabricated.",
+        "So, how can we address this issue?",
+        "The first step is recognizing",
+        "that hallucination is a known limitation",
+        "of the current AI models.",
+        "It's not a bug per se,",
+        "but a characteristic of how they process information.",
+        "However, there are strategies to mitigate this."
+      ],
+      "start": 52.53,
+      "duration": 23.28,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This means that sometimes,",
+          "start": 0.15,
+          "end": 1.49,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.45
+            },
+            {
+              "text": "means",
+              "start": 0.45,
+              "end": 0.71
+            },
+            {
+              "text": "that",
+              "start": 0.71,
+              "end": 0.99
+            },
+            {
+              "text": "sometimes,",
+              "start": 0.99,
+              "end": 1.49
+            }
+          ]
+        },
+        {
+          "text": "they can string together words or facts",
+          "start": 1.49,
+          "end": 3.55,
+          "words": [
+            {
+              "text": "they",
+              "start": 1.49,
+              "end": 1.89
+            },
+            {
+              "text": "can",
+              "start": 1.89,
+              "end": 2.31
+            },
+            {
+              "text": "string",
+              "start": 2.31,
+              "end": 2.37
+            },
+            {
+              "text": "together",
+              "start": 2.37,
+              "end": 2.87
+            },
+            {
+              "text": "words",
+              "start": 2.87,
+              "end": 3.07
+            },
+            {
+              "text": "or",
+              "start": 3.07,
+              "end": 3.35
+            },
+            {
+              "text": "facts",
+              "start": 3.35,
+              "end": 3.55
+            }
+          ]
+        },
+        {
+          "text": "that seem plausible but are, in fact,",
+          "start": 3.55,
+          "end": 5.97,
+          "words": [
+            {
+              "text": "that",
+              "start": 3.55,
+              "end": 3.81
+            },
+            {
+              "text": "seem",
+              "start": 3.81,
+              "end": 4.05
+            },
+            {
+              "text": "plausible",
+              "start": 4.05,
+              "end": 4.45
+            },
+            {
+              "text": "but",
+              "start": 4.97,
+              "end": 5.05
+            },
+            {
+              "text": "are,",
+              "start": 5.05,
+              "end": 5.21
+            },
+            {
+              "text": "in",
+              "start": 5.21,
+              "end": 5.97
+            },
+            {
+              "text": "fact,",
+              "start": 5.97,
+              "end": 5.97
+            }
+          ]
+        },
+        {
+          "text": "incorrect or fabricated.",
+          "start": 5.97,
+          "end": 7.51,
+          "words": [
+            {
+              "text": "incorrect",
+              "start": 5.97,
+              "end": 6.53
+            },
+            {
+              "text": "or",
+              "start": 6.53,
+              "end": 6.91
+            },
+            {
+              "text": "fabricated.",
+              "start": 6.91,
+              "end": 7.51
+            }
+          ]
+        },
+        {
+          "text": "So, how can we address this issue?",
+          "start": 8.01,
+          "end": 9.97,
+          "words": [
+            {
+              "text": "So,",
+              "start": 8.01,
+              "end": 8.61
+            },
+            {
+              "text": "how",
+              "start": 8.61,
+              "end": 8.85
+            },
+            {
+              "text": "can",
+              "start": 8.85,
+              "end": 9.03
+            },
+            {
+              "text": "we",
+              "start": 9.03,
+              "end": 9.23
+            },
+            {
+              "text": "address",
+              "start": 9.23,
+              "end": 9.43
+            },
+            {
+              "text": "this",
+              "start": 9.43,
+              "end": 9.69
+            },
+            {
+              "text": "issue?",
+              "start": 9.69,
+              "end": 9.97
+            }
+          ]
+        },
+        {
+          "text": "The first step is recognizing",
+          "start": 10.61,
+          "end": 11.91,
+          "words": [
+            {
+              "text": "The",
+              "start": 10.61,
+              "end": 10.75
+            },
+            {
+              "text": "first",
+              "start": 10.75,
+              "end": 11.03
+            },
+            {
+              "text": "step",
+              "start": 11.03,
+              "end": 11.23
+            },
+            {
+              "text": "is",
+              "start": 11.23,
+              "end": 11.41
+            },
+            {
+              "text": "recognizing",
+              "start": 11.41,
+              "end": 11.91
+            }
+          ]
+        },
+        {
+          "text": "that hallucination is a known limitation",
+          "start": 11.91,
+          "end": 13.95,
+          "words": [
+            {
+              "text": "that",
+              "start": 11.91,
+              "end": 12.27
+            },
+            {
+              "text": "hallucination",
+              "start": 12.27,
+              "end": 12.81
+            },
+            {
+              "text": "is",
+              "start": 12.81,
+              "end": 13.09
+            },
+            {
+              "text": "a",
+              "start": 13.09,
+              "end": 13.33
+            },
+            {
+              "text": "known",
+              "start": 13.33,
+              "end": 13.51
+            },
+            {
+              "text": "limitation",
+              "start": 13.51,
+              "end": 13.95
+            }
+          ]
+        },
+        {
+          "text": "of the current AI models.",
+          "start": 13.95,
+          "end": 15.29,
+          "words": [
+            {
+              "text": "of",
+              "start": 13.95,
+              "end": 14.17
+            },
+            {
+              "text": "the",
+              "start": 14.17,
+              "end": 14.33
+            },
+            {
+              "text": "current",
+              "start": 14.33,
+              "end": 14.61
+            },
+            {
+              "text": "AI",
+              "start": 14.61,
+              "end": 14.91
+            },
+            {
+              "text": "models.",
+              "start": 14.91,
+              "end": 15.29
+            }
+          ]
+        },
+        {
+          "text": "It's not a bug per se,",
+          "start": 16.05,
+          "end": 17.35,
+          "words": [
+            {
+              "text": "It's",
+              "start": 16.05,
+              "end": 16.15
+            },
+            {
+              "text": "not",
+              "start": 16.15,
+              "end": 16.33
+            },
+            {
+              "text": "a",
+              "start": 16.33,
+              "end": 16.75
+            },
+            {
+              "text": "bug",
+              "start": 16.75,
+              "end": 16.75
+            },
+            {
+              "text": "per",
+              "start": 16.95,
+              "end": 17.35
+            },
+            {
+              "text": "se,",
+              "start": 17.35,
+              "end": 17.35
+            }
+          ]
+        },
+        {
+          "text": "but a characteristic of how they process information.",
+          "start": 17.65,
+          "end": 20.17,
+          "words": [
+            {
+              "text": "but",
+              "start": 17.65,
+              "end": 17.97
+            },
+            {
+              "text": "a",
+              "start": 17.97,
+              "end": 18.17
+            },
+            {
+              "text": "characteristic",
+              "start": 18.17,
+              "end": 18.65
+            },
+            {
+              "text": "of",
+              "start": 18.65,
+              "end": 18.93
+            },
+            {
+              "text": "how",
+              "start": 18.93,
+              "end": 19.03
+            },
+            {
+              "text": "they",
+              "start": 19.03,
+              "end": 19.21
+            },
+            {
+              "text": "process",
+              "start": 19.21,
+              "end": 19.63
+            },
+            {
+              "text": "information.",
+              "start": 19.63,
+              "end": 20.17
+            }
+          ]
+        },
+        {
+          "text": "However, there are strategies to mitigate this.",
+          "start": 20.91,
+          "end": 23.01,
+          "words": [
+            {
+              "text": "However,",
+              "start": 20.91,
+              "end": 21.29
+            },
+            {
+              "text": "there",
+              "start": 21.35,
+              "end": 21.47
+            },
+            {
+              "text": "are",
+              "start": 21.47,
+              "end": 21.79
+            },
+            {
+              "text": "strategies",
+              "start": 21.79,
+              "end": 22.03
+            },
+            {
+              "text": "to",
+              "start": 22.03,
+              "end": 22.63
+            },
+            {
+              "text": "mitigate",
+              "start": 22.63,
+              "end": 22.63
+            },
+            {
+              "text": "this.",
+              "start": 22.63,
+              "end": 23.01
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-grounding",
+      "type": "concept-card",
+      "eyebrow": "How to 'FIX' AI",
+      "headline": "Grounding",
+      "captions": [
+        "One effective approach is **grounding**.",
+        "Grounding involves anchoring the AI's",
+        "responses in verified, reliable data sources.",
+        "For instance, if your AI is meant to provide",
+        "factual information, you can integrate it with",
+        "a database or a knowledge graph that contains",
+        "validated facts."
+      ],
+      "term": "Grounding",
+      "tagline": "anchor in data",
+      "definition": "Anchoring AI responses in verified data to reduce hallucination.",
+      "glyph": "📚",
+      "start": 75.81,
+      "duration": 15.92,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "One effective approach is **grounding**.",
+          "start": 0.15,
+          "end": 1.91,
+          "words": [
+            {
+              "text": "One",
+              "start": 0.15,
+              "end": 0.43
+            },
+            {
+              "text": "effective",
+              "start": 0.43,
+              "end": 0.81
+            },
+            {
+              "text": "approach",
+              "start": 0.81,
+              "end": 1.21
+            },
+            {
+              "text": "is",
+              "start": 1.21,
+              "end": 1.53
+            },
+            {
+              "text": "**grounding**.",
+              "start": 1.53,
+              "end": 1.91
+            }
+          ]
+        },
+        {
+          "text": "Grounding involves anchoring the AI's",
+          "start": 2.41,
+          "end": 4.37,
+          "words": [
+            {
+              "text": "Grounding",
+              "start": 2.41,
+              "end": 2.77
+            },
+            {
+              "text": "involves",
+              "start": 2.77,
+              "end": 3.29
+            },
+            {
+              "text": "anchoring",
+              "start": 3.29,
+              "end": 3.61
+            },
+            {
+              "text": "the",
+              "start": 3.61,
+              "end": 3.97
+            },
+            {
+              "text": "AI's",
+              "start": 3.97,
+              "end": 4.37
+            }
+          ]
+        },
+        {
+          "text": "responses in verified, reliable data sources.",
+          "start": 4.37,
+          "end": 6.81,
+          "words": [
+            {
+              "text": "responses",
+              "start": 4.37,
+              "end": 4.69
+            },
+            {
+              "text": "in",
+              "start": 4.69,
+              "end": 5.09
+            },
+            {
+              "text": "verified,",
+              "start": 5.09,
+              "end": 5.59
+            },
+            {
+              "text": "reliable",
+              "start": 6.05,
+              "end": 6.05
+            },
+            {
+              "text": "data",
+              "start": 6.05,
+              "end": 6.45
+            },
+            {
+              "text": "sources.",
+              "start": 6.45,
+              "end": 6.81
+            }
+          ]
+        },
+        {
+          "text": "For instance, if your AI is meant to provide",
+          "start": 7.39,
+          "end": 9.61,
+          "words": [
+            {
+              "text": "For",
+              "start": 7.39,
+              "end": 7.49
+            },
+            {
+              "text": "instance,",
+              "start": 7.49,
+              "end": 7.83
+            },
+            {
+              "text": "if",
+              "start": 8.23,
+              "end": 8.33
+            },
+            {
+              "text": "your",
+              "start": 8.33,
+              "end": 8.51
+            },
+            {
+              "text": "AI",
+              "start": 8.51,
+              "end": 8.77
+            },
+            {
+              "text": "is",
+              "start": 8.77,
+              "end": 9.09
+            },
+            {
+              "text": "meant",
+              "start": 9.09,
+              "end": 9.09
+            },
+            {
+              "text": "to",
+              "start": 9.09,
+              "end": 9.61
+            },
+            {
+              "text": "provide",
+              "start": 9.61,
+              "end": 9.61
+            }
+          ]
+        },
+        {
+          "text": "factual information, you can integrate it with",
+          "start": 9.61,
+          "end": 11.97,
+          "words": [
+            {
+              "text": "factual",
+              "start": 9.61,
+              "end": 10.05
+            },
+            {
+              "text": "information,",
+              "start": 10.05,
+              "end": 10.59
+            },
+            {
+              "text": "you",
+              "start": 11.19,
+              "end": 11.23
+            },
+            {
+              "text": "can",
+              "start": 11.23,
+              "end": 11.53
+            },
+            {
+              "text": "integrate",
+              "start": 11.53,
+              "end": 11.73
+            },
+            {
+              "text": "it",
+              "start": 11.73,
+              "end": 11.87
+            },
+            {
+              "text": "with",
+              "start": 11.87,
+              "end": 11.97
+            }
+          ]
+        },
+        {
+          "text": "a database or a knowledge graph that contains",
+          "start": 11.97,
+          "end": 14.37,
+          "words": [
+            {
+              "text": "a",
+              "start": 11.97,
+              "end": 12.19
+            },
+            {
+              "text": "database",
+              "start": 12.19,
+              "end": 12.57
+            },
+            {
+              "text": "or",
+              "start": 12.57,
+              "end": 13.03
+            },
+            {
+              "text": "a",
+              "start": 13.03,
+              "end": 13.49
+            },
+            {
+              "text": "knowledge",
+              "start": 13.49,
+              "end": 13.49
+            },
+            {
+              "text": "graph",
+              "start": 13.49,
+              "end": 13.75
+            },
+            {
+              "text": "that",
+              "start": 13.75,
+              "end": 14.09
+            },
+            {
+              "text": "contains",
+              "start": 14.09,
+              "end": 14.37
+            }
+          ]
+        },
+        {
+          "text": "validated facts.",
+          "start": 14.37,
+          "end": 15.39,
+          "words": [
+            {
+              "text": "validated",
+              "start": 14.37,
+              "end": 14.95
+            },
+            {
+              "text": "facts.",
+              "start": 14.95,
+              "end": 15.39
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-rag-method",
+      "type": "pipeline",
+      "eyebrow": "How to 'FIX' AI",
+      "headline": "RAG Method",
+      "captions": [
+        "This way, the model has a reference point",
+        "to check its responses against, reducing",
+        "the likelihood of hallucination.",
+        "Another technique is using retrieval-augmented",
+        "generation, or **RAG**.",
+        "This involves combining the generative",
+        "capabilities of the AI with a retrieval system",
+        "that can pull in relevant documents or data",
+        "points during the response generation process.",
+        "Essentially, the AI generates text, but it also",
+        "retrieves and incorporates real-time information",
+        "from a trusted source."
+      ],
+      "title": "RAG Process",
+      "nodes": [
+        {
+          "label": "Query",
+          "glyph": "❓"
+        },
+        {
+          "label": "Retrieve",
+          "sublabel": "relevant data",
+          "glyph": "🔍"
+        },
+        {
+          "label": "Generate",
+          "sublabel": "with context",
+          "glyph": "🧠"
+        }
+      ],
+      "highlightNode": 1,
+      "start": 91.73,
+      "duration": 27.62,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This way, the model has a reference point",
+          "start": 0.15,
+          "end": 2.07,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.37
+            },
+            {
+              "text": "way,",
+              "start": 0.37,
+              "end": 0.67
+            },
+            {
+              "text": "the",
+              "start": 0.87,
+              "end": 1.11
+            },
+            {
+              "text": "model",
+              "start": 1.11,
+              "end": 1.15
+            },
+            {
+              "text": "has",
+              "start": 1.15,
+              "end": 1.35
+            },
+            {
+              "text": "a",
+              "start": 1.35,
+              "end": 1.57
+            },
+            {
+              "text": "reference",
+              "start": 1.57,
+              "end": 1.81
+            },
+            {
+              "text": "point",
+              "start": 1.81,
+              "end": 2.07
+            }
+          ]
+        },
+        {
+          "text": "to check its responses against, reducing",
+          "start": 2.07,
+          "end": 4.31,
+          "words": [
+            {
+              "text": "to",
+              "start": 2.07,
+              "end": 2.27
+            },
+            {
+              "text": "check",
+              "start": 2.27,
+              "end": 2.43
+            },
+            {
+              "text": "its",
+              "start": 2.43,
+              "end": 2.69
+            },
+            {
+              "text": "responses",
+              "start": 2.69,
+              "end": 3.05
+            },
+            {
+              "text": "against,",
+              "start": 3.05,
+              "end": 3.51
+            },
+            {
+              "text": "reducing",
+              "start": 4.31,
+              "end": 4.31
+            }
+          ]
+        },
+        {
+          "text": "the likelihood of hallucination.",
+          "start": 4.31,
+          "end": 5.79,
+          "words": [
+            {
+              "text": "the",
+              "start": 4.31,
+              "end": 4.61
+            },
+            {
+              "text": "likelihood",
+              "start": 4.61,
+              "end": 4.89
+            },
+            {
+              "text": "of",
+              "start": 4.89,
+              "end": 5.25
+            },
+            {
+              "text": "hallucination.",
+              "start": 5.25,
+              "end": 5.79
+            }
+          ]
+        },
+        {
+          "text": "Another technique is using retrieval-augmented",
+          "start": 6.35,
+          "end": 8.71,
+          "words": [
+            {
+              "text": "Another",
+              "start": 6.35,
+              "end": 6.89
+            },
+            {
+              "text": "technique",
+              "start": 6.89,
+              "end": 7.27
+            },
+            {
+              "text": "is",
+              "start": 7.27,
+              "end": 7.51
+            },
+            {
+              "text": "using",
+              "start": 7.51,
+              "end": 7.77
+            },
+            {
+              "text": "retrieval-augmented",
+              "start": 7.77,
+              "end": 8.71
+            }
+          ]
+        },
+        {
+          "text": "generation, or **RAG**.",
+          "start": 8.71,
+          "end": 10.29,
+          "words": [
+            {
+              "text": "generation,",
+              "start": 8.71,
+              "end": 9.33
+            },
+            {
+              "text": "or",
+              "start": 9.81,
+              "end": 10.29
+            },
+            {
+              "text": "**RAG**.",
+              "start": 10.29,
+              "end": 10.29
+            }
+          ]
+        },
+        {
+          "text": "This involves combining the generative",
+          "start": 10.79,
+          "end": 12.65,
+          "words": [
+            {
+              "text": "This",
+              "start": 10.79,
+              "end": 11.11
+            },
+            {
+              "text": "involves",
+              "start": 11.11,
+              "end": 11.53
+            },
+            {
+              "text": "combining",
+              "start": 11.53,
+              "end": 11.97
+            },
+            {
+              "text": "the",
+              "start": 11.97,
+              "end": 12.35
+            },
+            {
+              "text": "generative",
+              "start": 12.35,
+              "end": 12.65
+            }
+          ]
+        },
+        {
+          "text": "capabilities of the AI with a retrieval system",
+          "start": 12.65,
+          "end": 15.35,
+          "words": [
+            {
+              "text": "capabilities",
+              "start": 12.65,
+              "end": 13.25
+            },
+            {
+              "text": "of",
+              "start": 13.25,
+              "end": 13.53
+            },
+            {
+              "text": "the",
+              "start": 13.53,
+              "end": 13.77
+            },
+            {
+              "text": "AI",
+              "start": 13.77,
+              "end": 13.93
+            },
+            {
+              "text": "with",
+              "start": 13.93,
+              "end": 14.49
+            },
+            {
+              "text": "a",
+              "start": 14.49,
+              "end": 14.73
+            },
+            {
+              "text": "retrieval",
+              "start": 14.73,
+              "end": 15.05
+            },
+            {
+              "text": "system",
+              "start": 15.05,
+              "end": 15.35
+            }
+          ]
+        },
+        {
+          "text": "that can pull in relevant documents or data",
+          "start": 15.35,
+          "end": 17.51,
+          "words": [
+            {
+              "text": "that",
+              "start": 15.35,
+              "end": 15.55
+            },
+            {
+              "text": "can",
+              "start": 15.55,
+              "end": 15.79
+            },
+            {
+              "text": "pull",
+              "start": 15.79,
+              "end": 15.95
+            },
+            {
+              "text": "in",
+              "start": 15.95,
+              "end": 16.51
+            },
+            {
+              "text": "relevant",
+              "start": 16.51,
+              "end": 16.51
+            },
+            {
+              "text": "documents",
+              "start": 16.51,
+              "end": 16.97
+            },
+            {
+              "text": "or",
+              "start": 16.97,
+              "end": 17.21
+            },
+            {
+              "text": "data",
+              "start": 17.21,
+              "end": 17.51
+            }
+          ]
+        },
+        {
+          "text": "points during the response generation process.",
+          "start": 17.51,
+          "end": 19.75,
+          "words": [
+            {
+              "text": "points",
+              "start": 17.51,
+              "end": 17.75
+            },
+            {
+              "text": "during",
+              "start": 17.75,
+              "end": 18.07
+            },
+            {
+              "text": "the",
+              "start": 18.07,
+              "end": 18.35
+            },
+            {
+              "text": "response",
+              "start": 18.35,
+              "end": 18.65
+            },
+            {
+              "text": "generation",
+              "start": 18.65,
+              "end": 19.19
+            },
+            {
+              "text": "process.",
+              "start": 19.19,
+              "end": 19.75
+            }
+          ]
+        },
+        {
+          "text": "Essentially, the AI generates text, but it also",
+          "start": 20.59,
+          "end": 23.93,
+          "words": [
+            {
+              "text": "Essentially,",
+              "start": 20.59,
+              "end": 20.95
+            },
+            {
+              "text": "the",
+              "start": 21.41,
+              "end": 21.65
+            },
+            {
+              "text": "AI",
+              "start": 21.65,
+              "end": 21.79
+            },
+            {
+              "text": "generates",
+              "start": 21.79,
+              "end": 22.31
+            },
+            {
+              "text": "text,",
+              "start": 22.31,
+              "end": 22.75
+            },
+            {
+              "text": "but",
+              "start": 23.27,
+              "end": 23.37
+            },
+            {
+              "text": "it",
+              "start": 23.37,
+              "end": 23.49
+            },
+            {
+              "text": "also",
+              "start": 23.49,
+              "end": 23.93
+            }
+          ]
+        },
+        {
+          "text": "retrieves and incorporates real-time information",
+          "start": 23.93,
+          "end": 25.99,
+          "words": [
+            {
+              "text": "retrieves",
+              "start": 23.93,
+              "end": 24.23
+            },
+            {
+              "text": "and",
+              "start": 24.23,
+              "end": 25.01
+            },
+            {
+              "text": "incorporates",
+              "start": 25.01,
+              "end": 25.01
+            },
+            {
+              "text": "real-time",
+              "start": 25.01,
+              "end": 25.49
+            },
+            {
+              "text": "information",
+              "start": 25.49,
+              "end": 25.99
+            }
+          ]
+        },
+        {
+          "text": "from a trusted source.",
+          "start": 25.99,
+          "end": 27.09,
+          "words": [
+            {
+              "text": "from",
+              "start": 25.99,
+              "end": 26.23
+            },
+            {
+              "text": "a",
+              "start": 26.23,
+              "end": 26.67
+            },
+            {
+              "text": "trusted",
+              "start": 26.67,
+              "end": 26.67
+            },
+            {
+              "text": "source.",
+              "start": 26.67,
+              "end": 27.09
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-improve-accuracy",
+      "type": "bullet-list",
+      "eyebrow": "How to 'FIX' AI",
+      "headline": "Improve Accuracy",
+      "captions": [
+        "This dual approach can significantly improve",
+        "the factual accuracy of the AI's outputs.",
+        "Fine-tuning your model is another option.",
+        "By exposing the AI to a more curated dataset",
+        "that emphasizes accuracy and relevance, you",
+        "can steer it away from generating incorrect",
+        "information."
+      ],
+      "title": "Fine-Tuning",
+      "items": [
+        "Expose AI to curated datasets",
+        "Emphasize **accuracy**",
+        "Reinforce learning from feedback"
+      ],
+      "start": 119.35,
+      "duration": 15.94,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This dual approach can significantly improve",
+          "start": 0.15,
+          "end": 2.23,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.29
+            },
+            {
+              "text": "dual",
+              "start": 0.29,
+              "end": 0.67
+            },
+            {
+              "text": "approach",
+              "start": 0.67,
+              "end": 0.99
+            },
+            {
+              "text": "can",
+              "start": 0.99,
+              "end": 1.27
+            },
+            {
+              "text": "significantly",
+              "start": 1.27,
+              "end": 1.81
+            },
+            {
+              "text": "improve",
+              "start": 1.81,
+              "end": 2.23
+            }
+          ]
+        },
+        {
+          "text": "the factual accuracy of the AI's outputs.",
+          "start": 2.23,
+          "end": 4.43,
+          "words": [
+            {
+              "text": "the",
+              "start": 2.23,
+              "end": 2.65
+            },
+            {
+              "text": "factual",
+              "start": 2.65,
+              "end": 2.85
+            },
+            {
+              "text": "accuracy",
+              "start": 2.85,
+              "end": 3.31
+            },
+            {
+              "text": "of",
+              "start": 3.31,
+              "end": 3.55
+            },
+            {
+              "text": "the",
+              "start": 3.55,
+              "end": 3.79
+            },
+            {
+              "text": "AI's",
+              "start": 3.79,
+              "end": 4.13
+            },
+            {
+              "text": "outputs.",
+              "start": 4.13,
+              "end": 4.43
+            }
+          ]
+        },
+        {
+          "text": "Fine-tuning your model is another option.",
+          "start": 4.43,
+          "end": 7.17,
+          "words": [
+            {
+              "text": "Fine-tuning",
+              "start": 4.43,
+              "end": 5.75
+            },
+            {
+              "text": "your",
+              "start": 5.75,
+              "end": 6.05
+            },
+            {
+              "text": "model",
+              "start": 6.05,
+              "end": 6.19
+            },
+            {
+              "text": "is",
+              "start": 6.19,
+              "end": 6.43
+            },
+            {
+              "text": "another",
+              "start": 6.43,
+              "end": 6.75
+            },
+            {
+              "text": "option.",
+              "start": 6.75,
+              "end": 7.17
+            }
+          ]
+        },
+        {
+          "text": "By exposing the AI to a more curated dataset",
+          "start": 7.17,
+          "end": 10.17,
+          "words": [
+            {
+              "text": "By",
+              "start": 7.17,
+              "end": 7.77
+            },
+            {
+              "text": "exposing",
+              "start": 7.77,
+              "end": 8.25
+            },
+            {
+              "text": "the",
+              "start": 8.25,
+              "end": 8.61
+            },
+            {
+              "text": "AI",
+              "start": 8.61,
+              "end": 8.73
+            },
+            {
+              "text": "to",
+              "start": 8.73,
+              "end": 8.99
+            },
+            {
+              "text": "a",
+              "start": 8.99,
+              "end": 9.13
+            },
+            {
+              "text": "more",
+              "start": 9.13,
+              "end": 9.51
+            },
+            {
+              "text": "curated",
+              "start": 9.51,
+              "end": 9.69
+            },
+            {
+              "text": "dataset",
+              "start": 9.69,
+              "end": 10.17
+            }
+          ]
+        },
+        {
+          "text": "that emphasizes accuracy and relevance, you",
+          "start": 10.17,
+          "end": 12.73,
+          "words": [
+            {
+              "text": "that",
+              "start": 10.17,
+              "end": 10.49
+            },
+            {
+              "text": "emphasizes",
+              "start": 10.49,
+              "end": 10.93
+            },
+            {
+              "text": "accuracy",
+              "start": 10.93,
+              "end": 11.51
+            },
+            {
+              "text": "and",
+              "start": 11.51,
+              "end": 11.81
+            },
+            {
+              "text": "relevance,",
+              "start": 11.81,
+              "end": 12.17
+            },
+            {
+              "text": "you",
+              "start": 12.69,
+              "end": 12.73
+            }
+          ]
+        },
+        {
+          "text": "can steer it away from generating incorrect",
+          "start": 12.73,
+          "end": 14.75,
+          "words": [
+            {
+              "text": "can",
+              "start": 12.73,
+              "end": 13.09
+            },
+            {
+              "text": "steer",
+              "start": 13.09,
+              "end": 13.17
+            },
+            {
+              "text": "it",
+              "start": 13.17,
+              "end": 13.35
+            },
+            {
+              "text": "away",
+              "start": 13.35,
+              "end": 13.55
+            },
+            {
+              "text": "from",
+              "start": 13.55,
+              "end": 13.83
+            },
+            {
+              "text": "generating",
+              "start": 13.83,
+              "end": 14.17
+            },
+            {
+              "text": "incorrect",
+              "start": 14.17,
+              "end": 14.75
+            }
+          ]
+        },
+        {
+          "text": "information.",
+          "start": 14.75,
+          "end": 15.27,
+          "words": [
+            {
+              "text": "information.",
+              "start": 14.75,
+              "end": 15.27
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-reinforce-learning",
+      "type": "reflection-loop",
+      "eyebrow": "How to 'FIX' AI",
+      "headline": "Reinforce Learning",
+      "captions": [
+        "This requires a careful selection of training",
+        "data and sometimes involves reinforcing learning",
+        "from human feedback.",
+        "In practice, this means that when the AI makes",
+        "a mistake, you can correct it and feed that",
+        "correction back into the model, helping it",
+        "learn over time."
+      ],
+      "steps": [
+        {
+          "label": "Attempt",
+          "glyph": "✍️"
+        },
+        {
+          "label": "Check",
+          "glyph": "🔎"
+        },
+        {
+          "label": "Fix",
+          "glyph": "🔧"
+        },
+        {
+          "label": "Retry",
+          "glyph": "🔄"
+        }
+      ],
+      "start": 135.29,
+      "duration": 13.92,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This requires a careful selection of training",
+          "start": 0.15,
+          "end": 1.95,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.21
+            },
+            {
+              "text": "requires",
+              "start": 0.21,
+              "end": 0.59
+            },
+            {
+              "text": "a",
+              "start": 0.59,
+              "end": 0.83
+            },
+            {
+              "text": "careful",
+              "start": 0.83,
+              "end": 1.07
+            },
+            {
+              "text": "selection",
+              "start": 1.07,
+              "end": 1.43
+            },
+            {
+              "text": "of",
+              "start": 1.43,
+              "end": 1.71
+            },
+            {
+              "text": "training",
+              "start": 1.71,
+              "end": 1.95
+            }
+          ]
+        },
+        {
+          "text": "data and sometimes involves reinforcing learning",
+          "start": 1.95,
+          "end": 4.53,
+          "words": [
+            {
+              "text": "data",
+              "start": 1.95,
+              "end": 2.21
+            },
+            {
+              "text": "and",
+              "start": 2.69,
+              "end": 2.83
+            },
+            {
+              "text": "sometimes",
+              "start": 2.83,
+              "end": 3.23
+            },
+            {
+              "text": "involves",
+              "start": 3.23,
+              "end": 3.65
+            },
+            {
+              "text": "reinforcing",
+              "start": 3.65,
+              "end": 4.19
+            },
+            {
+              "text": "learning",
+              "start": 4.19,
+              "end": 4.53
+            }
+          ]
+        },
+        {
+          "text": "from human feedback.",
+          "start": 4.53,
+          "end": 5.47,
+          "words": [
+            {
+              "text": "from",
+              "start": 4.53,
+              "end": 4.79
+            },
+            {
+              "text": "human",
+              "start": 4.79,
+              "end": 5.03
+            },
+            {
+              "text": "feedback.",
+              "start": 5.03,
+              "end": 5.47
+            }
+          ]
+        },
+        {
+          "text": "In practice, this means that when the AI makes",
+          "start": 6.11,
+          "end": 8.35,
+          "words": [
+            {
+              "text": "In",
+              "start": 6.11,
+              "end": 6.29
+            },
+            {
+              "text": "practice,",
+              "start": 6.29,
+              "end": 6.65
+            },
+            {
+              "text": "this",
+              "start": 6.99,
+              "end": 7.27
+            },
+            {
+              "text": "means",
+              "start": 7.27,
+              "end": 7.47
+            },
+            {
+              "text": "that",
+              "start": 7.47,
+              "end": 7.65
+            },
+            {
+              "text": "when",
+              "start": 7.65,
+              "end": 7.73
+            },
+            {
+              "text": "the",
+              "start": 7.73,
+              "end": 7.93
+            },
+            {
+              "text": "AI",
+              "start": 7.93,
+              "end": 8.13
+            },
+            {
+              "text": "makes",
+              "start": 8.13,
+              "end": 8.35
+            }
+          ]
+        },
+        {
+          "text": "a mistake, you can correct it and feed that",
+          "start": 8.35,
+          "end": 10.97,
+          "words": [
+            {
+              "text": "a",
+              "start": 8.35,
+              "end": 8.89
+            },
+            {
+              "text": "mistake,",
+              "start": 8.89,
+              "end": 8.89
+            },
+            {
+              "text": "you",
+              "start": 9.31,
+              "end": 9.37
+            },
+            {
+              "text": "can",
+              "start": 9.37,
+              "end": 9.61
+            },
+            {
+              "text": "correct",
+              "start": 9.61,
+              "end": 9.87
+            },
+            {
+              "text": "it",
+              "start": 9.87,
+              "end": 10.09
+            },
+            {
+              "text": "and",
+              "start": 10.09,
+              "end": 10.53
+            },
+            {
+              "text": "feed",
+              "start": 10.53,
+              "end": 10.69
+            },
+            {
+              "text": "that",
+              "start": 10.69,
+              "end": 10.97
+            }
+          ]
+        },
+        {
+          "text": "correction back into the model, helping it",
+          "start": 10.97,
+          "end": 13.05,
+          "words": [
+            {
+              "text": "correction",
+              "start": 10.97,
+              "end": 11.31
+            },
+            {
+              "text": "back",
+              "start": 11.31,
+              "end": 11.67
+            },
+            {
+              "text": "into",
+              "start": 11.67,
+              "end": 11.83
+            },
+            {
+              "text": "the",
+              "start": 11.83,
+              "end": 12.25
+            },
+            {
+              "text": "model,",
+              "start": 12.25,
+              "end": 12.25
+            },
+            {
+              "text": "helping",
+              "start": 12.85,
+              "end": 12.85
+            },
+            {
+              "text": "it",
+              "start": 12.85,
+              "end": 13.05
+            }
+          ]
+        },
+        {
+          "text": "learn over time.",
+          "start": 13.05,
+          "end": 13.73,
+          "words": [
+            {
+              "text": "learn",
+              "start": 13.05,
+              "end": 13.21
+            },
+            {
+              "text": "over",
+              "start": 13.21,
+              "end": 13.51
+            },
+            {
+              "text": "time.",
+              "start": 13.51,
+              "end": 13.73
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-practical-applications",
+      "type": "bullet-list",
+      "eyebrow": "AI in Practice",
+      "headline": "Practical Applications",
+      "captions": [
+        "Now, let's talk about some practical applications.",
+        "Imagine you're developing a chatbot for a healthcare service.",
+        "The last thing you want is for the bot to provide incorrect medical advice.",
+        "By implementing grounding and retrieval-augmented generation,",
+        "you can ensure that the chatbot references a database",
+        "of verified medical information before responding to user queries.",
+        "This not only enhances the accuracy of the information provided",
+        "but also builds trust with users."
+      ],
+      "title": "Chatbot Strategies",
+      "items": [
+        "Use **grounding** techniques",
+        "Implement **retrieval-augmented** generation",
+        "Reference **verified** databases"
+      ],
+      "start": 149.21,
+      "duration": 26.18,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Now, let's talk about some practical applications.",
+          "start": 0.15,
+          "end": 2.93,
+          "words": [
+            {
+              "text": "Now,",
+              "start": 0.15,
+              "end": 0.75
+            },
+            {
+              "text": "let's",
+              "start": 0.85,
+              "end": 1.23
+            },
+            {
+              "text": "talk",
+              "start": 1.23,
+              "end": 1.43
+            },
+            {
+              "text": "about",
+              "start": 1.43,
+              "end": 1.65
+            },
+            {
+              "text": "some",
+              "start": 1.65,
+              "end": 2.27
+            },
+            {
+              "text": "practical",
+              "start": 2.27,
+              "end": 2.27
+            },
+            {
+              "text": "applications.",
+              "start": 2.27,
+              "end": 2.93
+            }
+          ]
+        },
+        {
+          "text": "Imagine you're developing a chatbot for a healthcare service.",
+          "start": 3.49,
+          "end": 6.01,
+          "words": [
+            {
+              "text": "Imagine",
+              "start": 3.49,
+              "end": 3.75
+            },
+            {
+              "text": "you're",
+              "start": 3.75,
+              "end": 4.35
+            },
+            {
+              "text": "developing",
+              "start": 4.35,
+              "end": 4.35
+            },
+            {
+              "text": "a",
+              "start": 4.35,
+              "end": 4.73
+            },
+            {
+              "text": "chatbot",
+              "start": 4.73,
+              "end": 4.87
+            },
+            {
+              "text": "for",
+              "start": 4.87,
+              "end": 5.13
+            },
+            {
+              "text": "a",
+              "start": 5.13,
+              "end": 5.31
+            },
+            {
+              "text": "healthcare",
+              "start": 5.31,
+              "end": 5.61
+            },
+            {
+              "text": "service.",
+              "start": 5.61,
+              "end": 6.01
+            }
+          ]
+        },
+        {
+          "text": "The last thing you want is for the bot to provide incorrect medical advice.",
+          "start": 6.01,
+          "end": 9.83,
+          "words": [
+            {
+              "text": "The",
+              "start": 6.01,
+              "end": 6.55
+            },
+            {
+              "text": "last",
+              "start": 6.55,
+              "end": 6.85
+            },
+            {
+              "text": "thing",
+              "start": 6.85,
+              "end": 7.03
+            },
+            {
+              "text": "you",
+              "start": 7.03,
+              "end": 7.17
+            },
+            {
+              "text": "want",
+              "start": 7.17,
+              "end": 7.37
+            },
+            {
+              "text": "is",
+              "start": 7.37,
+              "end": 7.57
+            },
+            {
+              "text": "for",
+              "start": 7.57,
+              "end": 7.73
+            },
+            {
+              "text": "the",
+              "start": 7.73,
+              "end": 7.83
+            },
+            {
+              "text": "bot",
+              "start": 7.83,
+              "end": 7.99
+            },
+            {
+              "text": "to",
+              "start": 7.99,
+              "end": 8.21
+            },
+            {
+              "text": "provide",
+              "start": 8.21,
+              "end": 8.47
+            },
+            {
+              "text": "incorrect",
+              "start": 8.47,
+              "end": 9.03
+            },
+            {
+              "text": "medical",
+              "start": 9.03,
+              "end": 9.41
+            },
+            {
+              "text": "advice.",
+              "start": 9.41,
+              "end": 9.83
+            }
+          ]
+        },
+        {
+          "text": "By implementing grounding and retrieval-augmented generation,",
+          "start": 10.55,
+          "end": 13.25,
+          "words": [
+            {
+              "text": "By",
+              "start": 10.55,
+              "end": 10.55
+            },
+            {
+              "text": "implementing",
+              "start": 10.55,
+              "end": 11.03
+            },
+            {
+              "text": "grounding",
+              "start": 11.03,
+              "end": 11.49
+            },
+            {
+              "text": "and",
+              "start": 11.49,
+              "end": 11.87
+            },
+            {
+              "text": "retrieval-augmented",
+              "start": 11.87,
+              "end": 12.65
+            },
+            {
+              "text": "generation,",
+              "start": 12.65,
+              "end": 13.25
+            }
+          ]
+        },
+        {
+          "text": "you can ensure that the chatbot references a database",
+          "start": 13.57,
+          "end": 16.21,
+          "words": [
+            {
+              "text": "you",
+              "start": 13.57,
+              "end": 13.61
+            },
+            {
+              "text": "can",
+              "start": 13.61,
+              "end": 13.89
+            },
+            {
+              "text": "ensure",
+              "start": 13.89,
+              "end": 14.17
+            },
+            {
+              "text": "that",
+              "start": 14.17,
+              "end": 14.43
+            },
+            {
+              "text": "the",
+              "start": 14.43,
+              "end": 14.67
+            },
+            {
+              "text": "chatbot",
+              "start": 14.67,
+              "end": 15.07
+            },
+            {
+              "text": "references",
+              "start": 15.07,
+              "end": 15.51
+            },
+            {
+              "text": "a",
+              "start": 15.51,
+              "end": 15.85
+            },
+            {
+              "text": "database",
+              "start": 15.85,
+              "end": 16.21
+            }
+          ]
+        },
+        {
+          "text": "of verified medical information before responding to user queries.",
+          "start": 16.21,
+          "end": 19.83,
+          "words": [
+            {
+              "text": "of",
+              "start": 16.21,
+              "end": 16.95
+            },
+            {
+              "text": "verified",
+              "start": 16.95,
+              "end": 16.95
+            },
+            {
+              "text": "medical",
+              "start": 16.95,
+              "end": 17.31
+            },
+            {
+              "text": "information",
+              "start": 17.31,
+              "end": 17.81
+            },
+            {
+              "text": "before",
+              "start": 17.81,
+              "end": 18.51
+            },
+            {
+              "text": "responding",
+              "start": 18.51,
+              "end": 18.93
+            },
+            {
+              "text": "to",
+              "start": 18.93,
+              "end": 19.23
+            },
+            {
+              "text": "user",
+              "start": 19.23,
+              "end": 19.49
+            },
+            {
+              "text": "queries.",
+              "start": 19.49,
+              "end": 19.83
+            }
+          ]
+        },
+        {
+          "text": "This not only enhances the accuracy of the information provided",
+          "start": 20.63,
+          "end": 23.45,
+          "words": [
+            {
+              "text": "This",
+              "start": 20.63,
+              "end": 20.73
+            },
+            {
+              "text": "not",
+              "start": 20.73,
+              "end": 20.95
+            },
+            {
+              "text": "only",
+              "start": 20.95,
+              "end": 21.25
+            },
+            {
+              "text": "enhances",
+              "start": 21.25,
+              "end": 21.51
+            },
+            {
+              "text": "the",
+              "start": 21.51,
+              "end": 22.23
+            },
+            {
+              "text": "accuracy",
+              "start": 22.23,
+              "end": 22.23
+            },
+            {
+              "text": "of",
+              "start": 22.23,
+              "end": 22.41
+            },
+            {
+              "text": "the",
+              "start": 22.41,
+              "end": 22.91
+            },
+            {
+              "text": "information",
+              "start": 22.91,
+              "end": 22.97
+            },
+            {
+              "text": "provided",
+              "start": 22.97,
+              "end": 23.45
+            }
+          ]
+        },
+        {
+          "text": "but also builds trust with users.",
+          "start": 23.85,
+          "end": 25.69,
+          "words": [
+            {
+              "text": "but",
+              "start": 23.85,
+              "end": 24.03
+            },
+            {
+              "text": "also",
+              "start": 24.03,
+              "end": 24.41
+            },
+            {
+              "text": "builds",
+              "start": 24.41,
+              "end": 24.61
+            },
+            {
+              "text": "trust",
+              "start": 24.61,
+              "end": 25.01
+            },
+            {
+              "text": "with",
+              "start": 25.01,
+              "end": 25.69
+            },
+            {
+              "text": "users.",
+              "start": 25.69,
+              "end": 25.69
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-managing-expectations",
+      "type": "concept-card",
+      "eyebrow": "AI Challenges",
+      "headline": "Managing Expectations",
+      "captions": [
+        "However, it's important to manage expectations.",
+        "Even with these techniques, no AI is perfect.",
+        "Part of \"fixing\" hallucinations is also about setting up",
+        "a robust system for monitoring and feedback.",
+        "You need to continuously evaluate the AI's performance,",
+        "collect user feedback, and make iterative improvements.",
+        "This is an ongoing process, not a one-time fix."
+      ],
+      "term": "Expectation Management",
+      "tagline": "Continuous Improvement",
+      "definition": "AI systems require ongoing evaluation and feedback to improve.",
+      "glyph": "🔄",
+      "start": 175.39,
+      "duration": 21.86,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "However, it's important to manage expectations.",
+          "start": 0.15,
+          "end": 2.67,
+          "words": [
+            {
+              "text": "However,",
+              "start": 0.15,
+              "end": 0.51
+            },
+            {
+              "text": "it's",
+              "start": 0.55,
+              "end": 1.07
+            },
+            {
+              "text": "important",
+              "start": 1.07,
+              "end": 1.35
+            },
+            {
+              "text": "to",
+              "start": 1.35,
+              "end": 1.89
+            },
+            {
+              "text": "manage",
+              "start": 1.89,
+              "end": 1.89
+            },
+            {
+              "text": "expectations.",
+              "start": 1.89,
+              "end": 2.67
+            }
+          ]
+        },
+        {
+          "text": "Even with these techniques, no AI is perfect.",
+          "start": 3.39,
+          "end": 5.83,
+          "words": [
+            {
+              "text": "Even",
+              "start": 3.39,
+              "end": 3.51
+            },
+            {
+              "text": "with",
+              "start": 3.51,
+              "end": 3.69
+            },
+            {
+              "text": "these",
+              "start": 3.69,
+              "end": 3.95
+            },
+            {
+              "text": "techniques,",
+              "start": 3.95,
+              "end": 4.35
+            },
+            {
+              "text": "no",
+              "start": 4.67,
+              "end": 4.99
+            },
+            {
+              "text": "AI",
+              "start": 4.99,
+              "end": 5.21
+            },
+            {
+              "text": "is",
+              "start": 5.21,
+              "end": 5.45
+            },
+            {
+              "text": "perfect.",
+              "start": 5.45,
+              "end": 5.83
+            }
+          ]
+        },
+        {
+          "text": "Part of \"fixing\" hallucinations is also about setting up",
+          "start": 6.23,
+          "end": 9.27,
+          "words": [
+            {
+              "text": "Part",
+              "start": 6.23,
+              "end": 6.55
+            },
+            {
+              "text": "of",
+              "start": 6.55,
+              "end": 6.77
+            },
+            {
+              "text": "\"fixing\"",
+              "start": 6.77,
+              "end": 7.11
+            },
+            {
+              "text": "hallucinations",
+              "start": 7.11,
+              "end": 7.71
+            },
+            {
+              "text": "is",
+              "start": 7.71,
+              "end": 8.27
+            },
+            {
+              "text": "also",
+              "start": 8.27,
+              "end": 8.57
+            },
+            {
+              "text": "about",
+              "start": 8.57,
+              "end": 8.89
+            },
+            {
+              "text": "setting",
+              "start": 8.89,
+              "end": 9.03
+            },
+            {
+              "text": "up",
+              "start": 9.03,
+              "end": 9.27
+            }
+          ]
+        },
+        {
+          "text": "a robust system for monitoring and feedback.",
+          "start": 9.27,
+          "end": 11.53,
+          "words": [
+            {
+              "text": "a",
+              "start": 9.27,
+              "end": 9.49
+            },
+            {
+              "text": "robust",
+              "start": 9.49,
+              "end": 9.67
+            },
+            {
+              "text": "system",
+              "start": 9.67,
+              "end": 10.05
+            },
+            {
+              "text": "for",
+              "start": 10.05,
+              "end": 10.37
+            },
+            {
+              "text": "monitoring",
+              "start": 10.37,
+              "end": 10.71
+            },
+            {
+              "text": "and",
+              "start": 10.71,
+              "end": 11.11
+            },
+            {
+              "text": "feedback.",
+              "start": 11.11,
+              "end": 11.53
+            }
+          ]
+        },
+        {
+          "text": "You need to continuously evaluate the AI's performance,",
+          "start": 12.25,
+          "end": 14.73,
+          "words": [
+            {
+              "text": "You",
+              "start": 12.25,
+              "end": 12.25
+            },
+            {
+              "text": "need",
+              "start": 12.25,
+              "end": 12.39
+            },
+            {
+              "text": "to",
+              "start": 12.39,
+              "end": 12.65
+            },
+            {
+              "text": "continuously",
+              "start": 12.65,
+              "end": 13.15
+            },
+            {
+              "text": "evaluate",
+              "start": 13.15,
+              "end": 13.67
+            },
+            {
+              "text": "the",
+              "start": 13.67,
+              "end": 13.99
+            },
+            {
+              "text": "AI's",
+              "start": 13.99,
+              "end": 14.25
+            },
+            {
+              "text": "performance,",
+              "start": 14.25,
+              "end": 14.73
+            }
+          ]
+        },
+        {
+          "text": "collect user feedback, and make iterative improvements.",
+          "start": 15.49,
+          "end": 17.83,
+          "words": [
+            {
+              "text": "collect",
+              "start": 15.49,
+              "end": 15.49
+            },
+            {
+              "text": "user",
+              "start": 15.49,
+              "end": 15.81
+            },
+            {
+              "text": "feedback,",
+              "start": 15.81,
+              "end": 16.23
+            },
+            {
+              "text": "and",
+              "start": 16.63,
+              "end": 16.79
+            },
+            {
+              "text": "make",
+              "start": 16.79,
+              "end": 16.93
+            },
+            {
+              "text": "iterative",
+              "start": 16.93,
+              "end": 17.31
+            },
+            {
+              "text": "improvements.",
+              "start": 17.31,
+              "end": 17.83
+            }
+          ]
+        },
+        {
+          "text": "This is an ongoing process, not a one-time fix.",
+          "start": 18.41,
+          "end": 21.25,
+          "words": [
+            {
+              "text": "This",
+              "start": 18.41,
+              "end": 18.53
+            },
+            {
+              "text": "is",
+              "start": 18.53,
+              "end": 18.67
+            },
+            {
+              "text": "an",
+              "start": 18.67,
+              "end": 18.99
+            },
+            {
+              "text": "ongoing",
+              "start": 18.99,
+              "end": 19.21
+            },
+            {
+              "text": "process,",
+              "start": 19.21,
+              "end": 19.73
+            },
+            {
+              "text": "not",
+              "start": 20.29,
+              "end": 20.35
+            },
+            {
+              "text": "a",
+              "start": 20.35,
+              "end": 20.53
+            },
+            {
+              "text": "one-time",
+              "start": 20.53,
+              "end": 20.87
+            },
+            {
+              "text": "fix.",
+              "start": 20.87,
+              "end": 21.25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-misconception",
+      "type": "quote",
+      "eyebrow": "AI Misunderstandings",
+      "headline": "Common Misconception",
+      "captions": [
+        "One common misconception is that hallucinations",
+        "are purely technical errors that can be completely eradicated.",
+        "In reality, because AI models are probabilistic by nature,",
+        "there will always be a degree of uncertainty in their outputs.",
+        "The goal is not to eliminate hallucinations entirely",
+        "but to minimize their occurrence and impact."
+      ],
+      "quote": "AI hallucinations can't be fully eradicated.",
+      "attribution": "AI Expert Insight",
+      "start": 197.25,
+      "duration": 18.52,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "One common misconception is that hallucinations",
+          "start": 0.15,
+          "end": 2.53,
+          "words": [
+            {
+              "text": "One",
+              "start": 0.15,
+              "end": 0.31
+            },
+            {
+              "text": "common",
+              "start": 0.31,
+              "end": 0.61
+            },
+            {
+              "text": "misconception",
+              "start": 0.61,
+              "end": 1.17
+            },
+            {
+              "text": "is",
+              "start": 1.17,
+              "end": 1.77
+            },
+            {
+              "text": "that",
+              "start": 1.77,
+              "end": 2.23
+            },
+            {
+              "text": "hallucinations",
+              "start": 2.23,
+              "end": 2.53
+            }
+          ]
+        },
+        {
+          "text": "are purely technical errors that can be completely eradicated.",
+          "start": 2.53,
+          "end": 5.71,
+          "words": [
+            {
+              "text": "are",
+              "start": 2.53,
+              "end": 2.83
+            },
+            {
+              "text": "purely",
+              "start": 2.83,
+              "end": 3.17
+            },
+            {
+              "text": "technical",
+              "start": 3.17,
+              "end": 3.61
+            },
+            {
+              "text": "errors",
+              "start": 3.61,
+              "end": 3.97
+            },
+            {
+              "text": "that",
+              "start": 3.97,
+              "end": 4.49
+            },
+            {
+              "text": "can",
+              "start": 4.49,
+              "end": 4.61
+            },
+            {
+              "text": "be",
+              "start": 4.61,
+              "end": 4.79
+            },
+            {
+              "text": "completely",
+              "start": 4.79,
+              "end": 5.25
+            },
+            {
+              "text": "eradicated.",
+              "start": 5.25,
+              "end": 5.71
+            }
+          ]
+        },
+        {
+          "text": "In reality, because AI models are probabilistic by nature,",
+          "start": 6.31,
+          "end": 9.65,
+          "words": [
+            {
+              "text": "In",
+              "start": 6.31,
+              "end": 6.47
+            },
+            {
+              "text": "reality,",
+              "start": 6.47,
+              "end": 6.85
+            },
+            {
+              "text": "because",
+              "start": 7.35,
+              "end": 7.59
+            },
+            {
+              "text": "AI",
+              "start": 7.59,
+              "end": 7.93
+            },
+            {
+              "text": "models",
+              "start": 7.93,
+              "end": 8.19
+            },
+            {
+              "text": "are",
+              "start": 8.19,
+              "end": 8.47
+            },
+            {
+              "text": "probabilistic",
+              "start": 8.47,
+              "end": 9.09
+            },
+            {
+              "text": "by",
+              "start": 9.09,
+              "end": 9.33
+            },
+            {
+              "text": "nature,",
+              "start": 9.33,
+              "end": 9.65
+            }
+          ]
+        },
+        {
+          "text": "there will always be a degree of uncertainty in their outputs.",
+          "start": 10.09,
+          "end": 12.57,
+          "words": [
+            {
+              "text": "there",
+              "start": 10.09,
+              "end": 10.17
+            },
+            {
+              "text": "will",
+              "start": 10.17,
+              "end": 10.37
+            },
+            {
+              "text": "always",
+              "start": 10.37,
+              "end": 10.73
+            },
+            {
+              "text": "be",
+              "start": 10.73,
+              "end": 10.87
+            },
+            {
+              "text": "a",
+              "start": 10.87,
+              "end": 11.09
+            },
+            {
+              "text": "degree",
+              "start": 11.09,
+              "end": 11.21
+            },
+            {
+              "text": "of",
+              "start": 11.21,
+              "end": 11.49
+            },
+            {
+              "text": "uncertainty",
+              "start": 11.49,
+              "end": 11.81
+            },
+            {
+              "text": "in",
+              "start": 11.81,
+              "end": 12.01
+            },
+            {
+              "text": "their",
+              "start": 12.01,
+              "end": 12.19
+            },
+            {
+              "text": "outputs.",
+              "start": 12.19,
+              "end": 12.57
+            }
+          ]
+        },
+        {
+          "text": "The goal is not to eliminate hallucinations entirely",
+          "start": 12.85,
+          "end": 15.69,
+          "words": [
+            {
+              "text": "The",
+              "start": 12.85,
+              "end": 13.29
+            },
+            {
+              "text": "goal",
+              "start": 13.29,
+              "end": 13.53
+            },
+            {
+              "text": "is",
+              "start": 13.53,
+              "end": 13.73
+            },
+            {
+              "text": "not",
+              "start": 13.73,
+              "end": 13.89
+            },
+            {
+              "text": "to",
+              "start": 13.89,
+              "end": 14.51
+            },
+            {
+              "text": "eliminate",
+              "start": 14.51,
+              "end": 14.51
+            },
+            {
+              "text": "hallucinations",
+              "start": 14.51,
+              "end": 15.09
+            },
+            {
+              "text": "entirely",
+              "start": 15.09,
+              "end": 15.69
+            }
+          ]
+        },
+        {
+          "text": "but to minimize their occurrence and impact.",
+          "start": 16.13,
+          "end": 18.27,
+          "words": [
+            {
+              "text": "but",
+              "start": 16.13,
+              "end": 16.23
+            },
+            {
+              "text": "to",
+              "start": 16.23,
+              "end": 16.75
+            },
+            {
+              "text": "minimize",
+              "start": 16.75,
+              "end": 16.75
+            },
+            {
+              "text": "their",
+              "start": 16.75,
+              "end": 17.05
+            },
+            {
+              "text": "occurrence",
+              "start": 17.05,
+              "end": 17.37
+            },
+            {
+              "text": "and",
+              "start": 17.37,
+              "end": 17.73
+            },
+            {
+              "text": "impact.",
+              "start": 17.73,
+              "end": 18.27
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-strategies-for-reliability",
+      "type": "bullet-list",
+      "eyebrow": "AI Strategies",
+      "headline": "Strategies for Reliability",
+      "captions": [
+        "In conclusion, while AI hallucinations pose a significant challenge,",
+        "they can be managed effectively through strategies like grounding,",
+        "retrieval-augmented generation, and fine-tuning.",
+        "By understanding the root causes and implementing these solutions,",
+        "developers can create more reliable and trustworthy AI systems."
+      ],
+      "title": "Reliability Strategies",
+      "items": [
+        "**Grounding** techniques",
+        "**Retrieval-augmented** generation",
+        "**Fine-tuning** models"
+      ],
+      "start": 215.77,
+      "duration": 18.5,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "In conclusion, while AI hallucinations pose a significant challenge,",
+          "start": 0.15,
+          "end": 3.73,
+          "words": [
+            {
+              "text": "In",
+              "start": 0.15,
+              "end": 0.21
+            },
+            {
+              "text": "conclusion,",
+              "start": 0.21,
+              "end": 0.65
+            },
+            {
+              "text": "while",
+              "start": 1.23,
+              "end": 1.39
+            },
+            {
+              "text": "AI",
+              "start": 1.39,
+              "end": 1.71
+            },
+            {
+              "text": "hallucinations",
+              "start": 1.71,
+              "end": 2.33
+            },
+            {
+              "text": "pose",
+              "start": 2.33,
+              "end": 2.67
+            },
+            {
+              "text": "a",
+              "start": 2.67,
+              "end": 2.89
+            },
+            {
+              "text": "significant",
+              "start": 2.89,
+              "end": 3.29
+            },
+            {
+              "text": "challenge,",
+              "start": 3.29,
+              "end": 3.73
+            }
+          ]
+        },
+        {
+          "text": "they can be managed effectively through strategies like grounding,",
+          "start": 4.23,
+          "end": 6.85,
+          "words": [
+            {
+              "text": "they",
+              "start": 4.23,
+              "end": 4.31
+            },
+            {
+              "text": "can",
+              "start": 4.31,
+              "end": 4.45
+            },
+            {
+              "text": "be",
+              "start": 4.45,
+              "end": 4.93
+            },
+            {
+              "text": "managed",
+              "start": 4.93,
+              "end": 4.93
+            },
+            {
+              "text": "effectively",
+              "start": 4.93,
+              "end": 5.45
+            },
+            {
+              "text": "through",
+              "start": 5.45,
+              "end": 5.75
+            },
+            {
+              "text": "strategies",
+              "start": 5.75,
+              "end": 6.17
+            },
+            {
+              "text": "like",
+              "start": 6.17,
+              "end": 6.49
+            },
+            {
+              "text": "grounding,",
+              "start": 6.49,
+              "end": 6.85
+            }
+          ]
+        },
+        {
+          "text": "retrieval-augmented generation, and fine-tuning.",
+          "start": 6.85,
+          "end": 10.77,
+          "words": [
+            {
+              "text": "retrieval-augmented",
+              "start": 6.85,
+              "end": 8.13
+            },
+            {
+              "text": "generation,",
+              "start": 8.13,
+              "end": 8.75
+            },
+            {
+              "text": "and",
+              "start": 9.21,
+              "end": 9.41
+            },
+            {
+              "text": "fine-tuning.",
+              "start": 9.41,
+              "end": 10.77
+            }
+          ]
+        },
+        {
+          "text": "By understanding the root causes and implementing these solutions,",
+          "start": 10.77,
+          "end": 14.21,
+          "words": [
+            {
+              "text": "By",
+              "start": 10.77,
+              "end": 10.97
+            },
+            {
+              "text": "understanding",
+              "start": 10.97,
+              "end": 11.47
+            },
+            {
+              "text": "the",
+              "start": 11.47,
+              "end": 11.91
+            },
+            {
+              "text": "root",
+              "start": 11.91,
+              "end": 12.05
+            },
+            {
+              "text": "causes",
+              "start": 12.05,
+              "end": 12.41
+            },
+            {
+              "text": "and",
+              "start": 12.41,
+              "end": 12.87
+            },
+            {
+              "text": "implementing",
+              "start": 12.87,
+              "end": 13.27
+            },
+            {
+              "text": "these",
+              "start": 13.27,
+              "end": 13.71
+            },
+            {
+              "text": "solutions,",
+              "start": 13.71,
+              "end": 14.21
+            }
+          ]
+        },
+        {
+          "text": "developers can create more reliable and trustworthy AI systems.",
+          "start": 15.05,
+          "end": 18.5,
+          "words": [
+            {
+              "text": "developers",
+              "start": 15.05,
+              "end": 15.09
+            },
+            {
+              "text": "can",
+              "start": 15.09,
+              "end": 15.53
+            },
+            {
+              "text": "create",
+              "start": 15.53,
+              "end": 15.83
+            },
+            {
+              "text": "more",
+              "start": 15.83,
+              "end": 16.27
+            },
+            {
+              "text": "reliable",
+              "start": 16.27,
+              "end": 16.77
+            },
+            {
+              "text": "and",
+              "start": 16.77,
+              "end": 17.23
+            },
+            {
+              "text": "trustworthy",
+              "start": 17.23,
+              "end": 17.71
+            },
+            {
+              "text": "AI",
+              "start": 17.71,
+              "end": 18.21
+            },
+            {
+              "text": "systems.",
+              "start": 18.21,
+              "end": 18.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-closing-takeaway",
+      "type": "cta",
+      "eyebrow": "Final Thoughts",
+      "headline": "Keep Your AI Grounded",
+      "captions": [
+        "Remember, the key is not just in the technology itself",
+        "but in how we leverage it, integrate it with other systems,",
+        "and continuously improve it based on real-world use and feedback.",
+        "So, whether you're building an AI for customer service,",
+        "content creation, or any other application,",
+        "keep these strategies in mind to help your AI stay grounded in reality."
+      ],
+      "subheadline": "Leverage, Integrate, Improve.",
+      "start": 234.27,
+      "duration": 22.42,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Remember, the key is not just in the technology itself",
+          "start": 0.15,
+          "end": 3.81,
+          "words": [
+            {
+              "text": "Remember,",
+              "start": 0.15,
+              "end": 1.01
+            },
+            {
+              "text": "the",
+              "start": 1.43,
+              "end": 1.63
+            },
+            {
+              "text": "key",
+              "start": 1.63,
+              "end": 1.75
+            },
+            {
+              "text": "is",
+              "start": 1.75,
+              "end": 1.95
+            },
+            {
+              "text": "not",
+              "start": 1.95,
+              "end": 2.21
+            },
+            {
+              "text": "just",
+              "start": 2.21,
+              "end": 2.51
+            },
+            {
+              "text": "in",
+              "start": 2.51,
+              "end": 2.67
+            },
+            {
+              "text": "the",
+              "start": 2.67,
+              "end": 3.27
+            },
+            {
+              "text": "technology",
+              "start": 3.27,
+              "end": 3.27
+            },
+            {
+              "text": "itself",
+              "start": 3.27,
+              "end": 3.81
+            }
+          ]
+        },
+        {
+          "text": "but in how we leverage it, integrate it with other systems,",
+          "start": 4.05,
+          "end": 7.17,
+          "words": [
+            {
+              "text": "but",
+              "start": 4.05,
+              "end": 4.31
+            },
+            {
+              "text": "in",
+              "start": 4.31,
+              "end": 4.51
+            },
+            {
+              "text": "how",
+              "start": 4.51,
+              "end": 4.63
+            },
+            {
+              "text": "we",
+              "start": 4.63,
+              "end": 4.85
+            },
+            {
+              "text": "leverage",
+              "start": 4.85,
+              "end": 5.15
+            },
+            {
+              "text": "it,",
+              "start": 5.15,
+              "end": 5.37
+            },
+            {
+              "text": "integrate",
+              "start": 6.17,
+              "end": 6.17
+            },
+            {
+              "text": "it",
+              "start": 6.17,
+              "end": 6.29
+            },
+            {
+              "text": "with",
+              "start": 6.29,
+              "end": 6.51
+            },
+            {
+              "text": "other",
+              "start": 6.51,
+              "end": 6.79
+            },
+            {
+              "text": "systems,",
+              "start": 6.79,
+              "end": 7.17
+            }
+          ]
+        },
+        {
+          "text": "and continuously improve it based on real-world use and feedback.",
+          "start": 7.71,
+          "end": 11.21,
+          "words": [
+            {
+              "text": "and",
+              "start": 7.71,
+              "end": 7.91
+            },
+            {
+              "text": "continuously",
+              "start": 7.91,
+              "end": 8.55
+            },
+            {
+              "text": "improve",
+              "start": 8.55,
+              "end": 8.99
+            },
+            {
+              "text": "it",
+              "start": 8.99,
+              "end": 9.25
+            },
+            {
+              "text": "based",
+              "start": 9.25,
+              "end": 9.47
+            },
+            {
+              "text": "on",
+              "start": 9.47,
+              "end": 9.79
+            },
+            {
+              "text": "real-world",
+              "start": 9.79,
+              "end": 10.23
+            },
+            {
+              "text": "use",
+              "start": 10.23,
+              "end": 10.51
+            },
+            {
+              "text": "and",
+              "start": 10.51,
+              "end": 10.79
+            },
+            {
+              "text": "feedback.",
+              "start": 10.79,
+              "end": 11.21
+            }
+          ]
+        },
+        {
+          "text": "So, whether you're building an AI for customer service,",
+          "start": 11.89,
+          "end": 14.73,
+          "words": [
+            {
+              "text": "So,",
+              "start": 11.89,
+              "end": 12.17
+            },
+            {
+              "text": "whether",
+              "start": 12.55,
+              "end": 12.59
+            },
+            {
+              "text": "you're",
+              "start": 12.59,
+              "end": 13.15
+            },
+            {
+              "text": "building",
+              "start": 13.15,
+              "end": 13.15
+            },
+            {
+              "text": "an",
+              "start": 13.15,
+              "end": 13.49
+            },
+            {
+              "text": "AI",
+              "start": 13.49,
+              "end": 13.59
+            },
+            {
+              "text": "for",
+              "start": 13.59,
+              "end": 13.91
+            },
+            {
+              "text": "customer",
+              "start": 13.91,
+              "end": 14.27
+            },
+            {
+              "text": "service,",
+              "start": 14.27,
+              "end": 14.73
+            }
+          ]
+        },
+        {
+          "text": "content creation, or any other application,",
+          "start": 15.53,
+          "end": 17.53,
+          "words": [
+            {
+              "text": "content",
+              "start": 15.53,
+              "end": 15.53
+            },
+            {
+              "text": "creation,",
+              "start": 15.53,
+              "end": 16.01
+            },
+            {
+              "text": "or",
+              "start": 16.17,
+              "end": 16.63
+            },
+            {
+              "text": "any",
+              "start": 16.63,
+              "end": 16.81
+            },
+            {
+              "text": "other",
+              "start": 16.81,
+              "end": 17.05
+            },
+            {
+              "text": "application,",
+              "start": 17.05,
+              "end": 17.53
+            }
+          ]
+        },
+        {
+          "text": "keep these strategies in mind to help your AI stay grounded in reality.",
+          "start": 18.21,
+          "end": 22.07,
+          "words": [
+            {
+              "text": "keep",
+              "start": 18.21,
+              "end": 18.31
+            },
+            {
+              "text": "these",
+              "start": 18.31,
+              "end": 18.59
+            },
+            {
+              "text": "strategies",
+              "start": 18.59,
+              "end": 18.99
+            },
+            {
+              "text": "in",
+              "start": 18.99,
+              "end": 19.39
+            },
+            {
+              "text": "mind",
+              "start": 19.39,
+              "end": 19.51
+            },
+            {
+              "text": "to",
+              "start": 19.51,
+              "end": 19.93
+            },
+            {
+              "text": "help",
+              "start": 19.93,
+              "end": 20.09
+            },
+            {
+              "text": "your",
+              "start": 20.09,
+              "end": 20.29
+            },
+            {
+              "text": "AI",
+              "start": 20.29,
+              "end": 20.61
+            },
+            {
+              "text": "stay",
+              "start": 20.61,
+              "end": 20.91
+            },
+            {
+              "text": "grounded",
+              "start": 20.91,
+              "end": 21.31
+            },
+            {
+              "text": "in",
+              "start": 21.31,
+              "end": 21.71
+            },
+            {
+              "text": "reality.",
+              "start": 21.71,
+              "end": 22.07
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

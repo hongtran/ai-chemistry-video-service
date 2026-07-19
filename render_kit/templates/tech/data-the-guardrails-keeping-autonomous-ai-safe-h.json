@@ -1,0 +1,5334 @@
+{
+  "config": {
+    "topic": "The Guardrails: Keeping Autonomous AI Safe",
+    "slug": "the-guardrails-keeping-autonomous-ai-safe-h",
+    "totalDuration": 295.77,
+    "orientation": "horizontal",
+    "description": "Explore the thrilling yet daunting potential of autonomous AI, from self-driving cars to AI-driven financial systems. Discover why guardrails are essential to ensure these systems remain safe, reliable, and aligned with human values.",
+    "hashtags": [
+      "autonomousai",
+      "guardrails",
+      "aisafety",
+      "ethicalai",
+      "aiinnovation"
+    ],
+    "tags": [
+      "autonomous ai",
+      "ai safety",
+      "ethical ai",
+      "ai guardrails",
+      "ai innovation",
+      "self-driving cars",
+      "ai systems"
+    ],
+    "audio": "assets/tts/narration.mp3"
+  },
+  "scenes": [
+    {
+      "id": "s0-introduction",
+      "type": "cover",
+      "eyebrow": "Autonomous AI",
+      "headline": "The Guardrails: Keeping Autonomous AI Safe",
+      "captions": [
+        "As we venture deeper",
+        "into the realm of",
+        "artificial intelligence,",
+        "the potential for autonomous AI",
+        "is both thrilling and daunting."
+      ],
+      "start": 0,
+      "duration": 8.15,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "As we venture deeper",
+          "start": 0,
+          "end": 1.48,
+          "words": [
+            {
+              "text": "As",
+              "start": 0,
+              "end": 0.38
+            },
+            {
+              "text": "we",
+              "start": 0.38,
+              "end": 0.66
+            },
+            {
+              "text": "venture",
+              "start": 0.66,
+              "end": 1
+            },
+            {
+              "text": "deeper",
+              "start": 1,
+              "end": 1.48
+            }
+          ]
+        },
+        {
+          "text": "into the realm of",
+          "start": 1.48,
+          "end": 2.48,
+          "words": [
+            {
+              "text": "into",
+              "start": 1.48,
+              "end": 1.74
+            },
+            {
+              "text": "the",
+              "start": 1.74,
+              "end": 2.16
+            },
+            {
+              "text": "realm",
+              "start": 2.16,
+              "end": 2.16
+            },
+            {
+              "text": "of",
+              "start": 2.16,
+              "end": 2.48
+            }
+          ]
+        },
+        {
+          "text": "artificial intelligence,",
+          "start": 2.48,
+          "end": 3.42,
+          "words": [
+            {
+              "text": "artificial",
+              "start": 2.48,
+              "end": 2.82
+            },
+            {
+              "text": "intelligence,",
+              "start": 2.82,
+              "end": 3.42
+            }
+          ]
+        },
+        {
+          "text": "the potential for autonomous AI",
+          "start": 4.06,
+          "end": 5.66,
+          "words": [
+            {
+              "text": "the",
+              "start": 4.06,
+              "end": 4.08
+            },
+            {
+              "text": "potential",
+              "start": 4.08,
+              "end": 4.48
+            },
+            {
+              "text": "for",
+              "start": 4.48,
+              "end": 4.86
+            },
+            {
+              "text": "autonomous",
+              "start": 4.86,
+              "end": 5.2
+            },
+            {
+              "text": "AI",
+              "start": 5.2,
+              "end": 5.66
+            }
+          ]
+        },
+        {
+          "text": "is both thrilling and daunting.",
+          "start": 5.66,
+          "end": 7.46,
+          "words": [
+            {
+              "text": "is",
+              "start": 5.66,
+              "end": 5.92
+            },
+            {
+              "text": "both",
+              "start": 5.92,
+              "end": 6.42
+            },
+            {
+              "text": "thrilling",
+              "start": 6.42,
+              "end": 6.6
+            },
+            {
+              "text": "and",
+              "start": 6.6,
+              "end": 7.14
+            },
+            {
+              "text": "daunting.",
+              "start": 7.14,
+              "end": 7.46
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-autonomous-ai",
+      "type": "concept-card",
+      "eyebrow": "",
+      "headline": "",
+      "term": "Autonomous AI",
+      "tagline": "Decisions without humans",
+      "definition": "Systems that can make decisions and act independently of human input.",
+      "glyph": "🤖",
+      "captions": [
+        "Autonomous AI refers to systems",
+        "that can make decisions and act",
+        "independently of human input.",
+        "Imagine self-driving cars,",
+        "automated medical diagnostics,",
+        "or even AI-driven financial trading systems."
+      ],
+      "start": 8.15,
+      "duration": 12.44,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Autonomous AI refers to systems",
+          "start": 0.15,
+          "end": 1.71,
+          "words": [
+            {
+              "text": "Autonomous",
+              "start": 0.15,
+              "end": 0.37
+            },
+            {
+              "text": "AI",
+              "start": 0.37,
+              "end": 0.75
+            },
+            {
+              "text": "refers",
+              "start": 0.75,
+              "end": 1.01
+            },
+            {
+              "text": "to",
+              "start": 1.01,
+              "end": 1.43
+            },
+            {
+              "text": "systems",
+              "start": 1.43,
+              "end": 1.71
+            }
+          ]
+        },
+        {
+          "text": "that can make decisions and act",
+          "start": 1.71,
+          "end": 3.69,
+          "words": [
+            {
+              "text": "that",
+              "start": 1.71,
+              "end": 1.95
+            },
+            {
+              "text": "can",
+              "start": 1.95,
+              "end": 2.15
+            },
+            {
+              "text": "make",
+              "start": 2.15,
+              "end": 2.35
+            },
+            {
+              "text": "decisions",
+              "start": 2.35,
+              "end": 2.81
+            },
+            {
+              "text": "and",
+              "start": 2.81,
+              "end": 3.39
+            },
+            {
+              "text": "act",
+              "start": 3.39,
+              "end": 3.69
+            }
+          ]
+        },
+        {
+          "text": "independently of human input.",
+          "start": 3.69,
+          "end": 5.15,
+          "words": [
+            {
+              "text": "independently",
+              "start": 3.69,
+              "end": 4.23
+            },
+            {
+              "text": "of",
+              "start": 4.23,
+              "end": 4.59
+            },
+            {
+              "text": "human",
+              "start": 4.59,
+              "end": 4.79
+            },
+            {
+              "text": "input.",
+              "start": 4.79,
+              "end": 5.15
+            }
+          ]
+        },
+        {
+          "text": "Imagine self-driving cars,",
+          "start": 6.13,
+          "end": 7.35,
+          "words": [
+            {
+              "text": "Imagine",
+              "start": 6.13,
+              "end": 6.13
+            },
+            {
+              "text": "self-driving",
+              "start": 6.13,
+              "end": 6.85
+            },
+            {
+              "text": "cars,",
+              "start": 6.85,
+              "end": 7.35
+            }
+          ]
+        },
+        {
+          "text": "automated medical diagnostics,",
+          "start": 8.23,
+          "end": 9.41,
+          "words": [
+            {
+              "text": "automated",
+              "start": 8.23,
+              "end": 8.23
+            },
+            {
+              "text": "medical",
+              "start": 8.23,
+              "end": 8.63
+            },
+            {
+              "text": "diagnostics,",
+              "start": 8.63,
+              "end": 9.41
+            }
+          ]
+        },
+        {
+          "text": "or even AI-driven financial trading systems.",
+          "start": 9.51,
+          "end": 12.21,
+          "words": [
+            {
+              "text": "or",
+              "start": 9.51,
+              "end": 9.81
+            },
+            {
+              "text": "even",
+              "start": 9.81,
+              "end": 10.13
+            },
+            {
+              "text": "AI-driven",
+              "start": 10.13,
+              "end": 10.85
+            },
+            {
+              "text": "financial",
+              "start": 10.85,
+              "end": 11.37
+            },
+            {
+              "text": "trading",
+              "start": 11.37,
+              "end": 11.77
+            },
+            {
+              "text": "systems.",
+              "start": 11.77,
+              "end": 12.21
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-possibilities-risks",
+      "type": "bullet-list",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Endless Possibilities",
+      "items": [
+        "Self-driving cars",
+        "Medical diagnostics",
+        "Financial trading systems"
+      ],
+      "captions": [
+        "The possibilities are endless,",
+        "but so too are the risks.",
+        "This is where the concept of",
+        "guardrails comes into play,",
+        "ensuring that as AI systems",
+        "become more autonomous,",
+        "they remain safe, reliable,",
+        "and aligned with human values."
+      ],
+      "start": 20.59,
+      "duration": 14.5,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "The possibilities are endless,",
+          "start": 0.15,
+          "end": 1.59,
+          "words": [
+            {
+              "text": "The",
+              "start": 0.15,
+              "end": 0.43
+            },
+            {
+              "text": "possibilities",
+              "start": 0.43,
+              "end": 0.89
+            },
+            {
+              "text": "are",
+              "start": 0.89,
+              "end": 1.59
+            },
+            {
+              "text": "endless,",
+              "start": 1.59,
+              "end": 1.59
+            }
+          ]
+        },
+        {
+          "text": "but so too are the risks.",
+          "start": 1.93,
+          "end": 3.35,
+          "words": [
+            {
+              "text": "but",
+              "start": 1.93,
+              "end": 2.11
+            },
+            {
+              "text": "so",
+              "start": 2.11,
+              "end": 2.33
+            },
+            {
+              "text": "too",
+              "start": 2.33,
+              "end": 2.67
+            },
+            {
+              "text": "are",
+              "start": 2.67,
+              "end": 2.83
+            },
+            {
+              "text": "the",
+              "start": 2.83,
+              "end": 3.35
+            },
+            {
+              "text": "risks.",
+              "start": 3.35,
+              "end": 3.35
+            }
+          ]
+        },
+        {
+          "text": "This is where the concept of",
+          "start": 3.61,
+          "end": 5.55,
+          "words": [
+            {
+              "text": "This",
+              "start": 3.61,
+              "end": 4.25
+            },
+            {
+              "text": "is",
+              "start": 4.25,
+              "end": 4.55
+            },
+            {
+              "text": "where",
+              "start": 4.55,
+              "end": 4.65
+            },
+            {
+              "text": "the",
+              "start": 4.65,
+              "end": 4.85
+            },
+            {
+              "text": "concept",
+              "start": 4.85,
+              "end": 5.23
+            },
+            {
+              "text": "of",
+              "start": 5.23,
+              "end": 5.55
+            }
+          ]
+        },
+        {
+          "text": "guardrails comes into play,",
+          "start": 5.55,
+          "end": 6.87,
+          "words": [
+            {
+              "text": "guardrails",
+              "start": 5.55,
+              "end": 5.99
+            },
+            {
+              "text": "comes",
+              "start": 5.99,
+              "end": 6.33
+            },
+            {
+              "text": "into",
+              "start": 6.33,
+              "end": 6.61
+            },
+            {
+              "text": "play,",
+              "start": 6.61,
+              "end": 6.87
+            }
+          ]
+        },
+        {
+          "text": "ensuring that as AI systems",
+          "start": 7.39,
+          "end": 8.83,
+          "words": [
+            {
+              "text": "ensuring",
+              "start": 7.39,
+              "end": 7.65
+            },
+            {
+              "text": "that",
+              "start": 7.65,
+              "end": 7.89
+            },
+            {
+              "text": "as",
+              "start": 7.89,
+              "end": 8.11
+            },
+            {
+              "text": "AI",
+              "start": 8.11,
+              "end": 8.43
+            },
+            {
+              "text": "systems",
+              "start": 8.43,
+              "end": 8.83
+            }
+          ]
+        },
+        {
+          "text": "become more autonomous,",
+          "start": 8.83,
+          "end": 9.81,
+          "words": [
+            {
+              "text": "become",
+              "start": 8.83,
+              "end": 9.11
+            },
+            {
+              "text": "more",
+              "start": 9.11,
+              "end": 9.39
+            },
+            {
+              "text": "autonomous,",
+              "start": 9.39,
+              "end": 9.81
+            }
+          ]
+        },
+        {
+          "text": "they remain safe, reliable,",
+          "start": 10.09,
+          "end": 12.13,
+          "words": [
+            {
+              "text": "they",
+              "start": 10.09,
+              "end": 10.49
+            },
+            {
+              "text": "remain",
+              "start": 10.49,
+              "end": 10.81
+            },
+            {
+              "text": "safe,",
+              "start": 10.81,
+              "end": 11.29
+            },
+            {
+              "text": "reliable,",
+              "start": 12.13,
+              "end": 12.13
+            }
+          ]
+        },
+        {
+          "text": "and aligned with human values.",
+          "start": 12.53,
+          "end": 13.91,
+          "words": [
+            {
+              "text": "and",
+              "start": 12.53,
+              "end": 12.71
+            },
+            {
+              "text": "aligned",
+              "start": 12.71,
+              "end": 12.93
+            },
+            {
+              "text": "with",
+              "start": 12.93,
+              "end": 13.21
+            },
+            {
+              "text": "human",
+              "start": 13.21,
+              "end": 13.49
+            },
+            {
+              "text": "values.",
+              "start": 13.49,
+              "end": 13.91
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-nature-of-autonomous-ai",
+      "type": "bullet-list",
+      "eyebrow": "",
+      "headline": "",
+      "title": "Nature of Autonomous AI",
+      "items": [
+        "Learn from data",
+        "Adapt to new situations",
+        "Decide on their own"
+      ],
+      "captions": [
+        "To understand why guardrails are crucial,",
+        "let's first consider the nature",
+        "of autonomous AI.",
+        "These systems are designed",
+        "to learn from data,",
+        "adapt to new situations,",
+        "and make decisions on their own."
+      ],
+      "start": 35.09,
+      "duration": 11.38,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "To understand why guardrails are crucial,",
+          "start": 0.15,
+          "end": 2.17,
+          "words": [
+            {
+              "text": "To",
+              "start": 0.15,
+              "end": 0.23
+            },
+            {
+              "text": "understand",
+              "start": 0.23,
+              "end": 0.75
+            },
+            {
+              "text": "why",
+              "start": 0.75,
+              "end": 1.19
+            },
+            {
+              "text": "guardrails",
+              "start": 1.19,
+              "end": 1.55
+            },
+            {
+              "text": "are",
+              "start": 1.55,
+              "end": 1.83
+            },
+            {
+              "text": "crucial,",
+              "start": 1.83,
+              "end": 2.17
+            }
+          ]
+        },
+        {
+          "text": "let's first consider the nature",
+          "start": 2.73,
+          "end": 4.07,
+          "words": [
+            {
+              "text": "let's",
+              "start": 2.73,
+              "end": 2.89
+            },
+            {
+              "text": "first",
+              "start": 2.89,
+              "end": 3.35
+            },
+            {
+              "text": "consider",
+              "start": 3.35,
+              "end": 3.57
+            },
+            {
+              "text": "the",
+              "start": 3.57,
+              "end": 3.81
+            },
+            {
+              "text": "nature",
+              "start": 3.81,
+              "end": 4.07
+            }
+          ]
+        },
+        {
+          "text": "of autonomous AI.",
+          "start": 4.07,
+          "end": 5.11,
+          "words": [
+            {
+              "text": "of",
+              "start": 4.07,
+              "end": 4.43
+            },
+            {
+              "text": "autonomous",
+              "start": 4.43,
+              "end": 4.69
+            },
+            {
+              "text": "AI.",
+              "start": 4.69,
+              "end": 5.11
+            }
+          ]
+        },
+        {
+          "text": "These systems are designed",
+          "start": 5.69,
+          "end": 6.73,
+          "words": [
+            {
+              "text": "These",
+              "start": 5.69,
+              "end": 5.91
+            },
+            {
+              "text": "systems",
+              "start": 5.91,
+              "end": 6.21
+            },
+            {
+              "text": "are",
+              "start": 6.21,
+              "end": 6.47
+            },
+            {
+              "text": "designed",
+              "start": 6.47,
+              "end": 6.73
+            }
+          ]
+        },
+        {
+          "text": "to learn from data,",
+          "start": 6.73,
+          "end": 7.75,
+          "words": [
+            {
+              "text": "to",
+              "start": 6.73,
+              "end": 7.03
+            },
+            {
+              "text": "learn",
+              "start": 7.03,
+              "end": 7.23
+            },
+            {
+              "text": "from",
+              "start": 7.23,
+              "end": 7.49
+            },
+            {
+              "text": "data,",
+              "start": 7.49,
+              "end": 7.75
+            }
+          ]
+        },
+        {
+          "text": "adapt to new situations,",
+          "start": 8.57,
+          "end": 9.47,
+          "words": [
+            {
+              "text": "adapt",
+              "start": 8.57,
+              "end": 8.57
+            },
+            {
+              "text": "to",
+              "start": 8.57,
+              "end": 8.79
+            },
+            {
+              "text": "new",
+              "start": 8.79,
+              "end": 9.03
+            },
+            {
+              "text": "situations,",
+              "start": 9.03,
+              "end": 9.47
+            }
+          ]
+        },
+        {
+          "text": "and make decisions on their own.",
+          "start": 9.71,
+          "end": 11.05,
+          "words": [
+            {
+              "text": "and",
+              "start": 9.71,
+              "end": 9.87
+            },
+            {
+              "text": "make",
+              "start": 9.87,
+              "end": 10.01
+            },
+            {
+              "text": "decisions",
+              "start": 10.01,
+              "end": 10.43
+            },
+            {
+              "text": "on",
+              "start": 10.43,
+              "end": 10.65
+            },
+            {
+              "text": "their",
+              "start": 10.65,
+              "end": 10.79
+            },
+            {
+              "text": "own.",
+              "start": 10.79,
+              "end": 11.05
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-autonomy-and-uncertainty",
+      "type": "comparison",
+      "eyebrow": "",
+      "headline": "",
+      "leftTitle": "Autonomy",
+      "rightTitle": "Uncertainty",
+      "leftItems": [
+        "Efficiency",
+        "Innovation"
+      ],
+      "rightItems": [
+        "Complex environments",
+        "Life-or-death decisions"
+      ],
+      "leftAccent": "#00FF00",
+      "rightAccent": "#FF0000",
+      "verdict": "Autonomy introduces uncertainty.",
+      "captions": [
+        "While this autonomy can lead to",
+        "incredible efficiency and innovation,",
+        "it also introduces uncertainty.",
+        "A self-driving car, for instance,",
+        "must navigate complex environments,",
+        "making split-second decisions",
+        "that could have life-or-death consequences."
+      ],
+      "start": 46.47,
+      "duration": 14.52,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "While this autonomy can lead to",
+          "start": 0.15,
+          "end": 1.71,
+          "words": [
+            {
+              "text": "While",
+              "start": 0.15,
+              "end": 0.35
+            },
+            {
+              "text": "this",
+              "start": 0.35,
+              "end": 0.65
+            },
+            {
+              "text": "autonomy",
+              "start": 0.65,
+              "end": 0.97
+            },
+            {
+              "text": "can",
+              "start": 0.97,
+              "end": 1.33
+            },
+            {
+              "text": "lead",
+              "start": 1.33,
+              "end": 1.43
+            },
+            {
+              "text": "to",
+              "start": 1.43,
+              "end": 1.71
+            }
+          ]
+        },
+        {
+          "text": "incredible efficiency and innovation,",
+          "start": 1.71,
+          "end": 3.23,
+          "words": [
+            {
+              "text": "incredible",
+              "start": 1.71,
+              "end": 2.11
+            },
+            {
+              "text": "efficiency",
+              "start": 2.11,
+              "end": 2.59
+            },
+            {
+              "text": "and",
+              "start": 2.59,
+              "end": 2.91
+            },
+            {
+              "text": "innovation,",
+              "start": 2.91,
+              "end": 3.23
+            }
+          ]
+        },
+        {
+          "text": "it also introduces uncertainty.",
+          "start": 3.71,
+          "end": 5.21,
+          "words": [
+            {
+              "text": "it",
+              "start": 3.71,
+              "end": 3.81
+            },
+            {
+              "text": "also",
+              "start": 3.81,
+              "end": 4.23
+            },
+            {
+              "text": "introduces",
+              "start": 4.23,
+              "end": 4.63
+            },
+            {
+              "text": "uncertainty.",
+              "start": 4.63,
+              "end": 5.21
+            }
+          ]
+        },
+        {
+          "text": "A self-driving car, for instance,",
+          "start": 5.95,
+          "end": 7.83,
+          "words": [
+            {
+              "text": "A",
+              "start": 5.95,
+              "end": 6.13
+            },
+            {
+              "text": "self-driving",
+              "start": 6.13,
+              "end": 6.63
+            },
+            {
+              "text": "car,",
+              "start": 6.63,
+              "end": 7.05
+            },
+            {
+              "text": "for",
+              "start": 7.27,
+              "end": 7.83
+            },
+            {
+              "text": "instance,",
+              "start": 7.83,
+              "end": 7.83
+            }
+          ]
+        },
+        {
+          "text": "must navigate complex environments,",
+          "start": 8.09,
+          "end": 9.89,
+          "words": [
+            {
+              "text": "must",
+              "start": 8.09,
+              "end": 8.43
+            },
+            {
+              "text": "navigate",
+              "start": 8.43,
+              "end": 8.85
+            },
+            {
+              "text": "complex",
+              "start": 8.85,
+              "end": 9.41
+            },
+            {
+              "text": "environments,",
+              "start": 9.41,
+              "end": 9.89
+            }
+          ]
+        },
+        {
+          "text": "making split-second decisions",
+          "start": 10.43,
+          "end": 11.95,
+          "words": [
+            {
+              "text": "making",
+              "start": 10.43,
+              "end": 10.69
+            },
+            {
+              "text": "split-second",
+              "start": 10.69,
+              "end": 11.45
+            },
+            {
+              "text": "decisions",
+              "start": 11.45,
+              "end": 11.95
+            }
+          ]
+        },
+        {
+          "text": "that could have life-or-death consequences.",
+          "start": 11.95,
+          "end": 13.89,
+          "words": [
+            {
+              "text": "that",
+              "start": 11.95,
+              "end": 12.21
+            },
+            {
+              "text": "could",
+              "start": 12.21,
+              "end": 12.37
+            },
+            {
+              "text": "have",
+              "start": 12.37,
+              "end": 12.59
+            },
+            {
+              "text": "life-or-death",
+              "start": 12.59,
+              "end": 13.27
+            },
+            {
+              "text": "consequences.",
+              "start": 13.27,
+              "end": 13.89
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s0-importance-of-guardrails",
+      "type": "concept-card",
+      "eyebrow": "",
+      "headline": "",
+      "term": "Guardrails",
+      "tagline": "Safety for AI",
+      "definition": "Safety measures and guidelines that keep autonomous systems in check.",
+      "glyph": "🛡️",
+      "captions": [
+        "Without proper oversight,",
+        "the consequences of a misstep",
+        "could be catastrophic.",
+        "Guardrails are essentially",
+        "the safety measures and guidelines",
+        "that keep these systems in check.",
+        "They can be thought of as a combination",
+        "of ethical principles,",
+        "technical constraints,",
+        "and regulatory frameworks."
+      ],
+      "start": 60.99,
+      "duration": 15.94,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Without proper oversight,",
+          "start": 0.15,
+          "end": 1.19,
+          "words": [
+            {
+              "text": "Without",
+              "start": 0.15,
+              "end": 0.29
+            },
+            {
+              "text": "proper",
+              "start": 0.29,
+              "end": 0.69
+            },
+            {
+              "text": "oversight,",
+              "start": 0.69,
+              "end": 1.19
+            }
+          ]
+        },
+        {
+          "text": "the consequences of a misstep",
+          "start": 1.67,
+          "end": 3.05,
+          "words": [
+            {
+              "text": "the",
+              "start": 1.67,
+              "end": 1.95
+            },
+            {
+              "text": "consequences",
+              "start": 1.95,
+              "end": 2.31
+            },
+            {
+              "text": "of",
+              "start": 2.31,
+              "end": 2.53
+            },
+            {
+              "text": "a",
+              "start": 2.53,
+              "end": 2.75
+            },
+            {
+              "text": "misstep",
+              "start": 2.75,
+              "end": 3.05
+            }
+          ]
+        },
+        {
+          "text": "could be catastrophic.",
+          "start": 3.05,
+          "end": 4.05,
+          "words": [
+            {
+              "text": "could",
+              "start": 3.05,
+              "end": 3.31
+            },
+            {
+              "text": "be",
+              "start": 3.31,
+              "end": 3.53
+            },
+            {
+              "text": "catastrophic.",
+              "start": 3.53,
+              "end": 4.05
+            }
+          ]
+        },
+        {
+          "text": "Guardrails are essentially",
+          "start": 4.93,
+          "end": 5.97,
+          "words": [
+            {
+              "text": "Guardrails",
+              "start": 4.93,
+              "end": 5.31
+            },
+            {
+              "text": "are",
+              "start": 5.31,
+              "end": 5.55
+            },
+            {
+              "text": "essentially",
+              "start": 5.55,
+              "end": 5.97
+            }
+          ]
+        },
+        {
+          "text": "the safety measures and guidelines",
+          "start": 5.97,
+          "end": 7.59,
+          "words": [
+            {
+              "text": "the",
+              "start": 5.97,
+              "end": 6.33
+            },
+            {
+              "text": "safety",
+              "start": 6.33,
+              "end": 6.57
+            },
+            {
+              "text": "measures",
+              "start": 6.57,
+              "end": 6.87
+            },
+            {
+              "text": "and",
+              "start": 6.87,
+              "end": 7.21
+            },
+            {
+              "text": "guidelines",
+              "start": 7.21,
+              "end": 7.59
+            }
+          ]
+        },
+        {
+          "text": "that keep these systems in check.",
+          "start": 7.59,
+          "end": 9.69,
+          "words": [
+            {
+              "text": "that",
+              "start": 7.59,
+              "end": 7.97
+            },
+            {
+              "text": "keep",
+              "start": 7.97,
+              "end": 8.19
+            },
+            {
+              "text": "these",
+              "start": 8.19,
+              "end": 8.51
+            },
+            {
+              "text": "systems",
+              "start": 8.51,
+              "end": 8.73
+            },
+            {
+              "text": "in",
+              "start": 8.73,
+              "end": 9.19
+            },
+            {
+              "text": "check.",
+              "start": 9.19,
+              "end": 9.69
+            }
+          ]
+        },
+        {
+          "text": "They can be thought of as a combination",
+          "start": 9.69,
+          "end": 11.21,
+          "words": [
+            {
+              "text": "They",
+              "start": 9.69,
+              "end": 9.89
+            },
+            {
+              "text": "can",
+              "start": 9.89,
+              "end": 10.03
+            },
+            {
+              "text": "be",
+              "start": 10.03,
+              "end": 10.37
+            },
+            {
+              "text": "thought",
+              "start": 10.37,
+              "end": 10.37
+            },
+            {
+              "text": "of",
+              "start": 10.37,
+              "end": 10.55
+            },
+            {
+              "text": "as",
+              "start": 10.55,
+              "end": 10.69
+            },
+            {
+              "text": "a",
+              "start": 10.69,
+              "end": 10.81
+            },
+            {
+              "text": "combination",
+              "start": 10.81,
+              "end": 11.21
+            }
+          ]
+        },
+        {
+          "text": "of ethical principles,",
+          "start": 11.21,
+          "end": 12.35,
+          "words": [
+            {
+              "text": "of",
+              "start": 11.21,
+              "end": 11.85
+            },
+            {
+              "text": "ethical",
+              "start": 11.85,
+              "end": 11.85
+            },
+            {
+              "text": "principles,",
+              "start": 11.85,
+              "end": 12.35
+            }
+          ]
+        },
+        {
+          "text": "technical constraints,",
+          "start": 13.01,
+          "end": 13.79,
+          "words": [
+            {
+              "text": "technical",
+              "start": 13.01,
+              "end": 13.27
+            },
+            {
+              "text": "constraints,",
+              "start": 13.27,
+              "end": 13.79
+            }
+          ]
+        },
+        {
+          "text": "and regulatory frameworks.",
+          "start": 14.23,
+          "end": 15.41,
+          "words": [
+            {
+              "text": "and",
+              "start": 14.23,
+              "end": 14.51
+            },
+            {
+              "text": "regulatory",
+              "start": 14.51,
+              "end": 14.85
+            },
+            {
+              "text": "frameworks.",
+              "start": 14.85,
+              "end": 15.41
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-technical-safeguards",
+      "type": "bullet-list",
+      "eyebrow": "Technical Safeguards",
+      "headline": "Implementing Fail-Safes",
+      "captions": [
+        "At a technical level, this might involve",
+        "implementing fail-safes or redundancy",
+        "in critical systems.",
+        "For example, a self-driving car might have",
+        "multiple sensors and algorithms",
+        "cross-checking each other to ensure",
+        "accurate perception of the environment.",
+        "If one sensor fails, others can compensate,",
+        "preventing a failure from leading to an accident."
+      ],
+      "title": "AI Safety Measures",
+      "items": [
+        "Multiple **sensors**",
+        "Algorithms **cross-check**",
+        "Redundancy in **systems**"
+      ],
+      "start": 76.93,
+      "duration": 19.28,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "At a technical level, this might involve",
+          "start": 0.15,
+          "end": 2.19,
+          "words": [
+            {
+              "text": "At",
+              "start": 0.15,
+              "end": 0.31
+            },
+            {
+              "text": "a",
+              "start": 0.31,
+              "end": 0.51
+            },
+            {
+              "text": "technical",
+              "start": 0.51,
+              "end": 0.83
+            },
+            {
+              "text": "level,",
+              "start": 0.83,
+              "end": 1.11
+            },
+            {
+              "text": "this",
+              "start": 1.49,
+              "end": 1.65
+            },
+            {
+              "text": "might",
+              "start": 1.65,
+              "end": 1.83
+            },
+            {
+              "text": "involve",
+              "start": 1.83,
+              "end": 2.19
+            }
+          ]
+        },
+        {
+          "text": "implementing fail-safes or redundancy",
+          "start": 2.19,
+          "end": 4.49,
+          "words": [
+            {
+              "text": "implementing",
+              "start": 2.19,
+              "end": 2.71
+            },
+            {
+              "text": "fail-safes",
+              "start": 2.71,
+              "end": 3.47
+            },
+            {
+              "text": "or",
+              "start": 3.47,
+              "end": 3.95
+            },
+            {
+              "text": "redundancy",
+              "start": 3.95,
+              "end": 4.49
+            }
+          ]
+        },
+        {
+          "text": "in critical systems.",
+          "start": 4.49,
+          "end": 5.51,
+          "words": [
+            {
+              "text": "in",
+              "start": 4.49,
+              "end": 4.83
+            },
+            {
+              "text": "critical",
+              "start": 4.83,
+              "end": 5.11
+            },
+            {
+              "text": "systems.",
+              "start": 5.11,
+              "end": 5.51
+            }
+          ]
+        },
+        {
+          "text": "For example, a self-driving car might have",
+          "start": 5.71,
+          "end": 8.41,
+          "words": [
+            {
+              "text": "For",
+              "start": 5.71,
+              "end": 6.25
+            },
+            {
+              "text": "example,",
+              "start": 6.25,
+              "end": 6.55
+            },
+            {
+              "text": "a",
+              "start": 6.71,
+              "end": 7.23
+            },
+            {
+              "text": "self-driving",
+              "start": 7.23,
+              "end": 7.63
+            },
+            {
+              "text": "car",
+              "start": 7.63,
+              "end": 7.97
+            },
+            {
+              "text": "might",
+              "start": 7.97,
+              "end": 8.15
+            },
+            {
+              "text": "have",
+              "start": 8.15,
+              "end": 8.41
+            }
+          ]
+        },
+        {
+          "text": "multiple sensors and algorithms",
+          "start": 8.41,
+          "end": 9.99,
+          "words": [
+            {
+              "text": "multiple",
+              "start": 8.41,
+              "end": 8.77
+            },
+            {
+              "text": "sensors",
+              "start": 8.77,
+              "end": 9.19
+            },
+            {
+              "text": "and",
+              "start": 9.19,
+              "end": 9.99
+            },
+            {
+              "text": "algorithms",
+              "start": 9.99,
+              "end": 9.99
+            }
+          ]
+        },
+        {
+          "text": "cross-checking each other to ensure",
+          "start": 9.99,
+          "end": 11.77,
+          "words": [
+            {
+              "text": "cross-checking",
+              "start": 9.99,
+              "end": 10.63
+            },
+            {
+              "text": "each",
+              "start": 10.63,
+              "end": 10.81
+            },
+            {
+              "text": "other",
+              "start": 10.81,
+              "end": 11.01
+            },
+            {
+              "text": "to",
+              "start": 11.01,
+              "end": 11.47
+            },
+            {
+              "text": "ensure",
+              "start": 11.47,
+              "end": 11.77
+            }
+          ]
+        },
+        {
+          "text": "accurate perception of the environment.",
+          "start": 11.77,
+          "end": 13.39,
+          "words": [
+            {
+              "text": "accurate",
+              "start": 11.77,
+              "end": 12.21
+            },
+            {
+              "text": "perception",
+              "start": 12.21,
+              "end": 12.65
+            },
+            {
+              "text": "of",
+              "start": 12.65,
+              "end": 12.87
+            },
+            {
+              "text": "the",
+              "start": 12.87,
+              "end": 12.99
+            },
+            {
+              "text": "environment.",
+              "start": 12.99,
+              "end": 13.39
+            }
+          ]
+        },
+        {
+          "text": "If one sensor fails, others can compensate,",
+          "start": 14.11,
+          "end": 16.45,
+          "words": [
+            {
+              "text": "If",
+              "start": 14.11,
+              "end": 14.13
+            },
+            {
+              "text": "one",
+              "start": 14.13,
+              "end": 14.41
+            },
+            {
+              "text": "sensor",
+              "start": 14.41,
+              "end": 14.71
+            },
+            {
+              "text": "fails,",
+              "start": 14.71,
+              "end": 15.05
+            },
+            {
+              "text": "others",
+              "start": 15.69,
+              "end": 15.71
+            },
+            {
+              "text": "can",
+              "start": 15.71,
+              "end": 16.01
+            },
+            {
+              "text": "compensate,",
+              "start": 16.01,
+              "end": 16.45
+            }
+          ]
+        },
+        {
+          "text": "preventing a failure from leading to an accident.",
+          "start": 17.23,
+          "end": 18.95,
+          "words": [
+            {
+              "text": "preventing",
+              "start": 17.23,
+              "end": 17.23
+            },
+            {
+              "text": "a",
+              "start": 17.23,
+              "end": 17.61
+            },
+            {
+              "text": "failure",
+              "start": 17.61,
+              "end": 17.69
+            },
+            {
+              "text": "from",
+              "start": 17.69,
+              "end": 18.13
+            },
+            {
+              "text": "leading",
+              "start": 18.13,
+              "end": 18.15
+            },
+            {
+              "text": "to",
+              "start": 18.15,
+              "end": 18.37
+            },
+            {
+              "text": "an",
+              "start": 18.37,
+              "end": 18.95
+            },
+            {
+              "text": "accident.",
+              "start": 18.95,
+              "end": 18.95
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-ethical-guardrails",
+      "type": "concept-card",
+      "eyebrow": "Ethical Considerations",
+      "headline": "Embedding Ethics in AI",
+      "captions": [
+        "From an ethical standpoint, guardrails",
+        "ensure that AI systems act in ways",
+        "that align with human values",
+        "and societal norms.",
+        "This involves embedding ethical",
+        "considerations directly into the design",
+        "and operation of AI systems.",
+        "For instance, an AI in the healthcare sector",
+        "should prioritize patient safety",
+        "and confidentiality above all else."
+      ],
+      "term": "Ethical AI",
+      "tagline": "Values → Design",
+      "definition": "AI systems should align with human values and norms.",
+      "glyph": "⚖️",
+      "start": 96.21,
+      "duration": 20.12,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "From an ethical standpoint, guardrails",
+          "start": 0.15,
+          "end": 2.25,
+          "words": [
+            {
+              "text": "From",
+              "start": 0.15,
+              "end": 0.39
+            },
+            {
+              "text": "an",
+              "start": 0.39,
+              "end": 0.67
+            },
+            {
+              "text": "ethical",
+              "start": 0.67,
+              "end": 0.85
+            },
+            {
+              "text": "standpoint,",
+              "start": 0.85,
+              "end": 1.35
+            },
+            {
+              "text": "guardrails",
+              "start": 2.05,
+              "end": 2.25
+            }
+          ]
+        },
+        {
+          "text": "ensure that AI systems act in ways",
+          "start": 2.25,
+          "end": 4.25,
+          "words": [
+            {
+              "text": "ensure",
+              "start": 2.25,
+              "end": 2.63
+            },
+            {
+              "text": "that",
+              "start": 2.63,
+              "end": 2.89
+            },
+            {
+              "text": "AI",
+              "start": 2.89,
+              "end": 3.17
+            },
+            {
+              "text": "systems",
+              "start": 3.17,
+              "end": 3.55
+            },
+            {
+              "text": "act",
+              "start": 3.55,
+              "end": 3.85
+            },
+            {
+              "text": "in",
+              "start": 3.85,
+              "end": 4.19
+            },
+            {
+              "text": "ways",
+              "start": 4.19,
+              "end": 4.25
+            }
+          ]
+        },
+        {
+          "text": "that align with human values",
+          "start": 4.25,
+          "end": 5.63,
+          "words": [
+            {
+              "text": "that",
+              "start": 4.25,
+              "end": 4.73
+            },
+            {
+              "text": "align",
+              "start": 4.73,
+              "end": 4.75
+            },
+            {
+              "text": "with",
+              "start": 4.75,
+              "end": 5.03
+            },
+            {
+              "text": "human",
+              "start": 5.03,
+              "end": 5.25
+            },
+            {
+              "text": "values",
+              "start": 5.25,
+              "end": 5.63
+            }
+          ]
+        },
+        {
+          "text": "and societal norms.",
+          "start": 5.63,
+          "end": 6.67,
+          "words": [
+            {
+              "text": "and",
+              "start": 5.63,
+              "end": 5.89
+            },
+            {
+              "text": "societal",
+              "start": 5.89,
+              "end": 6.31
+            },
+            {
+              "text": "norms.",
+              "start": 6.31,
+              "end": 6.67
+            }
+          ]
+        },
+        {
+          "text": "This involves embedding ethical",
+          "start": 7.45,
+          "end": 8.85,
+          "words": [
+            {
+              "text": "This",
+              "start": 7.45,
+              "end": 7.61
+            },
+            {
+              "text": "involves",
+              "start": 7.61,
+              "end": 7.99
+            },
+            {
+              "text": "embedding",
+              "start": 7.99,
+              "end": 8.45
+            },
+            {
+              "text": "ethical",
+              "start": 8.45,
+              "end": 8.85
+            }
+          ]
+        },
+        {
+          "text": "considerations directly into the design",
+          "start": 8.85,
+          "end": 10.87,
+          "words": [
+            {
+              "text": "considerations",
+              "start": 8.85,
+              "end": 9.49
+            },
+            {
+              "text": "directly",
+              "start": 9.49,
+              "end": 10.01
+            },
+            {
+              "text": "into",
+              "start": 10.01,
+              "end": 10.27
+            },
+            {
+              "text": "the",
+              "start": 10.27,
+              "end": 10.55
+            },
+            {
+              "text": "design",
+              "start": 10.55,
+              "end": 10.87
+            }
+          ]
+        },
+        {
+          "text": "and operation of AI systems.",
+          "start": 10.87,
+          "end": 12.79,
+          "words": [
+            {
+              "text": "and",
+              "start": 10.87,
+              "end": 11.43
+            },
+            {
+              "text": "operation",
+              "start": 11.43,
+              "end": 11.81
+            },
+            {
+              "text": "of",
+              "start": 11.81,
+              "end": 12.11
+            },
+            {
+              "text": "AI",
+              "start": 12.11,
+              "end": 12.43
+            },
+            {
+              "text": "systems.",
+              "start": 12.43,
+              "end": 12.79
+            }
+          ]
+        },
+        {
+          "text": "For instance, an AI in the healthcare sector",
+          "start": 13.33,
+          "end": 15.85,
+          "words": [
+            {
+              "text": "For",
+              "start": 13.33,
+              "end": 13.69
+            },
+            {
+              "text": "instance,",
+              "start": 13.69,
+              "end": 13.93
+            },
+            {
+              "text": "an",
+              "start": 14.25,
+              "end": 14.63
+            },
+            {
+              "text": "AI",
+              "start": 14.63,
+              "end": 14.83
+            },
+            {
+              "text": "in",
+              "start": 14.83,
+              "end": 15.03
+            },
+            {
+              "text": "the",
+              "start": 15.03,
+              "end": 15.21
+            },
+            {
+              "text": "healthcare",
+              "start": 15.21,
+              "end": 15.49
+            },
+            {
+              "text": "sector",
+              "start": 15.49,
+              "end": 15.85
+            }
+          ]
+        },
+        {
+          "text": "should prioritize patient safety",
+          "start": 15.85,
+          "end": 17.51,
+          "words": [
+            {
+              "text": "should",
+              "start": 15.85,
+              "end": 16.11
+            },
+            {
+              "text": "prioritize",
+              "start": 16.11,
+              "end": 16.67
+            },
+            {
+              "text": "patient",
+              "start": 16.67,
+              "end": 17.15
+            },
+            {
+              "text": "safety",
+              "start": 17.15,
+              "end": 17.51
+            }
+          ]
+        },
+        {
+          "text": "and confidentiality above all else.",
+          "start": 17.51,
+          "end": 19.85,
+          "words": [
+            {
+              "text": "and",
+              "start": 17.51,
+              "end": 18.11
+            },
+            {
+              "text": "confidentiality",
+              "start": 18.11,
+              "end": 19.03
+            },
+            {
+              "text": "above",
+              "start": 19.03,
+              "end": 19.23
+            },
+            {
+              "text": "all",
+              "start": 19.23,
+              "end": 19.61
+            },
+            {
+              "text": "else.",
+              "start": 19.61,
+              "end": 19.85
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s1-regulatory-frameworks",
+      "type": "bullet-list",
+      "eyebrow": "Regulatory Frameworks",
+      "headline": "Role of Regulations",
+      "captions": [
+        "This requires a deep understanding",
+        "of ethical principles and how they",
+        "translate into technical requirements.",
+        "Regulatory frameworks also play",
+        "a crucial role.",
+        "Governments and international bodies",
+        "are increasingly recognizing the need",
+        "for regulations that address the unique",
+        "challenges posed by AI.",
+        "These regulations might dictate how",
+        "AI systems should be tested,",
+        "how transparent their decision-making",
+        "processes need to be,",
+        "or how accountability is assigned",
+        "in the event of a failure.",
+        "It's a delicate balance, ensuring",
+        "that regulations are robust enough",
+        "to protect the public,",
+        "yet flexible enough to not stifle innovation."
+      ],
+      "title": "AI Regulations",
+      "items": [
+        "Testing **standards**",
+        "Decision **transparency**",
+        "Assigning **accountability**"
+      ],
+      "start": 116.33,
+      "duration": 34.18,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This requires a deep understanding",
+          "start": 0.15,
+          "end": 1.79,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.47
+            },
+            {
+              "text": "requires",
+              "start": 0.47,
+              "end": 0.87
+            },
+            {
+              "text": "a",
+              "start": 0.87,
+              "end": 1.09
+            },
+            {
+              "text": "deep",
+              "start": 1.09,
+              "end": 1.35
+            },
+            {
+              "text": "understanding",
+              "start": 1.35,
+              "end": 1.79
+            }
+          ]
+        },
+        {
+          "text": "of ethical principles and how they",
+          "start": 1.79,
+          "end": 3.67,
+          "words": [
+            {
+              "text": "of",
+              "start": 1.79,
+              "end": 2.11
+            },
+            {
+              "text": "ethical",
+              "start": 2.11,
+              "end": 2.35
+            },
+            {
+              "text": "principles",
+              "start": 2.35,
+              "end": 2.81
+            },
+            {
+              "text": "and",
+              "start": 2.81,
+              "end": 3.33
+            },
+            {
+              "text": "how",
+              "start": 3.33,
+              "end": 3.49
+            },
+            {
+              "text": "they",
+              "start": 3.49,
+              "end": 3.67
+            }
+          ]
+        },
+        {
+          "text": "translate into technical requirements.",
+          "start": 3.67,
+          "end": 5.37,
+          "words": [
+            {
+              "text": "translate",
+              "start": 3.67,
+              "end": 4.05
+            },
+            {
+              "text": "into",
+              "start": 4.05,
+              "end": 4.35
+            },
+            {
+              "text": "technical",
+              "start": 4.35,
+              "end": 4.75
+            },
+            {
+              "text": "requirements.",
+              "start": 4.75,
+              "end": 5.37
+            }
+          ]
+        },
+        {
+          "text": "Regulatory frameworks also play",
+          "start": 6.37,
+          "end": 7.79,
+          "words": [
+            {
+              "text": "Regulatory",
+              "start": 6.37,
+              "end": 6.63
+            },
+            {
+              "text": "frameworks",
+              "start": 6.63,
+              "end": 7.07
+            },
+            {
+              "text": "also",
+              "start": 7.07,
+              "end": 7.73
+            },
+            {
+              "text": "play",
+              "start": 7.73,
+              "end": 7.79
+            }
+          ]
+        },
+        {
+          "text": "a crucial role.",
+          "start": 7.79,
+          "end": 8.63,
+          "words": [
+            {
+              "text": "a",
+              "start": 7.79,
+              "end": 8.03
+            },
+            {
+              "text": "crucial",
+              "start": 8.03,
+              "end": 8.31
+            },
+            {
+              "text": "role.",
+              "start": 8.31,
+              "end": 8.63
+            }
+          ]
+        },
+        {
+          "text": "Governments and international bodies",
+          "start": 9.61,
+          "end": 10.67,
+          "words": [
+            {
+              "text": "Governments",
+              "start": 9.61,
+              "end": 9.61
+            },
+            {
+              "text": "and",
+              "start": 9.61,
+              "end": 9.81
+            },
+            {
+              "text": "international",
+              "start": 9.81,
+              "end": 10.31
+            },
+            {
+              "text": "bodies",
+              "start": 10.31,
+              "end": 10.67
+            }
+          ]
+        },
+        {
+          "text": "are increasingly recognizing the need",
+          "start": 10.67,
+          "end": 12.51,
+          "words": [
+            {
+              "text": "are",
+              "start": 10.67,
+              "end": 10.97
+            },
+            {
+              "text": "increasingly",
+              "start": 10.97,
+              "end": 11.47
+            },
+            {
+              "text": "recognizing",
+              "start": 11.47,
+              "end": 12.01
+            },
+            {
+              "text": "the",
+              "start": 12.01,
+              "end": 12.31
+            },
+            {
+              "text": "need",
+              "start": 12.31,
+              "end": 12.51
+            }
+          ]
+        },
+        {
+          "text": "for regulations that address the unique",
+          "start": 12.51,
+          "end": 14.67,
+          "words": [
+            {
+              "text": "for",
+              "start": 12.51,
+              "end": 13.27
+            },
+            {
+              "text": "regulations",
+              "start": 13.27,
+              "end": 13.27
+            },
+            {
+              "text": "that",
+              "start": 13.27,
+              "end": 13.81
+            },
+            {
+              "text": "address",
+              "start": 13.81,
+              "end": 14.11
+            },
+            {
+              "text": "the",
+              "start": 14.11,
+              "end": 14.43
+            },
+            {
+              "text": "unique",
+              "start": 14.43,
+              "end": 14.67
+            }
+          ]
+        },
+        {
+          "text": "challenges posed by AI.",
+          "start": 14.67,
+          "end": 16.07,
+          "words": [
+            {
+              "text": "challenges",
+              "start": 14.67,
+              "end": 15.15
+            },
+            {
+              "text": "posed",
+              "start": 15.15,
+              "end": 15.49
+            },
+            {
+              "text": "by",
+              "start": 15.49,
+              "end": 15.77
+            },
+            {
+              "text": "AI.",
+              "start": 15.77,
+              "end": 16.07
+            }
+          ]
+        },
+        {
+          "text": "These regulations might dictate how",
+          "start": 16.73,
+          "end": 18.41,
+          "words": [
+            {
+              "text": "These",
+              "start": 16.73,
+              "end": 16.97
+            },
+            {
+              "text": "regulations",
+              "start": 16.97,
+              "end": 17.41
+            },
+            {
+              "text": "might",
+              "start": 17.41,
+              "end": 17.79
+            },
+            {
+              "text": "dictate",
+              "start": 17.79,
+              "end": 18.11
+            },
+            {
+              "text": "how",
+              "start": 18.11,
+              "end": 18.41
+            }
+          ]
+        },
+        {
+          "text": "AI systems should be tested,",
+          "start": 18.41,
+          "end": 19.79,
+          "words": [
+            {
+              "text": "AI",
+              "start": 18.41,
+              "end": 18.79
+            },
+            {
+              "text": "systems",
+              "start": 18.79,
+              "end": 19.11
+            },
+            {
+              "text": "should",
+              "start": 19.11,
+              "end": 19.31
+            },
+            {
+              "text": "be",
+              "start": 19.31,
+              "end": 19.79
+            },
+            {
+              "text": "tested,",
+              "start": 19.79,
+              "end": 19.79
+            }
+          ]
+        },
+        {
+          "text": "how transparent their decision-making",
+          "start": 20.37,
+          "end": 21.87,
+          "words": [
+            {
+              "text": "how",
+              "start": 20.37,
+              "end": 20.51
+            },
+            {
+              "text": "transparent",
+              "start": 20.51,
+              "end": 20.93
+            },
+            {
+              "text": "their",
+              "start": 20.93,
+              "end": 21.23
+            },
+            {
+              "text": "decision-making",
+              "start": 21.23,
+              "end": 21.87
+            }
+          ]
+        },
+        {
+          "text": "processes need to be,",
+          "start": 21.87,
+          "end": 22.93,
+          "words": [
+            {
+              "text": "processes",
+              "start": 21.87,
+              "end": 22.33
+            },
+            {
+              "text": "need",
+              "start": 22.33,
+              "end": 22.61
+            },
+            {
+              "text": "to",
+              "start": 22.61,
+              "end": 22.75
+            },
+            {
+              "text": "be,",
+              "start": 22.75,
+              "end": 22.93
+            }
+          ]
+        },
+        {
+          "text": "or how accountability is assigned",
+          "start": 23.23,
+          "end": 24.85,
+          "words": [
+            {
+              "text": "or",
+              "start": 23.23,
+              "end": 23.53
+            },
+            {
+              "text": "how",
+              "start": 23.53,
+              "end": 23.79
+            },
+            {
+              "text": "accountability",
+              "start": 23.79,
+              "end": 24.23
+            },
+            {
+              "text": "is",
+              "start": 24.23,
+              "end": 24.57
+            },
+            {
+              "text": "assigned",
+              "start": 24.57,
+              "end": 24.85
+            }
+          ]
+        },
+        {
+          "text": "in the event of a failure.",
+          "start": 24.85,
+          "end": 26.01,
+          "words": [
+            {
+              "text": "in",
+              "start": 24.85,
+              "end": 25.11
+            },
+            {
+              "text": "the",
+              "start": 25.11,
+              "end": 25.43
+            },
+            {
+              "text": "event",
+              "start": 25.43,
+              "end": 25.43
+            },
+            {
+              "text": "of",
+              "start": 25.43,
+              "end": 25.59
+            },
+            {
+              "text": "a",
+              "start": 25.59,
+              "end": 26.01
+            },
+            {
+              "text": "failure.",
+              "start": 26.01,
+              "end": 26.01
+            }
+          ]
+        },
+        {
+          "text": "It's a delicate balance, ensuring",
+          "start": 26.41,
+          "end": 28.39,
+          "words": [
+            {
+              "text": "It's",
+              "start": 26.41,
+              "end": 26.71
+            },
+            {
+              "text": "a",
+              "start": 26.71,
+              "end": 26.89
+            },
+            {
+              "text": "delicate",
+              "start": 26.89,
+              "end": 27.25
+            },
+            {
+              "text": "balance,",
+              "start": 27.25,
+              "end": 27.71
+            },
+            {
+              "text": "ensuring",
+              "start": 28.39,
+              "end": 28.39
+            }
+          ]
+        },
+        {
+          "text": "that regulations are robust enough",
+          "start": 28.39,
+          "end": 29.95,
+          "words": [
+            {
+              "text": "that",
+              "start": 28.39,
+              "end": 29.11
+            },
+            {
+              "text": "regulations",
+              "start": 29.11,
+              "end": 29.11
+            },
+            {
+              "text": "are",
+              "start": 29.11,
+              "end": 29.37
+            },
+            {
+              "text": "robust",
+              "start": 29.37,
+              "end": 29.67
+            },
+            {
+              "text": "enough",
+              "start": 29.67,
+              "end": 29.95
+            }
+          ]
+        },
+        {
+          "text": "to protect the public,",
+          "start": 29.95,
+          "end": 30.95,
+          "words": [
+            {
+              "text": "to",
+              "start": 29.95,
+              "end": 30.23
+            },
+            {
+              "text": "protect",
+              "start": 30.23,
+              "end": 30.45
+            },
+            {
+              "text": "the",
+              "start": 30.45,
+              "end": 30.65
+            },
+            {
+              "text": "public,",
+              "start": 30.65,
+              "end": 30.95
+            }
+          ]
+        },
+        {
+          "text": "yet flexible enough to not stifle innovation.",
+          "start": 31.33,
+          "end": 33.59,
+          "words": [
+            {
+              "text": "yet",
+              "start": 31.33,
+              "end": 31.53
+            },
+            {
+              "text": "flexible",
+              "start": 31.53,
+              "end": 31.97
+            },
+            {
+              "text": "enough",
+              "start": 31.97,
+              "end": 32.27
+            },
+            {
+              "text": "to",
+              "start": 32.27,
+              "end": 32.47
+            },
+            {
+              "text": "not",
+              "start": 32.47,
+              "end": 32.81
+            },
+            {
+              "text": "stifle",
+              "start": 32.81,
+              "end": 33.11
+            },
+            {
+              "text": "innovation.",
+              "start": 33.11,
+              "end": 33.59
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-misconception",
+      "type": "bullet-list",
+      "eyebrow": "Guardrails in AI",
+      "headline": "Common Misceptions",
+      "captions": [
+        "One common misconception about guardrails",
+        "is that they limit the potential of AI.",
+        "In reality, they enable it.",
+        "By providing clear guidelines and safety nets,",
+        "developers can innovate with confidence,",
+        "knowing that their creations won't cause harm."
+      ],
+      "title": "Misconceptions",
+      "items": [
+        "Limit AI potential",
+        "Restrict innovation",
+        "Act as barriers"
+      ],
+      "start": 150.51,
+      "duration": 13.24,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "One common misconception about guardrails",
+          "start": 0.15,
+          "end": 2.09,
+          "words": [
+            {
+              "text": "One",
+              "start": 0.15,
+              "end": 0.29
+            },
+            {
+              "text": "common",
+              "start": 0.29,
+              "end": 0.69
+            },
+            {
+              "text": "misconception",
+              "start": 0.69,
+              "end": 1.25
+            },
+            {
+              "text": "about",
+              "start": 1.25,
+              "end": 1.63
+            },
+            {
+              "text": "guardrails",
+              "start": 1.63,
+              "end": 2.09
+            }
+          ]
+        },
+        {
+          "text": "is that they limit the potential of AI.",
+          "start": 2.09,
+          "end": 4.17,
+          "words": [
+            {
+              "text": "is",
+              "start": 2.09,
+              "end": 2.59
+            },
+            {
+              "text": "that",
+              "start": 2.59,
+              "end": 2.75
+            },
+            {
+              "text": "they",
+              "start": 2.75,
+              "end": 2.93
+            },
+            {
+              "text": "limit",
+              "start": 2.93,
+              "end": 3.17
+            },
+            {
+              "text": "the",
+              "start": 3.17,
+              "end": 3.39
+            },
+            {
+              "text": "potential",
+              "start": 3.39,
+              "end": 3.71
+            },
+            {
+              "text": "of",
+              "start": 3.71,
+              "end": 3.95
+            },
+            {
+              "text": "AI.",
+              "start": 3.95,
+              "end": 4.17
+            }
+          ]
+        },
+        {
+          "text": "In reality, they enable it.",
+          "start": 4.77,
+          "end": 6.17,
+          "words": [
+            {
+              "text": "In",
+              "start": 4.77,
+              "end": 4.91
+            },
+            {
+              "text": "reality,",
+              "start": 4.91,
+              "end": 5.31
+            },
+            {
+              "text": "they",
+              "start": 5.51,
+              "end": 5.69
+            },
+            {
+              "text": "enable",
+              "start": 5.69,
+              "end": 5.99
+            },
+            {
+              "text": "it.",
+              "start": 5.99,
+              "end": 6.17
+            }
+          ]
+        },
+        {
+          "text": "By providing clear guidelines and safety nets,",
+          "start": 6.75,
+          "end": 8.93,
+          "words": [
+            {
+              "text": "By",
+              "start": 6.75,
+              "end": 6.83
+            },
+            {
+              "text": "providing",
+              "start": 6.83,
+              "end": 7.21
+            },
+            {
+              "text": "clear",
+              "start": 7.21,
+              "end": 7.63
+            },
+            {
+              "text": "guidelines",
+              "start": 7.63,
+              "end": 8.07
+            },
+            {
+              "text": "and",
+              "start": 8.07,
+              "end": 8.37
+            },
+            {
+              "text": "safety",
+              "start": 8.37,
+              "end": 8.65
+            },
+            {
+              "text": "nets,",
+              "start": 8.65,
+              "end": 8.93
+            }
+          ]
+        },
+        {
+          "text": "developers can innovate with confidence,",
+          "start": 9.71,
+          "end": 11.11,
+          "words": [
+            {
+              "text": "developers",
+              "start": 9.71,
+              "end": 9.73
+            },
+            {
+              "text": "can",
+              "start": 9.73,
+              "end": 10.11
+            },
+            {
+              "text": "innovate",
+              "start": 10.11,
+              "end": 10.33
+            },
+            {
+              "text": "with",
+              "start": 10.33,
+              "end": 10.65
+            },
+            {
+              "text": "confidence,",
+              "start": 10.65,
+              "end": 11.11
+            }
+          ]
+        },
+        {
+          "text": "knowing that their creations won't cause harm.",
+          "start": 11.71,
+          "end": 13.24,
+          "words": [
+            {
+              "text": "knowing",
+              "start": 11.71,
+              "end": 11.71
+            },
+            {
+              "text": "that",
+              "start": 11.71,
+              "end": 11.95
+            },
+            {
+              "text": "their",
+              "start": 11.95,
+              "end": 12.13
+            },
+            {
+              "text": "creations",
+              "start": 12.13,
+              "end": 12.55
+            },
+            {
+              "text": "won't",
+              "start": 12.55,
+              "end": 12.83
+            },
+            {
+              "text": "cause",
+              "start": 12.83,
+              "end": 13.13
+            },
+            {
+              "text": "harm.",
+              "start": 13.13,
+              "end": 13.24
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-aviation-example",
+      "type": "concept-card",
+      "eyebrow": "Aviation Industry",
+      "headline": "Aviation Safety Standards",
+      "captions": [
+        "Consider the aviation industry,",
+        "where rigorous safety standards",
+        "have not only protected passengers",
+        "but also propelled technological advancements.",
+        "The same principle applies to AI;",
+        "guardrails are not barriers,",
+        "but rather enablers of safe and responsible progress."
+      ],
+      "term": "Safety Standards",
+      "tagline": "Protect & Propel",
+      "definition": "Standards that ensure safety while driving tech advancement.",
+      "glyph": "✈️",
+      "start": 163.75,
+      "duration": 14.16,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Consider the aviation industry,",
+          "start": 0.15,
+          "end": 0.39,
+          "words": [
+            {
+              "text": "Consider",
+              "start": 0.15,
+              "end": 0.39
+            },
+            {
+              "text": "the",
+              "start": 0.39,
+              "end": 0.39
+            },
+            {
+              "text": "aviation",
+              "start": 0.39,
+              "end": 0.39
+            },
+            {
+              "text": "industry,",
+              "start": 0.39,
+              "end": 0.39
+            }
+          ]
+        },
+        {
+          "text": "where rigorous safety standards",
+          "start": 0.39,
+          "end": 2.17,
+          "words": [
+            {
+              "text": "where",
+              "start": 0.39,
+              "end": 0.99
+            },
+            {
+              "text": "rigorous",
+              "start": 0.99,
+              "end": 1.37
+            },
+            {
+              "text": "safety",
+              "start": 1.37,
+              "end": 1.81
+            },
+            {
+              "text": "standards",
+              "start": 1.81,
+              "end": 2.17
+            }
+          ]
+        },
+        {
+          "text": "have not only protected passengers",
+          "start": 2.17,
+          "end": 3.93,
+          "words": [
+            {
+              "text": "have",
+              "start": 2.17,
+              "end": 2.43
+            },
+            {
+              "text": "not",
+              "start": 2.43,
+              "end": 2.65
+            },
+            {
+              "text": "only",
+              "start": 2.65,
+              "end": 3.01
+            },
+            {
+              "text": "protected",
+              "start": 3.01,
+              "end": 3.33
+            },
+            {
+              "text": "passengers",
+              "start": 3.33,
+              "end": 3.93
+            }
+          ]
+        },
+        {
+          "text": "but also propelled technological advancements.",
+          "start": 4.27,
+          "end": 6.63,
+          "words": [
+            {
+              "text": "but",
+              "start": 4.27,
+              "end": 4.53
+            },
+            {
+              "text": "also",
+              "start": 4.53,
+              "end": 5.03
+            },
+            {
+              "text": "propelled",
+              "start": 5.03,
+              "end": 5.29
+            },
+            {
+              "text": "technological",
+              "start": 5.29,
+              "end": 6.03
+            },
+            {
+              "text": "advancements.",
+              "start": 6.03,
+              "end": 6.63
+            }
+          ]
+        },
+        {
+          "text": "The same principle applies to AI;",
+          "start": 7.07,
+          "end": 8.89,
+          "words": [
+            {
+              "text": "The",
+              "start": 7.07,
+              "end": 7.29
+            },
+            {
+              "text": "same",
+              "start": 7.29,
+              "end": 7.57
+            },
+            {
+              "text": "principle",
+              "start": 7.57,
+              "end": 7.97
+            },
+            {
+              "text": "applies",
+              "start": 7.97,
+              "end": 8.33
+            },
+            {
+              "text": "to",
+              "start": 8.33,
+              "end": 8.51
+            },
+            {
+              "text": "AI;",
+              "start": 8.51,
+              "end": 8.89
+            }
+          ]
+        },
+        {
+          "text": "guardrails are not barriers,",
+          "start": 9.67,
+          "end": 10.69,
+          "words": [
+            {
+              "text": "guardrails",
+              "start": 9.67,
+              "end": 9.79
+            },
+            {
+              "text": "are",
+              "start": 9.79,
+              "end": 10.03
+            },
+            {
+              "text": "not",
+              "start": 10.03,
+              "end": 10.25
+            },
+            {
+              "text": "barriers,",
+              "start": 10.25,
+              "end": 10.69
+            }
+          ]
+        },
+        {
+          "text": "but rather enablers of safe and responsible progress.",
+          "start": 11.11,
+          "end": 13.79,
+          "words": [
+            {
+              "text": "but",
+              "start": 11.11,
+              "end": 11.27
+            },
+            {
+              "text": "rather",
+              "start": 11.27,
+              "end": 11.63
+            },
+            {
+              "text": "enablers",
+              "start": 11.63,
+              "end": 12.01
+            },
+            {
+              "text": "of",
+              "start": 12.01,
+              "end": 12.37
+            },
+            {
+              "text": "safe",
+              "start": 12.37,
+              "end": 12.61
+            },
+            {
+              "text": "and",
+              "start": 12.61,
+              "end": 13.31
+            },
+            {
+              "text": "responsible",
+              "start": 13.31,
+              "end": 13.31
+            },
+            {
+              "text": "progress.",
+              "start": 13.31,
+              "end": 13.79
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-drone-example",
+      "type": "pipeline",
+      "eyebrow": "Autonomous Drones",
+      "headline": "Concrete Example: Autonomous Drones",
+      "captions": [
+        "Let's explore a concrete example:",
+        "the use of AI in autonomous drones.",
+        "These flying machines have the potential",
+        "to revolutionize industries ranging",
+        "from agriculture to logistics.",
+        "However, they also pose significant risks,",
+        "such as invading privacy or causing physical harm."
+      ],
+      "title": "Drone Applications",
+      "nodes": [
+        {
+          "label": "Agriculture",
+          "glyph": "🌾"
+        },
+        {
+          "label": "Logistics",
+          "glyph": "📦"
+        },
+        {
+          "label": "Privacy Risk",
+          "glyph": "🔍"
+        },
+        {
+          "label": "Physical Harm",
+          "glyph": "⚠️"
+        }
+      ],
+      "highlightNode": 0,
+      "start": 177.91,
+      "duration": 16.84,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Let's explore a concrete example:",
+          "start": 0.15,
+          "end": 1.71,
+          "words": [
+            {
+              "text": "Let's",
+              "start": 0.15,
+              "end": 0.53
+            },
+            {
+              "text": "explore",
+              "start": 0.53,
+              "end": 0.77
+            },
+            {
+              "text": "a",
+              "start": 0.77,
+              "end": 1.01
+            },
+            {
+              "text": "concrete",
+              "start": 1.01,
+              "end": 1.33
+            },
+            {
+              "text": "example:",
+              "start": 1.33,
+              "end": 1.71
+            }
+          ]
+        },
+        {
+          "text": "the use of AI in autonomous drones.",
+          "start": 2.33,
+          "end": 4.27,
+          "words": [
+            {
+              "text": "the",
+              "start": 2.33,
+              "end": 2.37
+            },
+            {
+              "text": "use",
+              "start": 2.37,
+              "end": 2.59
+            },
+            {
+              "text": "of",
+              "start": 2.59,
+              "end": 2.79
+            },
+            {
+              "text": "AI",
+              "start": 2.79,
+              "end": 3.13
+            },
+            {
+              "text": "in",
+              "start": 3.13,
+              "end": 3.51
+            },
+            {
+              "text": "autonomous",
+              "start": 3.51,
+              "end": 3.91
+            },
+            {
+              "text": "drones.",
+              "start": 3.91,
+              "end": 4.27
+            }
+          ]
+        },
+        {
+          "text": "These flying machines have the potential",
+          "start": 5.07,
+          "end": 6.63,
+          "words": [
+            {
+              "text": "These",
+              "start": 5.07,
+              "end": 5.25
+            },
+            {
+              "text": "flying",
+              "start": 5.25,
+              "end": 5.59
+            },
+            {
+              "text": "machines",
+              "start": 5.59,
+              "end": 5.97
+            },
+            {
+              "text": "have",
+              "start": 5.97,
+              "end": 6.17
+            },
+            {
+              "text": "the",
+              "start": 6.17,
+              "end": 6.41
+            },
+            {
+              "text": "potential",
+              "start": 6.41,
+              "end": 6.63
+            }
+          ]
+        },
+        {
+          "text": "to revolutionize industries ranging",
+          "start": 6.63,
+          "end": 8.77,
+          "words": [
+            {
+              "text": "to",
+              "start": 6.63,
+              "end": 6.99
+            },
+            {
+              "text": "revolutionize",
+              "start": 6.99,
+              "end": 7.65
+            },
+            {
+              "text": "industries",
+              "start": 7.65,
+              "end": 8.15
+            },
+            {
+              "text": "ranging",
+              "start": 8.57,
+              "end": 8.77
+            }
+          ]
+        },
+        {
+          "text": "from agriculture to logistics.",
+          "start": 8.77,
+          "end": 10.41,
+          "words": [
+            {
+              "text": "from",
+              "start": 8.77,
+              "end": 9.11
+            },
+            {
+              "text": "agriculture",
+              "start": 9.11,
+              "end": 9.59
+            },
+            {
+              "text": "to",
+              "start": 9.59,
+              "end": 9.95
+            },
+            {
+              "text": "logistics.",
+              "start": 9.95,
+              "end": 10.41
+            }
+          ]
+        },
+        {
+          "text": "However, they also pose significant risks,",
+          "start": 11.07,
+          "end": 13.39,
+          "words": [
+            {
+              "text": "However,",
+              "start": 11.07,
+              "end": 11.39
+            },
+            {
+              "text": "they",
+              "start": 11.51,
+              "end": 11.89
+            },
+            {
+              "text": "also",
+              "start": 11.89,
+              "end": 12.19
+            },
+            {
+              "text": "pose",
+              "start": 12.19,
+              "end": 12.45
+            },
+            {
+              "text": "significant",
+              "start": 12.45,
+              "end": 12.99
+            },
+            {
+              "text": "risks,",
+              "start": 12.99,
+              "end": 13.39
+            }
+          ]
+        },
+        {
+          "text": "such as invading privacy or causing physical harm.",
+          "start": 13.77,
+          "end": 16.49,
+          "words": [
+            {
+              "text": "such",
+              "start": 13.77,
+              "end": 13.93
+            },
+            {
+              "text": "as",
+              "start": 13.93,
+              "end": 14.45
+            },
+            {
+              "text": "invading",
+              "start": 14.45,
+              "end": 14.45
+            },
+            {
+              "text": "privacy",
+              "start": 14.45,
+              "end": 14.95
+            },
+            {
+              "text": "or",
+              "start": 14.95,
+              "end": 15.43
+            },
+            {
+              "text": "causing",
+              "start": 15.43,
+              "end": 15.73
+            },
+            {
+              "text": "physical",
+              "start": 15.73,
+              "end": 16.19
+            },
+            {
+              "text": "harm.",
+              "start": 16.19,
+              "end": 16.49
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-drone-guardrails",
+      "type": "bullet-list",
+      "eyebrow": "Drone Safety",
+      "headline": "Guardrails for Drones",
+      "captions": [
+        "Here, guardrails might include",
+        "geofencing technologies",
+        "that prevent drones from entering",
+        "restricted areas, or collision",
+        "avoidance systems that ensure",
+        "they don't crash into obstacles or people.",
+        "Additionally, clear guidelines on",
+        "data collection and usage can protect",
+        "privacy while still allowing for innovation."
+      ],
+      "title": "Drone Guardrails",
+      "items": [
+        "**Geofencing** tech",
+        "Collision avoidance",
+        "Data usage guidelines"
+      ],
+      "start": 194.75,
+      "duration": 17.42,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Here, guardrails might include",
+          "start": 0.15,
+          "end": 1.61,
+          "words": [
+            {
+              "text": "Here,",
+              "start": 0.15,
+              "end": 0.51
+            },
+            {
+              "text": "guardrails",
+              "start": 0.87,
+              "end": 1.01
+            },
+            {
+              "text": "might",
+              "start": 1.01,
+              "end": 1.29
+            },
+            {
+              "text": "include",
+              "start": 1.29,
+              "end": 1.61
+            }
+          ]
+        },
+        {
+          "text": "geofencing technologies",
+          "start": 1.61,
+          "end": 2.97,
+          "words": [
+            {
+              "text": "geofencing",
+              "start": 1.61,
+              "end": 2.23
+            },
+            {
+              "text": "technologies",
+              "start": 2.23,
+              "end": 2.97
+            }
+          ]
+        },
+        {
+          "text": "that prevent drones from entering",
+          "start": 2.97,
+          "end": 4.73,
+          "words": [
+            {
+              "text": "that",
+              "start": 2.97,
+              "end": 3.47
+            },
+            {
+              "text": "prevent",
+              "start": 3.47,
+              "end": 3.79
+            },
+            {
+              "text": "drones",
+              "start": 3.79,
+              "end": 4.13
+            },
+            {
+              "text": "from",
+              "start": 4.13,
+              "end": 4.73
+            },
+            {
+              "text": "entering",
+              "start": 4.73,
+              "end": 4.73
+            }
+          ]
+        },
+        {
+          "text": "restricted areas, or collision",
+          "start": 4.73,
+          "end": 6.61,
+          "words": [
+            {
+              "text": "restricted",
+              "start": 4.73,
+              "end": 5.23
+            },
+            {
+              "text": "areas,",
+              "start": 5.23,
+              "end": 5.67
+            },
+            {
+              "text": "or",
+              "start": 6.17,
+              "end": 6.37
+            },
+            {
+              "text": "collision",
+              "start": 6.37,
+              "end": 6.61
+            }
+          ]
+        },
+        {
+          "text": "avoidance systems that ensure",
+          "start": 6.61,
+          "end": 8.27,
+          "words": [
+            {
+              "text": "avoidance",
+              "start": 6.61,
+              "end": 7.17
+            },
+            {
+              "text": "systems",
+              "start": 7.17,
+              "end": 7.53
+            },
+            {
+              "text": "that",
+              "start": 7.53,
+              "end": 8.01
+            },
+            {
+              "text": "ensure",
+              "start": 8.01,
+              "end": 8.27
+            }
+          ]
+        },
+        {
+          "text": "they don't crash into obstacles or people.",
+          "start": 8.27,
+          "end": 10.53,
+          "words": [
+            {
+              "text": "they",
+              "start": 8.27,
+              "end": 8.47
+            },
+            {
+              "text": "don't",
+              "start": 8.47,
+              "end": 8.77
+            },
+            {
+              "text": "crash",
+              "start": 8.77,
+              "end": 9.05
+            },
+            {
+              "text": "into",
+              "start": 9.05,
+              "end": 9.35
+            },
+            {
+              "text": "obstacles",
+              "start": 9.35,
+              "end": 9.81
+            },
+            {
+              "text": "or",
+              "start": 9.81,
+              "end": 10.05
+            },
+            {
+              "text": "people.",
+              "start": 10.05,
+              "end": 10.53
+            }
+          ]
+        },
+        {
+          "text": "Additionally, clear guidelines on",
+          "start": 11.15,
+          "end": 12.91,
+          "words": [
+            {
+              "text": "Additionally,",
+              "start": 11.15,
+              "end": 11.49
+            },
+            {
+              "text": "clear",
+              "start": 12.13,
+              "end": 12.21
+            },
+            {
+              "text": "guidelines",
+              "start": 12.21,
+              "end": 12.61
+            },
+            {
+              "text": "on",
+              "start": 12.61,
+              "end": 12.91
+            }
+          ]
+        },
+        {
+          "text": "data collection and usage can protect",
+          "start": 12.91,
+          "end": 14.85,
+          "words": [
+            {
+              "text": "data",
+              "start": 12.91,
+              "end": 13.15
+            },
+            {
+              "text": "collection",
+              "start": 13.15,
+              "end": 13.47
+            },
+            {
+              "text": "and",
+              "start": 13.47,
+              "end": 14.07
+            },
+            {
+              "text": "usage",
+              "start": 14.07,
+              "end": 14.07
+            },
+            {
+              "text": "can",
+              "start": 14.07,
+              "end": 14.55
+            },
+            {
+              "text": "protect",
+              "start": 14.55,
+              "end": 14.85
+            }
+          ]
+        },
+        {
+          "text": "privacy while still allowing for innovation.",
+          "start": 14.85,
+          "end": 17.07,
+          "words": [
+            {
+              "text": "privacy",
+              "start": 14.85,
+              "end": 15.31
+            },
+            {
+              "text": "while",
+              "start": 15.31,
+              "end": 15.79
+            },
+            {
+              "text": "still",
+              "start": 15.79,
+              "end": 16.33
+            },
+            {
+              "text": "allowing",
+              "start": 16.33,
+              "end": 16.33
+            },
+            {
+              "text": "for",
+              "start": 16.33,
+              "end": 17.07
+            },
+            {
+              "text": "innovation.",
+              "start": 17.07,
+              "end": 17.07
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2-human-oversight",
+      "type": "stack-layers",
+      "eyebrow": "Human Role",
+      "headline": "Human Oversight in AI",
+      "captions": [
+        "Another key aspect of guardrails",
+        "is the role of human oversight.",
+        "While AI systems can operate independently,",
+        "human intervention remains crucial.",
+        "This might involve having a human in the loop",
+        "for critical decisions, or at least",
+        "maintaining the ability to override",
+        "AI actions if necessary."
+      ],
+      "title": "Oversight Layers",
+      "layers": [
+        {
+          "label": "AI Systems",
+          "sublabel": "Operate Independently"
+        },
+        {
+          "label": "Human Oversight",
+          "sublabel": "Critical Decisions"
+        },
+        {
+          "label": "Override Ability",
+          "sublabel": "If Necessary"
+        }
+      ],
+      "highlightIndex": 1,
+      "annotation": "Human in the loop",
+      "start": 212.17,
+      "duration": 17.08,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Another key aspect of guardrails",
+          "start": 0.15,
+          "end": 1.75,
+          "words": [
+            {
+              "text": "Another",
+              "start": 0.15,
+              "end": 0.45
+            },
+            {
+              "text": "key",
+              "start": 0.45,
+              "end": 0.87
+            },
+            {
+              "text": "aspect",
+              "start": 0.87,
+              "end": 1.09
+            },
+            {
+              "text": "of",
+              "start": 1.09,
+              "end": 1.35
+            },
+            {
+              "text": "guardrails",
+              "start": 1.35,
+              "end": 1.75
+            }
+          ]
+        },
+        {
+          "text": "is the role of human oversight.",
+          "start": 1.75,
+          "end": 3.45,
+          "words": [
+            {
+              "text": "is",
+              "start": 1.75,
+              "end": 2.21
+            },
+            {
+              "text": "the",
+              "start": 2.21,
+              "end": 2.37
+            },
+            {
+              "text": "role",
+              "start": 2.37,
+              "end": 2.57
+            },
+            {
+              "text": "of",
+              "start": 2.57,
+              "end": 2.81
+            },
+            {
+              "text": "human",
+              "start": 2.81,
+              "end": 2.99
+            },
+            {
+              "text": "oversight.",
+              "start": 2.99,
+              "end": 3.45
+            }
+          ]
+        },
+        {
+          "text": "While AI systems can operate independently,",
+          "start": 4.11,
+          "end": 6.03,
+          "words": [
+            {
+              "text": "While",
+              "start": 4.11,
+              "end": 4.17
+            },
+            {
+              "text": "AI",
+              "start": 4.17,
+              "end": 4.53
+            },
+            {
+              "text": "systems",
+              "start": 4.53,
+              "end": 4.87
+            },
+            {
+              "text": "can",
+              "start": 4.87,
+              "end": 5.19
+            },
+            {
+              "text": "operate",
+              "start": 5.19,
+              "end": 5.45
+            },
+            {
+              "text": "independently,",
+              "start": 5.45,
+              "end": 6.03
+            }
+          ]
+        },
+        {
+          "text": "human intervention remains crucial.",
+          "start": 6.75,
+          "end": 8.21,
+          "words": [
+            {
+              "text": "human",
+              "start": 6.75,
+              "end": 6.87
+            },
+            {
+              "text": "intervention",
+              "start": 6.87,
+              "end": 7.33
+            },
+            {
+              "text": "remains",
+              "start": 7.33,
+              "end": 7.83
+            },
+            {
+              "text": "crucial.",
+              "start": 7.83,
+              "end": 8.21
+            }
+          ]
+        },
+        {
+          "text": "This might involve having a human in the loop",
+          "start": 8.71,
+          "end": 10.73,
+          "words": [
+            {
+              "text": "This",
+              "start": 8.71,
+              "end": 9.05
+            },
+            {
+              "text": "might",
+              "start": 9.05,
+              "end": 9.31
+            },
+            {
+              "text": "involve",
+              "start": 9.31,
+              "end": 9.65
+            },
+            {
+              "text": "having",
+              "start": 9.65,
+              "end": 9.91
+            },
+            {
+              "text": "a",
+              "start": 9.91,
+              "end": 10.33
+            },
+            {
+              "text": "human",
+              "start": 10.33,
+              "end": 10.33
+            },
+            {
+              "text": "in",
+              "start": 10.33,
+              "end": 10.51
+            },
+            {
+              "text": "the",
+              "start": 10.51,
+              "end": 10.73
+            },
+            {
+              "text": "loop",
+              "start": 10.73,
+              "end": 10.73
+            }
+          ]
+        },
+        {
+          "text": "for critical decisions, or at least",
+          "start": 10.73,
+          "end": 12.75,
+          "words": [
+            {
+              "text": "for",
+              "start": 10.73,
+              "end": 10.99
+            },
+            {
+              "text": "critical",
+              "start": 10.99,
+              "end": 11.29
+            },
+            {
+              "text": "decisions,",
+              "start": 11.29,
+              "end": 11.77
+            },
+            {
+              "text": "or",
+              "start": 12.23,
+              "end": 12.33
+            },
+            {
+              "text": "at",
+              "start": 12.33,
+              "end": 12.51
+            },
+            {
+              "text": "least",
+              "start": 12.51,
+              "end": 12.75
+            }
+          ]
+        },
+        {
+          "text": "maintaining the ability to override",
+          "start": 12.75,
+          "end": 14.71,
+          "words": [
+            {
+              "text": "maintaining",
+              "start": 12.75,
+              "end": 13.39
+            },
+            {
+              "text": "the",
+              "start": 13.39,
+              "end": 13.71
+            },
+            {
+              "text": "ability",
+              "start": 13.71,
+              "end": 13.93
+            },
+            {
+              "text": "to",
+              "start": 13.93,
+              "end": 14.71
+            },
+            {
+              "text": "override",
+              "start": 14.71,
+              "end": 14.71
+            }
+          ]
+        },
+        {
+          "text": "AI actions if necessary.",
+          "start": 14.71,
+          "end": 16.43,
+          "words": [
+            {
+              "text": "AI",
+              "start": 14.71,
+              "end": 15.11
+            },
+            {
+              "text": "actions",
+              "start": 15.11,
+              "end": 15.49
+            },
+            {
+              "text": "if",
+              "start": 15.49,
+              "end": 15.89
+            },
+            {
+              "text": "necessary.",
+              "start": 15.89,
+              "end": 16.43
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-human-oversight",
+      "type": "bullet-list",
+      "eyebrow": "AI Safety",
+      "headline": "The Role of **Human Oversight**",
+      "captions": [
+        "Human oversight acts as a final check,",
+        "ensuring that AI actions align with",
+        "broader goals and ethical standards."
+      ],
+      "title": "Human Oversight",
+      "items": [
+        "Aligns with broader goals",
+        "Ensures ethical standards",
+        "Acts as a final check"
+      ],
+      "start": 229.25,
+      "duration": 7.7,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Human oversight acts as a final check,",
+          "start": 0.15,
+          "end": 2.41,
+          "words": [
+            {
+              "text": "Human",
+              "start": 0.15,
+              "end": 0.19
+            },
+            {
+              "text": "oversight",
+              "start": 0.19,
+              "end": 0.81
+            },
+            {
+              "text": "acts",
+              "start": 0.81,
+              "end": 1.31
+            },
+            {
+              "text": "as",
+              "start": 1.31,
+              "end": 1.49
+            },
+            {
+              "text": "a",
+              "start": 1.49,
+              "end": 1.73
+            },
+            {
+              "text": "final",
+              "start": 1.73,
+              "end": 1.99
+            },
+            {
+              "text": "check,",
+              "start": 1.99,
+              "end": 2.41
+            }
+          ]
+        },
+        {
+          "text": "ensuring that AI actions align with",
+          "start": 3.25,
+          "end": 5.15,
+          "words": [
+            {
+              "text": "ensuring",
+              "start": 3.25,
+              "end": 3.25
+            },
+            {
+              "text": "that",
+              "start": 3.25,
+              "end": 3.63
+            },
+            {
+              "text": "AI",
+              "start": 3.63,
+              "end": 3.93
+            },
+            {
+              "text": "actions",
+              "start": 3.93,
+              "end": 4.39
+            },
+            {
+              "text": "align",
+              "start": 4.39,
+              "end": 4.75
+            },
+            {
+              "text": "with",
+              "start": 4.75,
+              "end": 5.15
+            }
+          ]
+        },
+        {
+          "text": "broader goals and ethical standards.",
+          "start": 5.15,
+          "end": 6.93,
+          "words": [
+            {
+              "text": "broader",
+              "start": 5.15,
+              "end": 5.39
+            },
+            {
+              "text": "goals",
+              "start": 5.39,
+              "end": 5.77
+            },
+            {
+              "text": "and",
+              "start": 5.77,
+              "end": 6.07
+            },
+            {
+              "text": "ethical",
+              "start": 6.07,
+              "end": 6.37
+            },
+            {
+              "text": "standards.",
+              "start": 6.37,
+              "end": 6.93
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-goal-of-guardrails",
+      "type": "concept-card",
+      "eyebrow": "AI Design",
+      "headline": "The Goal of **Guardrails**",
+      "captions": [
+        "Ultimately, the goal of guardrails",
+        "is to foster a harmonious relationship",
+        "between humans and AI.",
+        "As these systems become more prevalent,",
+        "it’s essential that they enhance",
+        "human capabilities rather than replace them."
+      ],
+      "term": "Guardrails",
+      "tagline": "AI & Human Harmony",
+      "definition": "Foster harmony between humans and AI, enhancing capabilities.",
+      "start": 236.95,
+      "duration": 13.38,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "Ultimately, the goal of guardrails",
+          "start": 0.15,
+          "end": 1.63,
+          "words": [
+            {
+              "text": "Ultimately,",
+              "start": 0.15,
+              "end": 0.47
+            },
+            {
+              "text": "the",
+              "start": 0.67,
+              "end": 0.79
+            },
+            {
+              "text": "goal",
+              "start": 0.79,
+              "end": 1.03
+            },
+            {
+              "text": "of",
+              "start": 1.03,
+              "end": 1.29
+            },
+            {
+              "text": "guardrails",
+              "start": 1.29,
+              "end": 1.63
+            }
+          ]
+        },
+        {
+          "text": "is to foster a harmonious relationship",
+          "start": 1.63,
+          "end": 3.87,
+          "words": [
+            {
+              "text": "is",
+              "start": 1.63,
+              "end": 1.93
+            },
+            {
+              "text": "to",
+              "start": 1.93,
+              "end": 2.47
+            },
+            {
+              "text": "foster",
+              "start": 2.47,
+              "end": 2.47
+            },
+            {
+              "text": "a",
+              "start": 2.47,
+              "end": 2.83
+            },
+            {
+              "text": "harmonious",
+              "start": 2.83,
+              "end": 3.25
+            },
+            {
+              "text": "relationship",
+              "start": 3.25,
+              "end": 3.87
+            }
+          ]
+        },
+        {
+          "text": "between humans and AI.",
+          "start": 3.87,
+          "end": 5.25,
+          "words": [
+            {
+              "text": "between",
+              "start": 3.87,
+              "end": 4.31
+            },
+            {
+              "text": "humans",
+              "start": 4.31,
+              "end": 4.65
+            },
+            {
+              "text": "and",
+              "start": 4.65,
+              "end": 4.95
+            },
+            {
+              "text": "AI.",
+              "start": 4.95,
+              "end": 5.25
+            }
+          ]
+        },
+        {
+          "text": "As these systems become more prevalent,",
+          "start": 5.83,
+          "end": 7.85,
+          "words": [
+            {
+              "text": "As",
+              "start": 5.83,
+              "end": 6.07
+            },
+            {
+              "text": "these",
+              "start": 6.07,
+              "end": 6.37
+            },
+            {
+              "text": "systems",
+              "start": 6.37,
+              "end": 6.71
+            },
+            {
+              "text": "become",
+              "start": 6.71,
+              "end": 7.07
+            },
+            {
+              "text": "more",
+              "start": 7.07,
+              "end": 7.55
+            },
+            {
+              "text": "prevalent,",
+              "start": 7.55,
+              "end": 7.85
+            }
+          ]
+        },
+        {
+          "text": "it’s essential that they enhance",
+          "start": 8.25,
+          "end": 9.61,
+          "words": [
+            {
+              "text": "it’s",
+              "start": 8.25,
+              "end": 8.45
+            },
+            {
+              "text": "essential",
+              "start": 8.45,
+              "end": 8.77
+            },
+            {
+              "text": "that",
+              "start": 8.77,
+              "end": 9.09
+            },
+            {
+              "text": "they",
+              "start": 9.09,
+              "end": 9.19
+            },
+            {
+              "text": "enhance",
+              "start": 9.19,
+              "end": 9.61
+            }
+          ]
+        },
+        {
+          "text": "human capabilities rather than replace them.",
+          "start": 9.61,
+          "end": 12.33,
+          "words": [
+            {
+              "text": "human",
+              "start": 9.61,
+              "end": 9.99
+            },
+            {
+              "text": "capabilities",
+              "start": 9.99,
+              "end": 10.67
+            },
+            {
+              "text": "rather",
+              "start": 10.67,
+              "end": 11.37
+            },
+            {
+              "text": "than",
+              "start": 11.37,
+              "end": 11.69
+            },
+            {
+              "text": "replace",
+              "start": 11.69,
+              "end": 12.05
+            },
+            {
+              "text": "them.",
+              "start": 12.05,
+              "end": 12.33
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-designing-ai",
+      "type": "stack-layers",
+      "eyebrow": "AI Development",
+      "headline": "Designing AI to **Complement** Humans",
+      "captions": [
+        "This means designing AI that",
+        "complements human strengths",
+        "and compensates for weaknesses,",
+        "creating a synergy that leads to",
+        "better outcomes for society as a whole."
+      ],
+      "title": "AI Design Goals",
+      "layers": [
+        {
+          "label": "Complement Strengths"
+        },
+        {
+          "label": "Compensate Weaknesses"
+        },
+        {
+          "label": "Create Synergy"
+        }
+      ],
+      "highlightIndex": 2,
+      "annotation": "better societal outcomes",
+      "start": 250.33,
+      "duration": 8.7,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "This means designing AI that",
+          "start": 0.15,
+          "end": 1.73,
+          "words": [
+            {
+              "text": "This",
+              "start": 0.15,
+              "end": 0.17
+            },
+            {
+              "text": "means",
+              "start": 0.17,
+              "end": 0.49
+            },
+            {
+              "text": "designing",
+              "start": 0.49,
+              "end": 0.97
+            },
+            {
+              "text": "AI",
+              "start": 0.97,
+              "end": 1.43
+            },
+            {
+              "text": "that",
+              "start": 1.43,
+              "end": 1.73
+            }
+          ]
+        },
+        {
+          "text": "complements human strengths",
+          "start": 1.73,
+          "end": 2.91,
+          "words": [
+            {
+              "text": "complements",
+              "start": 1.73,
+              "end": 2.17
+            },
+            {
+              "text": "human",
+              "start": 2.17,
+              "end": 2.57
+            },
+            {
+              "text": "strengths",
+              "start": 2.57,
+              "end": 2.91
+            }
+          ]
+        },
+        {
+          "text": "and compensates for weaknesses,",
+          "start": 2.91,
+          "end": 4.57,
+          "words": [
+            {
+              "text": "and",
+              "start": 2.91,
+              "end": 3.45
+            },
+            {
+              "text": "compensates",
+              "start": 3.45,
+              "end": 3.89
+            },
+            {
+              "text": "for",
+              "start": 3.89,
+              "end": 4.17
+            },
+            {
+              "text": "weaknesses,",
+              "start": 4.17,
+              "end": 4.57
+            }
+          ]
+        },
+        {
+          "text": "creating a synergy that leads to",
+          "start": 5.39,
+          "end": 6.77,
+          "words": [
+            {
+              "text": "creating",
+              "start": 5.39,
+              "end": 5.39
+            },
+            {
+              "text": "a",
+              "start": 5.39,
+              "end": 5.67
+            },
+            {
+              "text": "synergy",
+              "start": 5.67,
+              "end": 5.91
+            },
+            {
+              "text": "that",
+              "start": 5.91,
+              "end": 6.47
+            },
+            {
+              "text": "leads",
+              "start": 6.47,
+              "end": 6.47
+            },
+            {
+              "text": "to",
+              "start": 6.47,
+              "end": 6.77
+            }
+          ]
+        },
+        {
+          "text": "better outcomes for society as a whole.",
+          "start": 6.77,
+          "end": 8.65,
+          "words": [
+            {
+              "text": "better",
+              "start": 6.77,
+              "end": 6.97
+            },
+            {
+              "text": "outcomes",
+              "start": 6.97,
+              "end": 7.35
+            },
+            {
+              "text": "for",
+              "start": 7.35,
+              "end": 7.73
+            },
+            {
+              "text": "society",
+              "start": 7.73,
+              "end": 8.05
+            },
+            {
+              "text": "as",
+              "start": 8.05,
+              "end": 8.35
+            },
+            {
+              "text": "a",
+              "start": 8.35,
+              "end": 8.41
+            },
+            {
+              "text": "whole.",
+              "start": 8.41,
+              "end": 8.65
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-building-trust",
+      "type": "quote",
+      "eyebrow": "Trust in AI",
+      "headline": "Building **Trust** in AI Systems",
+      "captions": [
+        "In summary, guardrails are not just about",
+        "keeping autonomous AI safe;",
+        "they are about building trust in these systems.",
+        "By ensuring that AI operates within",
+        "ethical, technical, and regulatory boundaries,",
+        "we can unlock its full potential",
+        "while safeguarding the values we hold dear."
+      ],
+      "quote": "Guardrails build trust, unlocking AI's full potential.",
+      "attribution": "AI Ethics Committee",
+      "start": 259.03,
+      "duration": 17.18,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "In summary, guardrails are not just about",
+          "start": 0.15,
+          "end": 2.99,
+          "words": [
+            {
+              "text": "In",
+              "start": 0.15,
+              "end": 0.79
+            },
+            {
+              "text": "summary,",
+              "start": 0.79,
+              "end": 1.09
+            },
+            {
+              "text": "guardrails",
+              "start": 1.81,
+              "end": 1.99
+            },
+            {
+              "text": "are",
+              "start": 1.99,
+              "end": 2.21
+            },
+            {
+              "text": "not",
+              "start": 2.21,
+              "end": 2.43
+            },
+            {
+              "text": "just",
+              "start": 2.43,
+              "end": 2.75
+            },
+            {
+              "text": "about",
+              "start": 2.75,
+              "end": 2.99
+            }
+          ]
+        },
+        {
+          "text": "keeping autonomous AI safe;",
+          "start": 2.99,
+          "end": 4.45,
+          "words": [
+            {
+              "text": "keeping",
+              "start": 2.99,
+              "end": 3.25
+            },
+            {
+              "text": "autonomous",
+              "start": 3.25,
+              "end": 3.77
+            },
+            {
+              "text": "AI",
+              "start": 3.77,
+              "end": 4.13
+            },
+            {
+              "text": "safe;",
+              "start": 4.13,
+              "end": 4.45
+            }
+          ]
+        },
+        {
+          "text": "they are about building trust in these systems.",
+          "start": 5.05,
+          "end": 7.19,
+          "words": [
+            {
+              "text": "they",
+              "start": 5.05,
+              "end": 5.15
+            },
+            {
+              "text": "are",
+              "start": 5.15,
+              "end": 5.31
+            },
+            {
+              "text": "about",
+              "start": 5.31,
+              "end": 5.57
+            },
+            {
+              "text": "building",
+              "start": 5.57,
+              "end": 5.85
+            },
+            {
+              "text": "trust",
+              "start": 5.85,
+              "end": 6.33
+            },
+            {
+              "text": "in",
+              "start": 6.33,
+              "end": 6.53
+            },
+            {
+              "text": "these",
+              "start": 6.53,
+              "end": 6.79
+            },
+            {
+              "text": "systems.",
+              "start": 6.79,
+              "end": 7.19
+            }
+          ]
+        },
+        {
+          "text": "By ensuring that AI operates within",
+          "start": 7.93,
+          "end": 9.83,
+          "words": [
+            {
+              "text": "By",
+              "start": 7.93,
+              "end": 8.05
+            },
+            {
+              "text": "ensuring",
+              "start": 8.05,
+              "end": 8.43
+            },
+            {
+              "text": "that",
+              "start": 8.43,
+              "end": 8.81
+            },
+            {
+              "text": "AI",
+              "start": 8.81,
+              "end": 9.03
+            },
+            {
+              "text": "operates",
+              "start": 9.03,
+              "end": 9.53
+            },
+            {
+              "text": "within",
+              "start": 9.53,
+              "end": 9.83
+            }
+          ]
+        },
+        {
+          "text": "ethical, technical, and regulatory boundaries,",
+          "start": 9.83,
+          "end": 12.33,
+          "words": [
+            {
+              "text": "ethical,",
+              "start": 9.83,
+              "end": 10.31
+            },
+            {
+              "text": "technical,",
+              "start": 11.05,
+              "end": 11.05
+            },
+            {
+              "text": "and",
+              "start": 11.17,
+              "end": 11.49
+            },
+            {
+              "text": "regulatory",
+              "start": 11.49,
+              "end": 11.83
+            },
+            {
+              "text": "boundaries,",
+              "start": 11.83,
+              "end": 12.33
+            }
+          ]
+        },
+        {
+          "text": "we can unlock its full potential",
+          "start": 12.91,
+          "end": 14.53,
+          "words": [
+            {
+              "text": "we",
+              "start": 12.91,
+              "end": 13.01
+            },
+            {
+              "text": "can",
+              "start": 13.01,
+              "end": 13.31
+            },
+            {
+              "text": "unlock",
+              "start": 13.31,
+              "end": 13.63
+            },
+            {
+              "text": "its",
+              "start": 13.63,
+              "end": 13.83
+            },
+            {
+              "text": "full",
+              "start": 13.83,
+              "end": 14.15
+            },
+            {
+              "text": "potential",
+              "start": 14.15,
+              "end": 14.53
+            }
+          ]
+        },
+        {
+          "text": "while safeguarding the values we hold dear.",
+          "start": 14.53,
+          "end": 16.73,
+          "words": [
+            {
+              "text": "while",
+              "start": 14.53,
+              "end": 15.11
+            },
+            {
+              "text": "safeguarding",
+              "start": 15.11,
+              "end": 15.61
+            },
+            {
+              "text": "the",
+              "start": 15.61,
+              "end": 15.85
+            },
+            {
+              "text": "values",
+              "start": 15.85,
+              "end": 16.03
+            },
+            {
+              "text": "we",
+              "start": 16.03,
+              "end": 16.29
+            },
+            {
+              "text": "hold",
+              "start": 16.29,
+              "end": 16.45
+            },
+            {
+              "text": "dear.",
+              "start": 16.45,
+              "end": 16.73
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s3-collective-responsibility",
+      "type": "cta",
+      "eyebrow": "Future of AI",
+      "headline": "Our **Collective Responsibility**",
+      "captions": [
+        "As developers, policymakers, and users,",
+        "it’s our collective responsibility to shape",
+        "the future of AI, ensuring it serves us all.",
+        "So, as we continue to innovate",
+        "and push the boundaries of what AI can do,",
+        "let’s remember the importance of these guardrails,",
+        "guiding us toward a future where technology",
+        "and humanity thrive together."
+      ],
+      "subheadline": "Shape AI's future to serve humanity.",
+      "start": 276.21,
+      "duration": 19.56,
+      "sfx": null,
+      "captionTiming": [
+        {
+          "text": "As developers, policymakers, and users,",
+          "start": 0.15,
+          "end": 2.75,
+          "words": [
+            {
+              "text": "As",
+              "start": 0.15,
+              "end": 0.45
+            },
+            {
+              "text": "developers,",
+              "start": 0.45,
+              "end": 0.91
+            },
+            {
+              "text": "policymakers,",
+              "start": 1.69,
+              "end": 1.95
+            },
+            {
+              "text": "and",
+              "start": 2.17,
+              "end": 2.75
+            },
+            {
+              "text": "users,",
+              "start": 2.75,
+              "end": 2.75
+            }
+          ]
+        },
+        {
+          "text": "it’s our collective responsibility to shape",
+          "start": 3.21,
+          "end": 5.15,
+          "words": [
+            {
+              "text": "it’s",
+              "start": 3.21,
+              "end": 3.29
+            },
+            {
+              "text": "our",
+              "start": 3.29,
+              "end": 3.53
+            },
+            {
+              "text": "collective",
+              "start": 3.53,
+              "end": 3.91
+            },
+            {
+              "text": "responsibility",
+              "start": 3.91,
+              "end": 4.57
+            },
+            {
+              "text": "to",
+              "start": 4.57,
+              "end": 5.11
+            },
+            {
+              "text": "shape",
+              "start": 5.11,
+              "end": 5.15
+            }
+          ]
+        },
+        {
+          "text": "the future of AI, ensuring it serves us all.",
+          "start": 5.15,
+          "end": 7.97,
+          "words": [
+            {
+              "text": "the",
+              "start": 5.15,
+              "end": 5.37
+            },
+            {
+              "text": "future",
+              "start": 5.37,
+              "end": 5.63
+            },
+            {
+              "text": "of",
+              "start": 5.63,
+              "end": 5.89
+            },
+            {
+              "text": "AI,",
+              "start": 5.89,
+              "end": 6.15
+            },
+            {
+              "text": "ensuring",
+              "start": 6.65,
+              "end": 6.91
+            },
+            {
+              "text": "it",
+              "start": 6.91,
+              "end": 7.25
+            },
+            {
+              "text": "serves",
+              "start": 7.25,
+              "end": 7.43
+            },
+            {
+              "text": "us",
+              "start": 7.43,
+              "end": 7.65
+            },
+            {
+              "text": "all.",
+              "start": 7.65,
+              "end": 7.97
+            }
+          ]
+        },
+        {
+          "text": "So, as we continue to innovate",
+          "start": 8.47,
+          "end": 10.43,
+          "words": [
+            {
+              "text": "So,",
+              "start": 8.47,
+              "end": 8.79
+            },
+            {
+              "text": "as",
+              "start": 8.95,
+              "end": 9.29
+            },
+            {
+              "text": "we",
+              "start": 9.29,
+              "end": 9.49
+            },
+            {
+              "text": "continue",
+              "start": 9.49,
+              "end": 9.83
+            },
+            {
+              "text": "to",
+              "start": 9.83,
+              "end": 10.43
+            },
+            {
+              "text": "innovate",
+              "start": 10.43,
+              "end": 10.43
+            }
+          ]
+        },
+        {
+          "text": "and push the boundaries of what AI can do,",
+          "start": 10.43,
+          "end": 12.61,
+          "words": [
+            {
+              "text": "and",
+              "start": 10.43,
+              "end": 10.75
+            },
+            {
+              "text": "push",
+              "start": 10.75,
+              "end": 10.91
+            },
+            {
+              "text": "the",
+              "start": 10.91,
+              "end": 11.47
+            },
+            {
+              "text": "boundaries",
+              "start": 11.47,
+              "end": 11.47
+            },
+            {
+              "text": "of",
+              "start": 11.47,
+              "end": 11.67
+            },
+            {
+              "text": "what",
+              "start": 11.67,
+              "end": 11.85
+            },
+            {
+              "text": "AI",
+              "start": 11.85,
+              "end": 12.09
+            },
+            {
+              "text": "can",
+              "start": 12.09,
+              "end": 12.37
+            },
+            {
+              "text": "do,",
+              "start": 12.37,
+              "end": 12.61
+            }
+          ]
+        },
+        {
+          "text": "let’s remember the importance of these guardrails,",
+          "start": 13.17,
+          "end": 15.09,
+          "words": [
+            {
+              "text": "let’s",
+              "start": 13.17,
+              "end": 13.37
+            },
+            {
+              "text": "remember",
+              "start": 13.37,
+              "end": 13.55
+            },
+            {
+              "text": "the",
+              "start": 13.55,
+              "end": 13.91
+            },
+            {
+              "text": "importance",
+              "start": 13.91,
+              "end": 14.17
+            },
+            {
+              "text": "of",
+              "start": 14.17,
+              "end": 14.37
+            },
+            {
+              "text": "these",
+              "start": 14.37,
+              "end": 14.63
+            },
+            {
+              "text": "guardrails,",
+              "start": 14.63,
+              "end": 15.09
+            }
+          ]
+        },
+        {
+          "text": "guiding us toward a future where technology",
+          "start": 15.73,
+          "end": 17.61,
+          "words": [
+            {
+              "text": "guiding",
+              "start": 15.73,
+              "end": 15.73
+            },
+            {
+              "text": "us",
+              "start": 15.73,
+              "end": 16.05
+            },
+            {
+              "text": "toward",
+              "start": 16.05,
+              "end": 16.15
+            },
+            {
+              "text": "a",
+              "start": 16.15,
+              "end": 16.39
+            },
+            {
+              "text": "future",
+              "start": 16.39,
+              "end": 16.65
+            },
+            {
+              "text": "where",
+              "start": 16.65,
+              "end": 17.03
+            },
+            {
+              "text": "technology",
+              "start": 17.03,
+              "end": 17.61
+            }
+          ]
+        },
+        {
+          "text": "and humanity thrive together.",
+          "start": 17.61,
+          "end": 19.21,
+          "words": [
+            {
+              "text": "and",
+              "start": 17.61,
+              "end": 17.95
+            },
+            {
+              "text": "humanity",
+              "start": 17.95,
+              "end": 18.31
+            },
+            {
+              "text": "thrive",
+              "start": 18.31,
+              "end": 18.79
+            },
+            {
+              "text": "together.",
+              "start": 18.79,
+              "end": 19.21
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

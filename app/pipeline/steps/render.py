@@ -2,6 +2,7 @@ import asyncio
 from pathlib import Path
 
 from app.config import Settings
+from app.subjects import SubjectConfig
 
 
 class RenderError(Exception):
@@ -9,7 +10,11 @@ class RenderError(Exception):
 
 
 async def render_video(
-    settings: Settings, data_json: Path, audio_file: Path, out_path: Path
+    settings: Settings,
+    subject_config: SubjectConfig,
+    data_json: Path,
+    audio_file: Path,
+    out_path: Path,
 ) -> None:
     script = (settings.hyperframes_dir / "scripts" / "build-video.sh").resolve()
     if not script.is_file():
@@ -19,6 +24,8 @@ async def render_video(
         "bash",
         str(script),
         str(data_json.resolve()),
+        "--template",
+        subject_config.renderer_template,
         "--audio_file",
         str(audio_file.resolve()),
         "--out_path",
@@ -43,4 +50,6 @@ async def render_video(
         raise RenderError(f"build-video.sh exited {proc.returncode}: ...{tail}")
     if not out_path.is_file():
         out = stdout.decode("utf-8", "replace").strip()[-300:]
-        raise RenderError(f"render reported success but no file at {out_path} (stdout: {out})")
+        raise RenderError(
+            f"render reported success but no file at {out_path} (stdout: {out})"
+        )

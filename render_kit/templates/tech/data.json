@@ -1,0 +1,79 @@
+{
+  "config": {
+    "topic": "RAG for AI Agents",
+    "slug": "rag-for-ai-agents",
+    "totalDuration": 62,
+    "orientation": "vertical",
+    "bgm": "assets/bgm/track.mp3",
+    "audio": "assets/tts/narration.mp3",
+    "voiceStyle": "energetic, curious, teacher energy"
+  },
+  "scenes": [
+    { "id": "hook", "type": "cover", "start": 0, "duration": 5, "transition": "punch",
+      "eyebrow": "~/ai-engineering", "headline": "Why your AI agent **forgets**",
+      "captions": ["Your AI agent has a **memory problem**.", "Here's how RAG fixes it."] },
+
+    { "id": "problem", "type": "chat", "start": 5, "duration": 7, "transition": "fade",
+      "title": "The **amnesia** problem",
+      "messages": [
+        { "role": "user", "text": "What did we decide about the refund policy?" },
+        { "role": "assistant", "text": "I don't have information about **your** refund policy." }
+      ],
+      "captions": ["Models only know their training data.", "Your docs? **Never seen them.**"] },
+
+    { "id": "stat", "type": "stats", "start": 12, "duration": 5, "transition": "punch",
+      "eyebrow": "CONTEXT WINDOW", "stat": "200", "suffix": "K",
+      "statLabel": "tokens — still **not enough** for your whole wiki",
+      "captions": ["You can't paste the whole company", "into every prompt."] },
+
+    { "id": "define", "type": "concept-card", "start": 17, "duration": 6, "transition": "fade",
+      "term": "RAG", "tagline": "Retrieval-Augmented Generation", "glyph": "📚",
+      "definition": "Fetch the **right** documents first, then let the model answer with them.",
+      "captions": ["Retrieval. Augmentation. Generation.", "An **open-book exam** for your agent."] },
+
+    { "id": "embed", "type": "vector-space", "start": 23, "duration": 7, "transition": "fade",
+      "title": "Step 1 — **embed** everything",
+      "clusterLabels": ["refund docs", "api docs", "hr wiki"], "queryLabel": "agent's question",
+      "captions": ["Every document becomes a point in space.", "Similar meaning lands **close together**."] },
+
+    { "id": "flow", "type": "pipeline", "start": 30, "duration": 7, "transition": "fade",
+      "title": "Step 2 — the **pipeline**",
+      "nodes": [
+        { "label": "Question", "glyph": "❓" },
+        { "label": "Retriever", "sublabel": "nearest neighbors", "glyph": "🔍" },
+        { "label": "Vector DB", "sublabel": "top-k chunks", "glyph": "🗄️" },
+        { "label": "LLM", "sublabel": "grounded answer", "glyph": "🧠" }
+      ],
+      "highlightNode": 1,
+      "captions": ["The agent asks, the retriever fetches,", "the model answers **with receipts**."] },
+
+    { "id": "code", "type": "code-snippet", "start": 37, "duration": 7, "transition": "fade",
+      "headline": "The whole trick in **5 lines**",
+      "filename": "agent.py", "language": "python",
+      "code": ["docs = db.search(question, top_k=3)", "context = \"\\n\".join(d.text for d in docs)", "# the model reads YOUR docs first", "answer = llm.ask(", "    f\"{context}\\n\\nQ: {question}\"", ")"],
+      "highlightLines": [1, 3],
+      "captions": ["Search your data,", "stuff it in the prompt. **That's RAG.**"] },
+
+    { "id": "payoff", "type": "chat", "start": 44, "duration": 6, "transition": "fade",
+      "title": "Same agent, **with RAG**",
+      "messages": [
+        { "role": "user", "text": "What did we decide about the refund policy?" },
+        { "role": "assistant", "text": "30 days, **no questions asked** — per policy v2, updated May 12." }
+      ],
+      "captions": ["Same model. Same question.", "Now it **knows your business**."] },
+
+    { "id": "versus", "type": "comparison", "start": 50, "duration": 7, "transition": "fade",
+      "headline": "RAG or **fine-tuning**?",
+      "leftTitle": "RAG", "rightTitle": "Fine-tuning",
+      "leftItems": ["Fresh data instantly", "Cites its sources", "Cheap to update"],
+      "rightItems": ["New skills & style", "Slow, costly retrains", "Knowledge freezes"],
+      "verdict": "For agent memory → **RAG wins**.",
+      "captions": ["Facts change daily.", "Retrieval keeps up. Retraining **can't**."] },
+
+    { "id": "outro", "type": "cta", "start": 57, "duration": 5,
+      "headline": "Give your agent a **library**",
+      "subheadline": "Retrieve. Augment. Generate.",
+      "eyebrow": "@ai.decoded",
+      "captions": ["That's RAG for AI agents.", "Follow for more **AI engineering**."] }
+  ]
+}

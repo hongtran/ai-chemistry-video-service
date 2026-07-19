@@ -1,0 +1,15 @@
+{
+  "config": { "slug": "test-tech-reflection-loop", "topic": "tech reflection-loop test", "totalDuration": 7 },
+  "scenes": [{
+    "id": "s1", "type": "reflection-loop", "start": 0, "duration": 7,
+    "title": "Agents **check their work**",
+    "steps": [
+      { "label": "Attempt", "glyph": "✍️" },
+      { "label": "Check", "glyph": "🔎" },
+      { "label": "Fix", "glyph": "🔧" }
+    ],
+    "failLabel": "error found",
+    "passLabel": "fixed",
+    "captions": ["Fail once,", "**learn**, retry."]
+  }]
+}

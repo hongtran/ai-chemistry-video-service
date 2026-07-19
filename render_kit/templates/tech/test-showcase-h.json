@@ -1,0 +1,493 @@
+{
+  "config": {
+    "slug": "test-tech-showcase-h",
+    "topic": "tech template showcase (horizontal)",
+    "totalDuration": 115,
+    "orientation": "horizontal"
+  },
+  "scenes": [
+    {
+      "id": "sc-cover",
+      "type": "cover",
+      "start": 0,
+      "duration": 5,
+      "transition": "fade",
+      "eyebrow": "~/ai-engineering",
+      "headline": "The **tech** template",
+      "captions": [
+        "Every frame,",
+        "one dark **dev** system."
+      ]
+    },
+    {
+      "id": "sc-stats",
+      "type": "stats",
+      "start": 5,
+      "duration": 5,
+      "transition": "fade",
+      "eyebrow": "THE REALITY",
+      "stat": "80",
+      "suffix": "%",
+      "statLabel": "of AI projects **never ship**",
+      "captions": [
+        "Most stall at the demo."
+      ]
+    },
+    {
+      "id": "sc-quote",
+      "type": "quote",
+      "start": 10,
+      "duration": 5,
+      "transition": "fade",
+      "quote": "The hottest new programming language is **English**.",
+      "attribution": "Andrej Karpathy",
+      "captions": [
+        "Prompting is a real skill now."
+      ]
+    },
+    {
+      "id": "sc-bullets",
+      "type": "bullet-list",
+      "start": 15,
+      "duration": 6,
+      "transition": "fade",
+      "title": "5 skills of an **AI engineer**",
+      "items": [
+        "Prompt & context design",
+        "**RAG** pipelines",
+        "Evals & observability",
+        "Fine-tuning basics",
+        "Product sense"
+      ],
+      "captions": [
+        "Less math,",
+        "more **systems**."
+      ]
+    },
+    {
+      "id": "sc-concept",
+      "type": "concept-card",
+      "start": 21,
+      "duration": 5,
+      "transition": "fade",
+      "term": "Embedding",
+      "tagline": "text → numbers",
+      "glyph": "🧭",
+      "definition": "A list of numbers that captures the **meaning** of text.",
+      "captions": [
+        "Similar meaning,",
+        "similar **numbers**."
+      ]
+    },
+    {
+      "id": "sc-code",
+      "type": "code-snippet",
+      "start": 26,
+      "duration": 6,
+      "transition": "fade",
+      "headline": "A RAG call in **5 lines**",
+      "filename": "rag.py",
+      "language": "python",
+      "code": [
+        "docs = db.search(query, top_k=3)",
+        "context = \"\\n\".join(d.text for d in docs)",
+        "# ground the model in your data",
+        "answer = llm.ask(",
+        "    prompt=f\"{context}\\n\\nQ: {query}\"",
+        ")"
+      ],
+      "highlightLines": [
+        1,
+        5
+      ],
+      "captions": [
+        "Retrieve first,",
+        "then **answer**."
+      ]
+    },
+    {
+      "id": "sc-term",
+      "type": "terminal",
+      "start": 32,
+      "duration": 6,
+      "transition": "fade",
+      "headline": "Ship it in **one command**",
+      "eyebrow": "~/my-agent",
+      "commands": [
+        {
+          "cmd": "pip install langchain",
+          "output": [
+            "Collecting langchain...",
+            "✓ Installed in 2.1s"
+          ]
+        },
+        {
+          "cmd": "python agent.py",
+          "output": [
+            "Agent ready on :8000"
+          ]
+        }
+      ],
+      "captions": [
+        "Two commands,",
+        "agent is **live**."
+      ]
+    },
+    {
+      "id": "sc-chat",
+      "type": "chat",
+      "start": 38,
+      "duration": 6,
+      "transition": "fade",
+      "title": "Agents **ask back**",
+      "messages": [
+        {
+          "role": "user",
+          "text": "Book me a flight to Tokyo next week."
+        },
+        {
+          "role": "assistant",
+          "text": "Found 3 options. **Cheapest** is Tuesday 6am — book it?"
+        },
+        {
+          "role": "user",
+          "text": "Yes, do it."
+        }
+      ],
+      "captions": [
+        "Agents keep **state**."
+      ]
+    },
+    {
+      "id": "sc-pipe",
+      "type": "pipeline",
+      "start": 44,
+      "duration": 6,
+      "transition": "fade",
+      "title": "The **RAG** pipeline",
+      "nodes": [
+        {
+          "label": "Query",
+          "glyph": "❓"
+        },
+        {
+          "label": "Retriever",
+          "sublabel": "vector search",
+          "glyph": "🔍"
+        },
+        {
+          "label": "Vector DB",
+          "sublabel": "top-k docs",
+          "glyph": "🗄️"
+        },
+        {
+          "label": "LLM",
+          "sublabel": "grounded answer",
+          "glyph": "🧠"
+        }
+      ],
+      "highlightNode": 2,
+      "captions": [
+        "The DB remembers,",
+        "the model talks."
+      ]
+    },
+    {
+      "id": "sc-comp",
+      "type": "comparison",
+      "start": 50,
+      "duration": 6,
+      "transition": "fade",
+      "headline": "Two ways to add **knowledge**",
+      "leftTitle": "RAG",
+      "rightTitle": "Fine-tuning",
+      "leftItems": [
+        "Fresh data at query time",
+        "Cheap to update",
+        "Citable sources"
+      ],
+      "rightItems": [
+        "Bakes style & skills in",
+        "Costly retraining",
+        "Frozen knowledge"
+      ],
+      "verdict": "Facts → **RAG**. Behavior → fine-tune.",
+      "captions": [
+        "**Different** problems."
+      ]
+    },
+    {
+      "id": "sc-road",
+      "type": "roadmap",
+      "start": 56,
+      "duration": 6,
+      "transition": "fade",
+      "title": "Path to **AI engineer**",
+      "steps": [
+        {
+          "label": "Python basics",
+          "sublabel": "3 months"
+        },
+        {
+          "label": "APIs & prompts",
+          "sublabel": "LLM 101"
+        },
+        {
+          "label": "Build with RAG",
+          "sublabel": "ship a project"
+        },
+        {
+          "label": "Evals & agents",
+          "sublabel": "production"
+        }
+      ],
+      "captions": [
+        "Under a **year**."
+      ]
+    },
+    {
+      "id": "sc-stack",
+      "type": "stack-layers",
+      "start": 62,
+      "duration": 5,
+      "transition": "fade",
+      "title": "Where you **work**",
+      "layers": [
+        {
+          "label": "Product & UI",
+          "sublabel": "what users touch"
+        },
+        {
+          "label": "Orchestration",
+          "sublabel": "agents · RAG · evals"
+        },
+        {
+          "label": "Model APIs",
+          "sublabel": "GPT · Claude · Llama"
+        },
+        {
+          "label": "Infra",
+          "sublabel": "GPUs · serving"
+        }
+      ],
+      "highlightIndex": 1,
+      "annotation": "you work HERE",
+      "captions": [
+        "Between product",
+        "and the models."
+      ]
+    },
+    {
+      "id": "sc-vec",
+      "type": "vector-space",
+      "start": 67,
+      "duration": 5,
+      "transition": "fade",
+      "title": "How **retrieval** works",
+      "clusterLabels": [
+        "billing docs",
+        "api docs",
+        "faq"
+      ],
+      "queryLabel": "your question",
+      "captions": [
+        "Close in space =",
+        "close in **meaning**."
+      ]
+    },
+    {
+      "id": "sc-nn",
+      "type": "neural-net",
+      "start": 72,
+      "duration": 3,
+      "transition": "fade",
+      "title": "Inside the **model**",
+      "layerLabels": [
+        "tokens",
+        "layers",
+        "next word"
+      ],
+      "outputLabel": "prediction",
+      "captions": [
+        "Signals ripple through."
+      ]
+    },
+    {
+      "id": "sc-task",
+      "type": "task-breakdown",
+      "start": 75,
+      "duration": 6,
+      "transition": "fade",
+      "title": "Agents make a **to-do list**",
+      "goal": "Plan a team offsite",
+      "subtasks": [
+        {
+          "label": "Pick 3 candidate dates",
+          "sublabel": "check calendars"
+        },
+        {
+          "label": "Compare venues & prices",
+          "sublabel": "web search"
+        },
+        {
+          "label": "Draft the agenda",
+          "sublabel": "1-day format"
+        },
+        {
+          "label": "Send invites",
+          "sublabel": "email tool"
+        }
+      ],
+      "captions": [
+        "Big goal in,",
+        "small **finishable** steps out."
+      ]
+    },
+    {
+      "id": "sc-thought",
+      "type": "thought-chain",
+      "start": 81,
+      "duration": 6,
+      "transition": "fade",
+      "title": "Thinking **out loud**",
+      "question": "Should we refund order #482?",
+      "thoughts": [
+        "My goal is to check the refund policy first.",
+        "Policy says 30 days — order is 12 days old.",
+        "Customer is eligible. Next: issue the refund."
+      ],
+      "conclusion": "Refund **approved** — within the 30-day window.",
+      "captions": [
+        "Plan first,",
+        "**then** act."
+      ]
+    },
+    {
+      "id": "sc-tool",
+      "type": "tool-use",
+      "start": 87,
+      "duration": 6,
+      "transition": "fade",
+      "title": "Agents use **tools**",
+      "agentLabel": "Agent",
+      "tools": [
+        {
+          "glyph": "🔍",
+          "label": "Web search",
+          "sublabel": "live info"
+        },
+        {
+          "glyph": "🧮",
+          "label": "Calculator",
+          "sublabel": "exact math"
+        },
+        {
+          "glyph": "🗄️",
+          "label": "Database",
+          "sublabel": "your data"
+        },
+        {
+          "glyph": "✉️",
+          "label": "Email",
+          "sublabel": "take action"
+        }
+      ],
+      "captions": [
+        "Not trapped in a **chat box** —",
+        "it reaches out."
+      ]
+    },
+    {
+      "id": "sc-memory",
+      "type": "memory",
+      "start": 93,
+      "duration": 6,
+      "transition": "fade",
+      "title": "Agents **remember**",
+      "shortItems": [
+        "Asked about order #482",
+        "Wants a refund"
+      ],
+      "longItems": [
+        "Prefers email replies",
+        "VIP customer since 2023"
+      ],
+      "captions": [
+        "No more starting **from scratch**",
+        "every single chat."
+      ]
+    },
+    {
+      "id": "sc-reflect",
+      "type": "reflection-loop",
+      "start": 99,
+      "duration": 6,
+      "transition": "fade",
+      "title": "Agents **check their work**",
+      "steps": [
+        {
+          "label": "Attempt",
+          "glyph": "✍️"
+        },
+        {
+          "label": "Check",
+          "glyph": "🔎"
+        },
+        {
+          "label": "Fix",
+          "glyph": "🔧"
+        }
+      ],
+      "failLabel": "error found",
+      "passLabel": "fixed",
+      "captions": [
+        "Fail once,",
+        "**learn**, retry."
+      ]
+    },
+    {
+      "id": "sc-mcp",
+      "type": "mcp-hub",
+      "start": 105,
+      "duration": 6,
+      "transition": "fade",
+      "title": "One plug: **MCP**",
+      "agentLabel": "Your Agent",
+      "hubLabel": "MCP",
+      "apps": [
+        {
+          "glyph": "💬",
+          "label": "Slack"
+        },
+        {
+          "glyph": "📁",
+          "label": "Drive"
+        },
+        {
+          "glyph": "💳",
+          "label": "Stripe"
+        },
+        {
+          "glyph": "🗓️",
+          "label": "Calendar"
+        }
+      ],
+      "captions": [
+        "No custom code",
+        "per **integration**."
+      ]
+    },
+    {
+      "id": "sc-cta",
+      "type": "cta",
+      "start": 111,
+      "duration": 4,
+      "headline": "That's the **template**",
+      "subheadline": "21 frames. Both orientations.",
+      "eyebrow": "@ai.decoded",
+      "captions": [
+        "Follow for more."
+      ]
+    }
+  ]
+}

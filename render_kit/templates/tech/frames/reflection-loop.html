@@ -1,0 +1,203 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --cap-size:44px; --cap-bottom:70px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:250px; text-align:center; }
+#main-clip.horizontal .title { top:120px; text-align:left; }
+
+.rig { position:absolute; z-index:2; inset:0; }
+.loop-node { position:absolute; background:#161B22; border:2px solid rgba(230,237,243,.16); border-radius:24px; text-align:center; padding:24px 34px; box-shadow:0 12px 34px rgba(0,0,0,.4); }
+.node-glyph { font-size:46px; line-height:1.1; margin-bottom:6px; }
+.node-label { font-weight:700; font-size:36px; line-height:1.1; white-space:nowrap; }
+.badge { position:absolute; top:-24px; right:-24px; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:800; opacity:0; }
+.badge.fail { background:#FF5F57; color:#0D1117; }
+.badge.pass { background:#4ADE80; color:#0D1117; }
+
+.chord { position:absolute; height:6px; margin-top:-3px; border-radius:3px; background:{{accent}}55; }
+.runner { position:absolute; width:28px; height:28px; margin:-14px 0 0 -14px; border-radius:50%; background:{{accent}}; box-shadow:0 0 30px {{accent}}; opacity:0; }
+
+.status { position:absolute; z-index:2; display:flex; gap:22px; }
+#main-clip.vertical .status   { left:var(--pad); right:var(--pad); top:1510px; justify-content:center; }
+#main-clip.horizontal .status { left:1310px; top:520px; flex-direction:column; }
+.chip { display:flex; align-items:center; gap:14px; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:31px; border-radius:999px; padding:16px 32px; opacity:0; white-space:nowrap; }
+.chip.fail { background:#FF5F5722; border:2px solid #FF5F57; color:#FF5F57; }
+.chip.pass { background:#4ADE8022; border:2px solid #4ADE80; color:#4ADE80; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <span class="fail-src" hidden>{{failLabel}}</span>
+    <span class="pass-src" hidden>{{passLabel}}</span>
+    <div class="rig"></div>
+    <div class="status">
+      <div class="chip fail"><span>✗</span><span class="fail-txt"></span></div>
+      <div class="chip pass"><span>✓</span><span class="pass-txt"></span></div>
+    </div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var W = {{width}}, H = {{height}};
+  var DUR = parseFloat('{{duration}}') || 4;
+  var VERT = '{{orientation}}' === 'vertical';
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var STEPS = {{steps}};
+  $('.fail-txt').textContent = $('.fail-src').textContent.trim() || 'error found';
+  $('.pass-txt').textContent = $('.pass-src').textContent.trim() || 'fixed';
+  var rig = $('.rig');
+  var n = Math.max(2, STEPS.length);
+
+  // Cycle geometry from canvas constants. The SECOND step (index 1) is the
+  // check point where lap 1 fails and lap 2 passes.
+  var C = VERT ? { x: W/2, y: 1000 } : { x: 660, y: 620 };
+  var R = VERT ? { x: 350, y: 380 } : { x: 380, y: 230 }; // horizontal ry keeps the bottom node above the caption band (~928+)
+  var pos = STEPS.map(function(_, i){
+    var a = -Math.PI/2 + (i * 2 * Math.PI / n);
+    return { x: C.x + R.x * Math.cos(a), y: C.y + R.y * Math.sin(a) };
+  });
+
+  // Chords beneath, nodes on top
+  pos.forEach(function(p, i){
+    var q = pos[(i + 1) % n];
+    var dx = q.x - p.x, dy = q.y - p.y;
+    var len = Math.sqrt(dx*dx + dy*dy);
+    var ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    var c = document.createElement('div');
+    c.className = 'chord';
+    c.style.left = p.x + 'px'; c.style.top = p.y + 'px'; c.style.width = len + 'px';
+    rig.insertBefore(c, rig.firstChild);
+    gsap.set(c, { rotation:ang, scaleX:0, transformOrigin:'left center' });
+    p.chord = c;
+  });
+  var nodes = STEPS.map(function(s, i){
+    var el = document.createElement('div');
+    el.className = 'loop-node';
+    el.innerHTML = (s.glyph ? '<div class="node-glyph">' + esc(s.glyph) + '<\/div>' : '') +
+      '<div class="node-label">' + hl(s.label || '') + '<\/div>' +
+      (i === 1 ? '<div class="badge fail">✗<\/div><div class="badge pass">✓<\/div>' : '');
+    rig.appendChild(el);
+    el.style.left = pos[i].x + 'px'; el.style.top = pos[i].y + 'px';
+    gsap.set(el, { xPercent:-50, yPercent:-50 });
+    return el;
+  });
+  var runner = document.createElement('div');
+  runner.className = 'runner';
+  runner.style.left = pos[0].x + 'px'; runner.style.top = pos[0].y + 'px';
+  rig.insertBefore(runner, nodes[0]); // beneath the nodes, above the chords
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+
+  // The loop assembles: nodes pop around the ring, chords draw between them
+  nodes.forEach(function(el, i){
+    tl.fromTo(el, { opacity:0, scale:0.5 }, { opacity:1, scale:1, duration:0.3, ease:'back.out(1.9)' }, 0.2 + i * 0.14);
+    tl.to(pos[i].chord, { scaleX:1, duration:0.22, ease:'power2.out' }, 0.32 + i * 0.14);
+  });
+
+  // Two laps: the runner circles the loop; the check node (index 1) throws
+  // an ✗ on lap 1 and lands a ✓ on lap 2.
+  var lapsAt = 0.2 + n * 0.14 + 0.35;
+  var lapDur = Math.max(1.0, Math.min(1.8, (DUR - lapsAt - 0.6) / 2));
+  var seg = lapDur / n;
+  tl.fromTo(runner, { opacity:0 }, { opacity:1, duration:0.15 }, lapsAt);
+  for (var lap = 0; lap < 2; lap++) {
+    for (var k = 1; k <= n; k++) {
+      var target = pos[k % n];
+      tl.to(runner, { x: target.x - pos[0].x, y: target.y - pos[0].y, duration: seg, ease:'none' },
+        lapsAt + lap * lapDur + (k - 1) * seg);
+    }
+  }
+  var checkArrive1 = lapsAt + seg;            // lap 1 reaches index 1
+  var checkArrive2 = lapsAt + lapDur + seg;   // lap 2 reaches index 1
+  var failBadge = nodes[1] && nodes[1].querySelector('.badge.fail');
+  var passBadge = nodes[1] && nodes[1].querySelector('.badge.pass');
+  if (failBadge) {
+    tl.fromTo(failBadge, { opacity:0, scale:0.3 }, { opacity:1, scale:1, duration:0.25, ease:'back.out(2.4)' }, checkArrive1);
+    tl.fromTo(nodes[1], { x:0 }, { x:-14, duration:0.07, repeat:3, yoyo:true, ease:'none' }, checkArrive1); // shake
+    tl.to(nodes[1], { x:0, duration:0.06 }, checkArrive1 + 0.28);
+    tl.fromTo($('.chip.fail'), { opacity:0, y:16 }, { opacity:1, y:0, duration:0.25, ease:'power2.out' }, checkArrive1 + 0.1);
+    // fail state clears as the retry lap approaches the check
+    tl.to(failBadge, { opacity:0, duration:0.2 }, checkArrive2 - 0.3);
+    tl.to($('.chip.fail'), { opacity:0.25, duration:0.25 }, checkArrive2 - 0.3);
+  }
+  if (passBadge) {
+    tl.fromTo(passBadge, { opacity:0, scale:0.3 }, { opacity:1, scale:1, duration:0.28, ease:'back.out(2.4)' }, checkArrive2);
+    tl.fromTo($('.chip.pass'), { opacity:0, y:16 }, { opacity:1, y:0, duration:0.25, ease:'power2.out' }, checkArrive2 + 0.1);
+  }
+  tl.to(runner, { opacity:0, scale:1.6, duration:0.25, ease:'power2.out' }, lapsAt + 2 * lapDur);
+  // B-roll: check node glow settles green
+  var idleAt = lapsAt + 2 * lapDur + 0.2;
+  var pulses = Math.max(1, Math.floor((DUR - idleAt) / 0.9));
+  if (passBadge) tl.to(passBadge, { scale:1.15, duration:0.45, ease:'sine.inOut', repeat:pulses * 2 - 1, yoyo:true }, idleAt);
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

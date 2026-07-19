@@ -1,0 +1,10 @@
+{
+  "config": { "slug": "test-tech-cta", "topic": "tech cta test", "totalDuration": 4 },
+  "scenes": [{
+    "id": "s1", "type": "cta", "start": 0, "duration": 4,
+    "headline": "Now you know **RAG**",
+    "subheadline": "Retrieve. Augment. Generate.",
+    "eyebrow": "@ai.decoded",
+    "captions": ["Follow for more AI engineering."]
+  }]
+}

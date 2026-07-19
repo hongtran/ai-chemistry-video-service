@@ -1,0 +1,15 @@
+{
+  "config": { "slug": "test-tech-task-breakdown", "topic": "tech task-breakdown test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "task-breakdown", "start": 0, "duration": 6,
+    "title": "Agents make a **to-do list**",
+    "goal": "Plan a team offsite",
+    "subtasks": [
+      { "label": "Pick 3 candidate dates", "sublabel": "check calendars" },
+      { "label": "Compare venues & prices", "sublabel": "web search" },
+      { "label": "Draft the agenda", "sublabel": "1-day format" },
+      { "label": "Send invites", "sublabel": "email tool" }
+    ],
+    "captions": ["Big goal in,", "small **finishable** steps out."]
+  }]
+}

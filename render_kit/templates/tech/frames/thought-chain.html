@@ -1,0 +1,190 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --title-size:76px; --q-size:44px; --thought-size:38px; --ans-size:48px; --chain-top:460px; --chain-w:100%; --cap-size:58px; --cap-bottom:170px; --cap-maxw:100%; }
+#main-clip.horizontal { --pad:130px; --title-size:70px; --q-size:38px; --thought-size:32px; --ans-size:40px; --chain-top:264px; --chain-w:1150px; --cap-size:44px; --cap-bottom:60px;  --cap-maxw:1180px; }
+
+.bg-fill { pointer-events:none; position:absolute; inset:0; background:{{bg}}; }
+.bg-grid { pointer-events:none; position:absolute; inset:-140px; opacity:.9;
+  background-image:radial-gradient(rgba(230,237,243,.08) 2px, transparent 2px);
+  background-size:54px 54px; }
+
+.title { position:absolute; z-index:2; left:var(--pad); right:var(--pad); font-weight:700; font-size:var(--title-size); line-height:1.05; letter-spacing:-1px; }
+#main-clip.vertical .title   { top:250px; text-align:center; }
+#main-clip.horizontal .title { top:120px; text-align:left; }
+
+.chain { position:absolute; z-index:2; top:var(--chain-top); left:50%; transform:translateX(-50%); width:var(--chain-w); max-width:calc(100% - 2*var(--pad)); display:flex; flex-direction:column; align-items:stretch; }
+.q-pill { align-self:center; display:flex; align-items:center; gap:18px; background:{{accent}}; color:{{bg}}; font-family:'Inter',sans-serif; font-weight:800; font-size:var(--q-size); line-height:1.25; padding:24px 44px; border-radius:999px; }
+.link { align-self:center; width:0; height:44px; border-left:5px dashed rgba(230,237,243,.3); }
+#main-clip.horizontal .link { height:26px; }
+.thought { display:flex; gap:26px; align-items:flex-start; background:#161B22; border:1px solid rgba(230,237,243,.1); border-radius:22px; padding:28px 38px; }
+#main-clip.horizontal .thought { padding:20px 34px; }
+#main-clip.horizontal .q-pill { padding:18px 38px; }
+#main-clip.horizontal .answer { padding:24px 38px; }
+.t-idx { flex:0 0 auto; font-family:'JetBrains Mono',monospace; font-weight:700; font-size:30px; color:{{accent}}; opacity:.9; margin-top:4px; }
+.t-txt { font-family:'JetBrains Mono',monospace; font-size:var(--thought-size); line-height:1.5; opacity:.85; }
+.t-txt .w { display:inline-block; white-space:pre; }
+.answer { position:relative; background:#161B22; border:2px solid {{accent}}; border-radius:22px; padding:32px 42px; font-family:'Inter',sans-serif; font-weight:800; font-size:var(--ans-size); line-height:1.3; box-shadow:0 0 50px {{accent}}33; }
+.ans-tag { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:24px; letter-spacing:4px; color:{{accent}}; margin-bottom:14px; }
+.ans-ring { position:absolute; inset:-3px; border-radius:24px; border:3px solid {{accent}}; opacity:0; }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .12em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+.answer .hl, .q-pill .hl { background:{{bg}}; color:{{accent}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section id="main-clip" class="clip main-clip {{orientation}}" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="bg-fill"></div>
+    <div class="bg-grid"></div>
+    <div class="title">{{title}}</div>
+    <span class="q-src" hidden>{{question}}</span>
+    <span class="c-src" hidden>{{conclusion}}</span>
+    <div class="chain"></div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var DUR = parseFloat('{{duration}}') || 4;
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+  // Multi-word **spans** must survive word-splitting: re-mark each word
+  function splitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g, function(_m, inner){
+    return inner.split(/\s+/).map(function(w){ return '**' + w + '**'; }).join(' ');
+  }); }
+
+  var titleEl = $('.title');
+  var tt = titleEl.textContent.trim();
+  if (!tt) titleEl.style.display = 'none'; else titleEl.innerHTML = hl(tt);
+
+  var THOUGHTS = {{thoughts}};
+  var question = $('.q-src').textContent.trim();
+  var conclusion = $('.c-src').textContent.trim();
+  var chain = $('.chain');
+
+  var qPill = document.createElement('div');
+  qPill.className = 'q-pill';
+  qPill.innerHTML = '<span>❓<\/span><span>' + hl(question) + '<\/span>';
+  chain.appendChild(qPill);
+
+  var thoughtEls = THOUGHTS.map(function(t, i){
+    var link = document.createElement('div');
+    link.className = 'link';
+    chain.appendChild(link);
+    var el = document.createElement('div');
+    el.className = 'thought';
+    el.innerHTML = '<span class="t-idx">#' + (i + 1) + '<\/span><span class="t-txt">' +
+      splitMarks(String(t).trim()).split(/\s+/).map(function(w){ return '<span class="w">' + hl(w) + ' <\/span>'; }).join('') +
+      '<\/span>';
+    chain.appendChild(el);
+    return { link:link, el:el, words:Array.prototype.slice.call(el.querySelectorAll('.w')) };
+  });
+
+  var ansLink = document.createElement('div');
+  ansLink.className = 'link';
+  chain.appendChild(ansLink);
+  var ansEl = document.createElement('div');
+  ansEl.className = 'answer';
+  ansEl.innerHTML = '<div class="ans-ring"></div><div class="ans-tag">ANSWER<\/div>' + hl(conclusion);
+  chain.appendChild(ansEl);
+
+  // Defensive fit: a chain taller than its zone scales down to clear the
+  // caption band (content limits live in schema.json; this is the net).
+  // xPercent re-applies the CSS translateX(-50%) centering GSAP takes over.
+  (function(){
+    var zone = chain; if (!zone.children.length) return;
+    function apply(){
+      gsap.set(zone, { clearProps:'transform' }); // re-measure from natural layout
+      var rootR = root.getBoundingClientRect();
+      var k = (rootR.width / parseFloat('{{width}}')) || 1;
+      var r = zone.getBoundingClientRect();
+      var top = (r.top - rootR.top) / k, h = r.height / k;
+      var avail = (('{{orientation}}' === 'vertical') ? 1580 : 890) - top;
+      if (h > avail && avail > 0) gsap.set(zone, { xPercent:-50, x:0, scale: Math.max(0.6, avail / h), transformOrigin: '50% 0' });
+    }
+    apply(); // pre-font metrics can under-measure wraps — re-run when fonts land
+    if (document.fonts) {
+      document.fonts.ready.then(function(){ apply(); });
+      if (document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', function(){ apply(); });
+    }
+  })();
+
+  var tl = gsap.timeline({ paused:true });
+  tl.to($('.bg-grid'), { x:36, y:36, duration:DUR, ease:'none' }, 0);
+  tl.fromTo(titleEl, { opacity:0, y:-24 }, { opacity:1, y:0, duration:0.32, ease:'power3.out' }, 0.08);
+  tl.fromTo(qPill, { opacity:0, scale:0.8 }, { opacity:1, scale:1, duration:0.32, ease:'back.out(1.7)' }, 0.22);
+
+  // Thinking out loud: each step types on down the dotted spine
+  var natural = 0;
+  thoughtEls.forEach(function(t){ natural += 0.25 + Math.min(0.9, t.words.length * 0.06) + 0.15; });
+  var k = Math.min(1, (DUR * 0.55) / natural);
+  var t = 0.55;
+  thoughtEls.forEach(function(th){
+    tl.fromTo(th.link, { opacity:0, scaleY:0, transformOrigin:'center top' }, { opacity:1, scaleY:1, duration:0.16, ease:'power2.out' }, t);
+    tl.fromTo(th.el, { opacity:0, y:26 }, { opacity:1, y:0, duration:0.28, ease:'power2.out' }, t + 0.08);
+    var reveal = Math.min(0.9, th.words.length * 0.06) * k;
+    var per = th.words.length > 1 ? reveal / th.words.length : reveal;
+    th.words.forEach(function(w, wi){
+      tl.fromTo(w, { opacity:0 }, { opacity:1, duration:0.12 }, t + 0.2 + wi * per);
+    });
+    t += (0.25 + reveal + 0.15);
+  });
+
+  // The answer punches in
+  tl.fromTo(ansLink, { opacity:0, scaleY:0, transformOrigin:'center top' }, { opacity:1, scaleY:1, duration:0.16, ease:'power2.out' }, t);
+  tl.fromTo(ansEl, { opacity:0, scale:0.85 }, { opacity:1, scale:1, duration:0.36, ease:'back.out(1.8)' }, t + 0.1);
+  // B-roll: answer ring pulses
+  var idleAt = t + 0.7;
+  var pulses = Math.max(1, Math.floor((DUR - idleAt) / 0.9));
+  tl.fromTo($('.ans-ring'), { opacity:0 }, { opacity:0.7, duration:0.45, ease:'sine.inOut', repeat:pulses * 2 - 1, yoyo:true }, idleAt);
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div');
+    d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(c.text);
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var ct = CT[i]; if(!ct) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, ct.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : ct.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(ct.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(ct.words) ? ct.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'{{fg}}', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>
