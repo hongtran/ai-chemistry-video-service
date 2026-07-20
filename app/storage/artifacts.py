@@ -6,6 +6,7 @@ is resolvable from job_id alone. Swap LocalArtifactStore for an S3-backed
 implementation without touching pipeline or API code.
 """
 import json
+import shutil
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -24,6 +25,8 @@ class ArtifactStore(Protocol):
     def exists(self, job_id: str, name: str) -> bool: ...
 
     def list_names(self, job_id: str) -> list[str]: ...
+
+    def delete_all(self, job_id: str) -> None: ...
 
 
 class LocalArtifactStore:
@@ -56,3 +59,13 @@ class LocalArtifactStore:
         if not job_dir.is_dir():
             return []
         return sorted(p.name for p in job_dir.iterdir() if p.is_file())
+
+    def delete_all(self, job_id: str) -> None:
+        """Remove a job's entire artifact directory. No-op if it doesn't
+        exist. Refuses anything that isn't a direct child of the artifact root
+        (defensive against a traversing job_id on this destructive path)."""
+        job_dir = (self._root / job_id).resolve()
+        if job_dir.parent != self._root.resolve():
+            return
+        if job_dir.is_dir():
+            shutil.rmtree(job_dir, ignore_errors=True)

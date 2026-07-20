@@ -10,7 +10,10 @@ from pathlib import Path
 
 import httpx
 
+from app.cleanup import purge_job
 from app.domain.models import UploadStatus
+from app.storage.artifacts import ArtifactStore
+from app.storage.jobs import JobRepository
 from app.storage.uploads import UploadRepository
 from app.youtube.client import (
     UploadMetadata,
@@ -23,9 +26,22 @@ logger = logging.getLogger(__name__)
 
 
 class UploadRunner:
-    def __init__(self, uploads: UploadRepository, uploader: YouTubeUploader) -> None:
+    def __init__(
+        self,
+        uploads: UploadRepository,
+        uploader: YouTubeUploader,
+        jobs: JobRepository | None = None,
+        artifacts: ArtifactStore | None = None,
+        clear_job_on_success: bool = False,
+    ) -> None:
         self._uploads = uploads
         self._uploader = uploader
+        self._jobs = jobs
+        self._artifacts = artifacts
+        # Auto-clear needs both stores; without them it silently stays off.
+        self._clear_job_on_success = (
+            clear_job_on_success and jobs is not None and artifacts is not None
+        )
         self._tasks: set[asyncio.Task[None]] = set()
 
     def submit(self, upload_id: str, access_token: str, video_path: Path) -> None:
@@ -108,6 +124,19 @@ class UploadRunner:
                 fields["error_message"] = f"uploaded, but playlist add failed: {exc}"
         await self._uploads.update(upload_id, **fields)
         logger.info("upload %s completed: %s", upload_id, fields["video_url"])
+        await self._maybe_clear_job(upload.job_id)
+
+    async def _maybe_clear_job(self, job_id: str) -> None:
+        """Drop the source job + artifacts now that the video is on YouTube.
+        Cleanup must never turn a successful publish into a failure, so any
+        error here is logged and swallowed."""
+        if not self._clear_job_on_success:
+            return
+        try:
+            await purge_job(job_id, self._jobs, self._artifacts)
+            logger.info("cleared job %s after successful upload", job_id)
+        except Exception:  # noqa: BLE001 — cleanup never fails the upload
+            logger.exception("failed to clear job %s after upload", job_id)
 
     async def _fail(self, upload_id: str, code: str, exc: Exception) -> None:
         logger.exception("upload %s failed (%s)", upload_id, code)

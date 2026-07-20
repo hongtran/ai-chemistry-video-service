@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Query, Request, status
+from fastapi import APIRouter, HTTPException, Query, Request, Response, status
 from fastapi.responses import FileResponse
 
 from app.api.schemas import CreateVideoRequest, CreateVideoResponse, JobDetail, JobSummary
+from app.cleanup import purge_job
 from app.domain.models import Job, JobStatus
 from app.llm.client import GuardMisconfiguredError, GuardUnavailableError, SubjectGuard
 from app.storage.artifacts import ArtifactStore
@@ -109,6 +110,17 @@ async def get_video_job(job_id: str, request: Request) -> JobDetail:
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found.")
     return JobDetail.from_job(job, artifacts.list_names(job_id))
+
+
+@router.delete("/videos/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_video_job(job_id: str, request: Request) -> Response:
+    """Delete a job and its on-disk artifacts. Allowed in any state; a job
+    still processing simply has its record dropped and the pipeline's later
+    updates become no-ops. YouTube upload records are left intact."""
+    jobs, artifacts, _, _ = _deps(request)
+    if not await purge_job(job_id, jobs, artifacts):
+        raise HTTPException(status_code=404, detail="Job not found.")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @router.get("/videos/{job_id}/video")

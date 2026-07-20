@@ -207,5 +207,66 @@ class UploadToYouTubeTests(UploadApiHarness):
         self.assertTrue(detail.playlist_added)
 
 
+class AutoClearAfterUploadTests(UploadApiHarness):
+    async def asyncSetUp(self) -> None:
+        await super().asyncSetUp()
+        # Same wiring as production when clear_job_after_youtube_upload=True.
+        self.runner = UploadRunner(
+            self.uploads,
+            YouTubeUploader(
+                httpx.AsyncClient(transport=httpx.MockTransport(_google_handler)), 1024 * 1024
+            ),
+            jobs=self.jobs,
+            artifacts=self.artifacts,
+            clear_job_on_success=True,
+        )
+
+    async def test_successful_upload_clears_job_but_keeps_upload_record(self) -> None:
+        job = await self._seed_completed_job()
+        response = await upload_to_youtube(
+            job.id, CreateYouTubeUploadRequest(access_token="good-token"), self._request()
+        )
+        await self.runner.join()
+
+        # Job record + artifacts are gone...
+        self.assertIsNone(await self.jobs.get(job.id))
+        self.assertEqual(self.artifacts.list_names(job.id), [])
+        # ...but the upload record (and its YouTube URL) survives.
+        detail = await get_youtube_upload(response.upload_id, self._request())
+        self.assertEqual(detail.status, UploadStatus.COMPLETED)
+        self.assertEqual(detail.video_url, "https://www.youtube.com/watch?v=abc123")
+
+    async def test_failed_upload_does_not_clear_job(self) -> None:
+        def failing(request: httpx.Request) -> httpx.Response:
+            if request.url.path == "/oauth2/v3/tokeninfo":
+                return httpx.Response(200, json={"scope": UPLOAD_SCOPE})
+            return httpx.Response(
+                403,
+                json={"error": {"message": "quota", "errors": [{"reason": "quotaExceeded"}]}},
+            )
+
+        client = httpx.AsyncClient(transport=httpx.MockTransport(failing))
+        self.oauth = GoogleOAuth(
+            Settings(google_client_id="cid", google_client_secret="csecret"), client
+        )
+        self.runner = UploadRunner(
+            self.uploads,
+            YouTubeUploader(client, 1024),
+            jobs=self.jobs,
+            artifacts=self.artifacts,
+            clear_job_on_success=True,
+        )
+
+        job = await self._seed_completed_job()
+        await upload_to_youtube(
+            job.id, CreateYouTubeUploadRequest(access_token="good-token"), self._request()
+        )
+        await self.runner.join()
+
+        # Upload failed → job and its artifacts must remain.
+        self.assertIsNotNone(await self.jobs.get(job.id))
+        self.assertIn("video.mp4", self.artifacts.list_names(job.id))
+
+
 if __name__ == "__main__":
     unittest.main()
