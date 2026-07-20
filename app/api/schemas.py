@@ -21,12 +21,15 @@ class CreateVideoRequest(BaseModel):
     query: str = Field(min_length=1, max_length=1000)
     subject: Literal["chemistry", "tech"] = "chemistry"
     orientation: Literal["vertical", "horizontal"] = "vertical"
+    # Kept in sync with app/languages.py SUPPORTED_LANGUAGES.
+    language: Literal["en", "vi"] = "en"
 
 
 class CreateVideoResponse(BaseModel):
     id: str
     subject: str
     orientation: str
+    language: str
     status: JobStatus
 
 
@@ -35,6 +38,7 @@ class JobSummary(BaseModel):
     query: str
     subject: str
     orientation: str
+    language: str
     status: JobStatus
     current_step: PipelineStep | None
     created_at: datetime
@@ -49,6 +53,7 @@ class JobDetail(BaseModel):
     query: str
     subject: str
     orientation: str
+    language: str
     status: JobStatus
     current_step: PipelineStep | None
     error_message: str | None

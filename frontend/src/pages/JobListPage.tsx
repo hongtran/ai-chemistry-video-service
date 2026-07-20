@@ -1,8 +1,8 @@
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { listVideos } from '../api/client'
-import { usePolling } from '../hooks/usePolling'
 import CreateVideoForm from '../components/CreateVideoForm'
-import type { JobStatus } from '../api/types'
+import type { JobStatus, JobSummary } from '../api/types'
 
 const STATUS_CLASS: Record<JobStatus, string> = {
   PENDING: 'badge pending',
@@ -13,7 +13,19 @@ const STATUS_CLASS: Record<JobStatus, string> = {
 
 export default function JobListPage() {
   const navigate = useNavigate()
-  const { data: jobs, error } = usePolling(listVideos, 5000, true)
+  // Fetch the list once on mount; no polling. Revisit the page (or reload) to refresh.
+  const [jobs, setJobs] = useState<JobSummary[] | null>(null)
+  const [error, setError] = useState<Error | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+    listVideos()
+      .then((result) => !cancelled && setJobs(result))
+      .catch((err) => !cancelled && setError(err as Error))
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return (
     <div className="page">

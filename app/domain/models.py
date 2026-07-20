@@ -32,6 +32,7 @@ class Job(BaseModel):
     query: str
     subject: str = "chemistry"
     orientation: str = "vertical"
+    language: str = "en"
     status: JobStatus = JobStatus.PENDING
     current_step: PipelineStep | None = None
     error_message: str | None = None

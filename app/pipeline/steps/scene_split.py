@@ -27,6 +27,7 @@ import jsonschema
 from openai import AsyncOpenAI
 
 from app.config import Settings
+from app.languages import DEFAULT_LANGUAGE, language_name
 from app.pipeline.steps.sections import (
     build_arc_rule,
     section_index_from_scene_id,
@@ -54,6 +55,23 @@ _METADATA_BLOCK = (
     'Response shape: {"config": {"description": "...", "hashtags": ["..."], '
     '"tags": ["..."]}, "scenes": [ ... ]}'
 )
+
+
+def _language_block(language: str) -> str:
+    """Force target-language DISPLAY text + YouTube metadata. Empty for the
+    default language (captions already follow the transcript verbatim, so the
+    English path is unchanged). Kept in the user message, never the cache-stable
+    system prefix."""
+    if language == DEFAULT_LANGUAGE:
+        return ""
+    name = language_name(language)
+    return (
+        f"LANGUAGE: Write every on-screen display field you author (headline, "
+        f"eyebrow, and all type-specific labels/titles) AND the config "
+        f"description/hashtags/tags in {name}, matching the transcript's "
+        "language. The captions must still copy the transcript verbatim. "
+        "Standard chemical notation (NaCl, H₂O) stays as-is."
+    )
 
 
 class SceneSplitError(Exception):
@@ -206,11 +224,16 @@ def build_user_message(
     orientation: str,
     script: str | None,
     full_transcript: str,
+    language: str = DEFAULT_LANGUAGE,
 ) -> str:
     """Everything per-request. Multi-section runs get position-aware framing
     and only their own transcript slice to split."""
     multi = section.total > 1
     parts = [_canvas_line(orientation), build_arc_rule(section.index, section.total)]
+
+    language_block = _language_block(language)
+    if language_block:
+        parts.append(language_block)
 
     if multi:
         parts.append(
@@ -271,6 +294,7 @@ async def split_section(
     orientation: str = "vertical",
     script: str | None = None,
     full_transcript: str = "",
+    language: str = DEFAULT_LANGUAGE,
     feedback: str | None = None,
 ) -> tuple[list[dict], dict]:
     """Split one section, continuing its conversation if it already has one.
@@ -291,7 +315,7 @@ async def split_section(
             {
                 "role": "user",
                 "content": build_user_message(
-                    section, orientation, script, full_transcript
+                    section, orientation, script, full_transcript, language
                 ),
             },
         ]
@@ -406,6 +430,7 @@ async def generate_scenes(
     script: str,
     transcript_text: str,
     alignment_feedback: str | None = None,
+    language: str = DEFAULT_LANGUAGE,
 ) -> tuple[list[dict], dict]:
     """Single-section convenience wrapper (the short-form path).
 
@@ -423,7 +448,9 @@ async def generate_scenes(
             },
             {
                 "role": "user",
-                "content": build_user_message(section, "vertical", script, transcript_text)
+                "content": build_user_message(
+                    section, "vertical", script, transcript_text, language
+                )
                 + "\n\nPREVIOUS ATTEMPT FAILED WORD ALIGNMENT against the audio:\n"
                 + alignment_feedback
                 + "\nRe-split the narration, copying the TRANSCRIPT wording verbatim "
@@ -438,4 +465,5 @@ async def generate_scenes(
         orientation="vertical",
         script=script,
         full_transcript=transcript_text,
+        language=language,
     )

@@ -1,7 +1,14 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ApiError, createVideo } from '../api/client'
-import { MAX_QUERY_LENGTH, SUBJECTS, type Orientation, type Subject } from '../api/types'
+import {
+  LANGUAGES,
+  MAX_QUERY_LENGTH,
+  SUBJECTS,
+  type Language,
+  type Orientation,
+  type Subject,
+} from '../api/types'
 
 // The API has no short/long field — vertical is the short single-pass flow
 // (45-90s) and horizontal the long-form sectioned one (5-10 min).
@@ -14,6 +21,7 @@ export default function CreateVideoForm() {
   const navigate = useNavigate()
   const [subject, setSubject] = useState<Subject>('chemistry')
   const [orientation, setOrientation] = useState<Orientation>('vertical')
+  const [language, setLanguage] = useState<Language>('en')
   const [query, setQuery] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -24,7 +32,7 @@ export default function CreateVideoForm() {
     setSubmitting(true)
     setError(null)
     try {
-      const job = await createVideo({ query: query.trim(), subject, orientation })
+      const job = await createVideo({ query: query.trim(), subject, orientation, language })
       navigate(`/jobs/${job.id}`)
     } catch (err) {
       // 400 = the subject guard rejected an off-topic query; show it inline.
@@ -44,6 +52,17 @@ export default function CreateVideoForm() {
             {SUBJECTS.map((s) => (
               <option key={s} value={s}>
                 {s}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="field">
+          <span className="field-label">Language</span>
+          <select value={language} onChange={(e) => setLanguage(e.target.value as Language)}>
+            {LANGUAGES.map((l) => (
+              <option key={l.value} value={l.value}>
+                {l.label}
               </option>
             ))}
           </select>

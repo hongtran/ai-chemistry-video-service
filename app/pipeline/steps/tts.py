@@ -14,6 +14,7 @@ from pathlib import Path
 from openai import AsyncOpenAI
 
 from app.config import Settings
+from app.languages import DEFAULT_LANGUAGE
 from app.llm.client import with_retries
 from app.pipeline.steps.sections import split_for_tts
 
@@ -25,14 +26,14 @@ class TTSError(Exception):
 
 
 async def _synthesize_chunk(
-    client: AsyncOpenAI, settings: Settings, text: str
+    client: AsyncOpenAI, settings: Settings, text: str, voice: str
 ) -> bytes:
     async def _call() -> bytes:
         response = await client.audio.speech.create(
             model=settings.tts_model,
-            voice=settings.tts_voice,
+            voice=voice,
             input=text,
-            response_format="mp3",
+            response_format="mp3"
         )
         return response.content
 
@@ -85,16 +86,22 @@ async def _concat_mp3(parts: list[bytes]) -> bytes:
         return out_path.read_bytes()
 
 
-async def synthesize(client: AsyncOpenAI, settings: Settings, script: str) -> bytes:
+async def synthesize(
+    client: AsyncOpenAI,
+    settings: Settings,
+    script: str,
+    language: str = DEFAULT_LANGUAGE,
+) -> bytes:
+    voice = settings.voice_for_language(language)
     chunks = split_for_tts(script, settings.tts_max_chars)
     if not chunks:
         raise TTSError("nothing to synthesize: script is empty")
     if len(chunks) == 1:
-        return await _synthesize_chunk(client, settings, chunks[0])
+        return await _synthesize_chunk(client, settings, chunks[0], voice)
 
     logger.info(
         "narration is %d chars — synthesizing in %d chunks, then joining",
         len(script), len(chunks),
     )
-    parts = [await _synthesize_chunk(client, settings, c) for c in chunks]
+    parts = [await _synthesize_chunk(client, settings, c, voice) for c in chunks]
     return await _concat_mp3(parts)

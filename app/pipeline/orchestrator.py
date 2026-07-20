@@ -79,17 +79,20 @@ class RealVideoPipeline:
 
             await self._step(job_id, PipelineStep.NARRATION)
             script = await narration.generate_script(
-                self._client, self._settings, subject_config, job.query, job.orientation
+                self._client, self._settings, subject_config, job.query,
+                job.orientation, job.language,
             )
             self._artifacts.save_text(job_id, "script.txt", script)
 
             step = await self._step(job_id, PipelineStep.TTS)
-            audio = await tts.synthesize(self._client, self._settings, script)
+            audio = await tts.synthesize(
+                self._client, self._settings, script, job.language
+            )
             audio_path = self._artifacts.save_bytes(job_id, "narration.mp3", audio)
 
             step = await self._step(job_id, PipelineStep.TRANSCRIPTION)
             words, duration, transcript_text = await transcribe.transcribe_words(
-                self._client, self._settings, audio_path
+                self._client, self._settings, audio_path, job.language
             )
             self._artifacts.save_json(
                 job_id, "transcript.json", {"text": transcript_text, "words": words}
@@ -105,7 +108,8 @@ class RealVideoPipeline:
                     job_id, job.orientation, len(sections),
                 )
             metadata = await self._split_sections(
-                subject_config, sections, job.orientation, script, transcript_text
+                subject_config, sections, job.orientation, script, transcript_text,
+                job.language,
             )
             scenes = _collect_scenes(sections)
             self._artifacts.save_json(job_id, "scenes.json", scenes)
@@ -209,6 +213,7 @@ class RealVideoPipeline:
         orientation: str,
         script: str,
         transcript_text: str,
+        language: str,
     ) -> dict:
         """Split every section in narration order. Returns the video-level
         YouTube metadata (only section 0 is asked for it)."""
@@ -222,6 +227,7 @@ class RealVideoPipeline:
                 orientation=orientation,
                 script=script,
                 full_transcript=transcript_text,
+                language=language,
             )
             metadata = metadata or section_metadata
         return metadata

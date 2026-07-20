@@ -66,7 +66,7 @@ class OuterLoopTests(unittest.IsolatedAsyncioTestCase):
         are per-round outcomes (an Exception is raised, else returned)."""
         aligns, gates = list(align_results), list(gate_results)
 
-        async def fake_split_sections(subject_config, sections, orientation, script, transcript):
+        async def fake_split_sections(subject_config, sections, orientation, script, transcript, language):
             for s in sections:
                 s.scenes = [_scene(f"{s.id_prefix}hook")]
             return {"description": "d"}
