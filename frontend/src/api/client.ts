@@ -84,6 +84,19 @@ export function getJob(jobId: string): Promise<JobDetail> {
   return request(`/api/v1/videos/${jobId}`)
 }
 
+/** Delete a job and its artifacts. Backend returns 204 (no JSON body), so this
+ * doesn't go through `request` (which parses JSON). */
+export async function deleteJob(jobId: string): Promise<void> {
+  const res = await fetch(`${BASE}/api/v1/videos/${jobId}`, {
+    method: 'DELETE',
+    headers: authHeaders(false),
+  })
+  if (!res.ok) {
+    handleAdminSessionExpiry(res)
+    throw await toApiError(res)
+  }
+}
+
 export function login(username: string, password: string): Promise<LoginResponse> {
   return request('/api/v1/auth/login', {
     method: 'POST',

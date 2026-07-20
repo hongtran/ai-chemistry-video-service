@@ -184,6 +184,19 @@ button:disabled {
   cursor: not-allowed;
 }
 
+/* Compact, borderless destructive action (e.g. row delete in the job table). */
+button.danger-link {
+  padding: 0.2rem 0.4rem;
+  border: none;
+  background: none;
+  color: var(--danger);
+  font-weight: 500;
+}
+
+button.danger-link:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
 .toggle-group {
   display: flex;
   gap: 0.5rem;

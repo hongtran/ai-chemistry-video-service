@@ -89,6 +89,10 @@ class Settings(BaseSettings):
     youtube_upload_chunk_bytes: int = 8 * 1024 * 1024
     # Read timeout for Google calls; a chunk PUT must finish within this.
     youtube_upload_timeout_seconds: int = 600
+    # After a video publishes to YouTube, delete its job record + on-disk
+    # artifacts (the video now lives on YouTube). The upload record — and its
+    # video URL — is kept. Set false to retain the job/artifacts.
+    clear_job_after_youtube_upload: bool = True
 
     def voice_for_language(self, language: str) -> str:
         """TTS voice for a language, falling back to the global `tts_voice`."""

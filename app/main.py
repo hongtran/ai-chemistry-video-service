@@ -64,7 +64,11 @@ async def lifespan(app: FastAPI):
     oauth = GoogleOAuth(settings, http_client)
     uploads = InMemoryUploadRepository()
     upload_runner = UploadRunner(
-        uploads, YouTubeUploader(http_client, settings.youtube_upload_chunk_bytes)
+        uploads,
+        YouTubeUploader(http_client, settings.youtube_upload_chunk_bytes),
+        jobs=jobs,
+        artifacts=artifacts,
+        clear_job_on_success=settings.clear_job_after_youtube_upload,
     )
 
     auth = AdminAuth(settings)

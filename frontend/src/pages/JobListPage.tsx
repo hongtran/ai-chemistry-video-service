@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { listVideos } from '../api/client'
+import { ApiError, deleteJob, listVideos } from '../api/client'
 import CreateVideoForm from '../components/CreateVideoForm'
 import type { JobStatus, JobSummary } from '../api/types'
 
@@ -16,6 +16,7 @@ export default function JobListPage() {
   // Fetch the list once on mount; no polling. Revisit the page (or reload) to refresh.
   const [jobs, setJobs] = useState<JobSummary[] | null>(null)
   const [error, setError] = useState<Error | null>(null)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -26,6 +27,26 @@ export default function JobListPage() {
       cancelled = true
     }
   }, [])
+
+  const remove = async (event: React.MouseEvent, job: JobSummary) => {
+    event.stopPropagation() // don't trigger the row's navigate
+    if (deletingId) return
+    if (!window.confirm(`Delete this job and its files?\n\n${job.query}`)) return
+    setDeletingId(job.id)
+    try {
+      await deleteJob(job.id)
+      setJobs((current) => (current ? current.filter((j) => j.id !== job.id) : current))
+    } catch (err) {
+      // A 404 means it's already gone — drop it from the list anyway.
+      if (err instanceof ApiError && err.status === 404) {
+        setJobs((current) => (current ? current.filter((j) => j.id !== job.id) : current))
+      } else {
+        window.alert(err instanceof Error ? err.message : 'Delete failed.')
+      }
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
   return (
     <div className="page">
@@ -47,6 +68,7 @@ export default function JobListPage() {
                 <th>Status</th>
                 <th>Step</th>
                 <th>Created</th>
+                <th aria-label="Actions"></th>
               </tr>
             </thead>
             <tbody>
@@ -60,6 +82,17 @@ export default function JobListPage() {
                   </td>
                   <td>{job.current_step ?? '—'}</td>
                   <td>{new Date(job.created_at).toLocaleString()}</td>
+                  <td>
+                    <button
+                      type="button"
+                      className="danger-link"
+                      onClick={(e) => remove(e, job)}
+                      disabled={deletingId === job.id}
+                      title="Delete job"
+                    >
+                      {deletingId === job.id ? 'Deleting…' : 'Delete'}
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>

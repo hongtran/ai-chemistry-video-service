@@ -20,6 +20,8 @@ class JobRepository(Protocol):
 
     async def update(self, job_id: str, **fields: Any) -> Job | None: ...
 
+    async def delete(self, job_id: str) -> bool: ...
+
 
 class InMemoryJobRepository:
     def __init__(self) -> None:
@@ -53,3 +55,7 @@ class InMemoryJobRepository:
             )
             self._jobs[job_id] = updated
         return updated.model_copy()
+
+    async def delete(self, job_id: str) -> bool:
+        async with self._lock:
+            return self._jobs.pop(job_id, None) is not None
