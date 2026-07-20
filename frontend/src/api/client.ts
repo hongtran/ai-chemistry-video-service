@@ -5,6 +5,7 @@ import type {
   CreateYouTubeUploadRequest,
   CreateYouTubeUploadResponse,
   JobDetail,
+  JobMeta,
   JobSummary,
   LoginResponse,
   YouTubeUploadDetail,
@@ -82,6 +83,12 @@ export function listVideos(): Promise<JobSummary[]> {
 
 export function getJob(jobId: string): Promise<JobDetail> {
   return request(`/api/v1/videos/${jobId}`)
+}
+
+/** The video's meta.json sidecar — the YouTube upload defaults (title,
+ * description, tags). 404s until the compose step has produced it. */
+export function getJobMeta(jobId: string): Promise<JobMeta> {
+  return request(`/api/v1/videos/${jobId}/artifacts/meta.json`)
 }
 
 /** Delete a job and its artifacts. Backend returns 204 (no JSON body), so this

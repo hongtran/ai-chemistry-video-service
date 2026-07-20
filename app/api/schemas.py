@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from app.domain.models import Job, JobStatus, PipelineStep, UploadStatus, YouTubeUpload
 
@@ -18,15 +18,32 @@ class LoginResponse(BaseModel):
 
 
 class CreateVideoRequest(BaseModel):
-    query: str = Field(min_length=1, max_length=1000)
+    # "topic": LLM writes the narration from `query`. "script": the user supplies
+    # the narration in `script` and the NARRATION pipeline step is skipped.
+    input_mode: Literal["topic", "script"] = "topic"
+    query: str | None = Field(default=None, max_length=300)
+    # Generous ceiling; the router enforces the real per-orientation cap
+    # (settings.max_script_length_short / _long).
+    script: str | None = Field(default=None, max_length=9000)
     subject: Literal["chemistry", "tech"] = "chemistry"
     orientation: Literal["vertical", "horizontal"] = "vertical"
     # Kept in sync with app/languages.py SUPPORTED_LANGUAGES.
     language: Literal["en", "vi"] = "en"
 
+    @model_validator(mode="after")
+    def _require_active_field(self) -> "CreateVideoRequest":
+        if self.input_mode == "topic":
+            if not (self.query and self.query.strip()):
+                raise ValueError("query is required in topic mode")
+        else:
+            if not (self.script and self.script.strip()):
+                raise ValueError("script is required in script mode")
+        return self
+
 
 class CreateVideoResponse(BaseModel):
     id: str
+    input_mode: str
     subject: str
     orientation: str
     language: str
@@ -35,6 +52,7 @@ class CreateVideoResponse(BaseModel):
 
 class JobSummary(BaseModel):
     id: str
+    input_mode: str
     query: str
     subject: str
     orientation: str
@@ -50,6 +68,7 @@ class JobSummary(BaseModel):
 
 class JobDetail(BaseModel):
     id: str
+    input_mode: str
     query: str
     subject: str
     orientation: str

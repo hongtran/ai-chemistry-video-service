@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from pydantic import AliasChoices, Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,6 +9,17 @@ class Settings(BaseSettings):
 
     openai_api_key: str = ""
     use_stub_pipeline: bool = False
+
+    # Langfuse LLM cost/token tracking. Both keys empty => tracking disabled and
+    # the service behaves exactly as before (see app/observability.py). Keys come
+    # from a Langfuse Cloud (or self-hosted) project.
+    langfuse_public_key: str = ""
+    langfuse_secret_key: str = ""
+    # Accept either LANGFUSE_HOST or Langfuse's own LANGFUSE_BASE_URL env name.
+    langfuse_host: str = Field(
+        default="https://cloud.langfuse.com",
+        validation_alias=AliasChoices("LANGFUSE_HOST", "LANGFUSE_BASE_URL"),
+    )
 
     llm_model: str = "gpt-4o"
     # Narration + scene split run warm enough to write well, cool enough to
@@ -54,6 +66,10 @@ class Settings(BaseSettings):
     render_timeout_seconds: int = 1800
 
     max_query_length: int = 300
+    # Script/narration input caps (script input mode), by video type: vertical is
+    # the short single-pass flow (45-90s), horizontal the long-form one (5-10 min).
+    max_script_length_short: int = 1200
+    max_script_length_long: int = 9000
 
     # Single admin account. Both unset => auth disabled (dev/stub mode) with a
     # startup warning. Setting both requires a Bearer token on the videos API
@@ -93,6 +109,11 @@ class Settings(BaseSettings):
     # artifacts (the video now lives on YouTube). The upload record — and its
     # video URL — is kept. Set false to retain the job/artifacts.
     clear_job_after_youtube_upload: bool = True
+
+    @property
+    def langfuse_enabled(self) -> bool:
+        """Langfuse tracking is on only when both keys are configured."""
+        return bool(self.langfuse_public_key and self.langfuse_secret_key)
 
     def voice_for_language(self, language: str) -> str:
         """TTS voice for a language, falling back to the global `tts_voice`."""

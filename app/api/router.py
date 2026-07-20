@@ -29,53 +29,89 @@ def _deps(request: Request) -> tuple[JobRepository, ArtifactStore, JobQueue, Sub
     return s.jobs, s.artifacts, s.queue, s.guard
 
 
+def _title_from_script(script: str, limit: int = 80) -> str:
+    """A short single-line title for a script-mode job (list display + compose)."""
+    first_line = next((ln.strip() for ln in script.splitlines() if ln.strip()), "")
+    title = " ".join(first_line.split())
+    return f"{title[: limit - 1]}…" if len(title) > limit else title
+
+
 @router.post(
     "/videos", response_model=CreateVideoResponse, status_code=status.HTTP_202_ACCEPTED
 )
 async def request_video(body: CreateVideoRequest, request: Request) -> CreateVideoResponse:
     jobs, _, queue, guard = _deps(request)
+    settings = request.app.state.settings
+    subject_config = get_subject_config(body.subject, settings)
 
-    query = body.query.strip()
-    subject_config = get_subject_config(body.subject, request.app.state.settings)
-    max_len = request.app.state.settings.max_query_length
-    if not query:
-        raise HTTPException(status_code=400, detail="Query must not be empty.")
-    if len(query) > max_len:
-        raise HTTPException(
-            status_code=400, detail=f"Query too long (max {max_len} characters)."
+    if body.input_mode == "script":
+        # User supplies the narration verbatim: enforce the per-orientation cap and
+        # skip the subject-relevance guard (trusted content). `query` carries a
+        # short derived title for display/compose.
+        script = (body.script or "").strip()
+        max_len = (
+            settings.max_script_length_short
+            if body.orientation == "vertical"
+            else settings.max_script_length_long
+        )
+        if not script:
+            raise HTTPException(status_code=400, detail="Script must not be empty.")
+        if len(script) > max_len:
+            raise HTTPException(
+                status_code=400, detail=f"Script too long (max {max_len} characters)."
+            )
+        job = Job(
+            input_mode="script",
+            query=_title_from_script(script),
+            script=script,
+            subject=body.subject,
+            orientation=body.orientation,
+            language=body.language,
+        )
+    else:
+        query = (body.query or "").strip()
+        max_len = settings.max_query_length
+        if not query:
+            raise HTTPException(status_code=400, detail="Query must not be empty.")
+        if len(query) > max_len:
+            raise HTTPException(
+                status_code=400, detail=f"Query too long (max {max_len} characters)."
+            )
+
+        try:
+            verdict = await guard.check(query, body.subject)
+        except GuardMisconfiguredError as exc:
+            raise HTTPException(
+                status_code=500,
+                detail="Subject validation is misconfigured. Contact support.",
+            ) from exc
+        except GuardUnavailableError as exc:
+            raise HTTPException(
+                status_code=503,
+                detail=f"Subject validation is temporarily unavailable: {exc}",
+            ) from exc
+        if not verdict.is_valid:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Query is not a {subject_config.display_name} concept: "
+                    f"{verdict.reason}"
+                ),
+            )
+
+        job = Job(
+            input_mode="topic",
+            query=query,
+            subject=body.subject,
+            orientation=body.orientation,
+            language=body.language,
         )
 
-    try:
-        verdict = await guard.check(query, body.subject)
-    except GuardMisconfiguredError as exc:
-        raise HTTPException(
-            status_code=500,
-            detail="Subject validation is misconfigured. Contact support.",
-        ) from exc
-    except GuardUnavailableError as exc:
-        raise HTTPException(
-            status_code=503,
-            detail=f"Subject validation is temporarily unavailable: {exc}",
-        ) from exc
-    if not verdict.is_valid:
-        raise HTTPException(
-            status_code=400,
-            detail=(
-                f"Query is not a {subject_config.display_name} concept: "
-                f"{verdict.reason}"
-            ),
-        )
-
-    job = Job(
-        query=query,
-        subject=body.subject,
-        orientation=body.orientation,
-        language=body.language,
-    )
     await jobs.create(job)
     await queue.enqueue(job.id)
     return CreateVideoResponse(
         id=job.id,
+        input_mode=job.input_mode,
         subject=job.subject,
         orientation=job.orientation,
         language=job.language,

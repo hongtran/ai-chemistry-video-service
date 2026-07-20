@@ -29,7 +29,13 @@ def _now() -> datetime:
 
 class Job(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid4()))
+    # "topic" → LLM writes the narration from `query`; "script" → `script` holds
+    # the user-supplied narration and the NARRATION step is skipped. In script
+    # mode `query` carries a short title derived from the script (for display,
+    # compose and meta).
+    input_mode: str = "topic"
     query: str
+    script: str | None = None
     subject: str = "chemistry"
     orientation: str = "vertical"
     language: str = "en"

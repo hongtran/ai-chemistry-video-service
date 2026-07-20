@@ -16,6 +16,7 @@ from openai import AsyncOpenAI
 
 from app.config import Settings
 from app.domain.models import JobStatus, PipelineStep
+from app.observability import job_trace
 from app.pipeline.steps import compose, layout_gate, narration, render, scene_split, transcribe, tts
 from app.pipeline.steps.align import AlignmentError, align_scenes
 from app.pipeline.steps.layout_gate import LayoutGateError
@@ -71,17 +72,28 @@ class RealVideoPipeline:
         if job is None:
             logger.warning("job %s vanished before processing", job_id)
             return
+        # One Langfuse trace per job groups every LLM generation below under it
+        # (no-op when Langfuse is disabled).
+        with job_trace(self._settings, job):
+            await self._process(job_id, job)
+
+    async def _process(self, job_id: str, job) -> None:
         await self._jobs.update(job_id, status=JobStatus.PROCESSING)
 
         step = PipelineStep.NARRATION
         try:
             subject_config = get_subject_config(job.subject, self._settings)
 
-            await self._step(job_id, PipelineStep.NARRATION)
-            script = await narration.generate_script(
-                self._client, self._settings, subject_config, job.query,
-                job.orientation, job.language,
-            )
+            if job.input_mode == "script":
+                # User-supplied narration: skip generation, use it verbatim.
+                step = PipelineStep.TTS
+                script = job.script
+            else:
+                await self._step(job_id, PipelineStep.NARRATION)
+                script = await narration.generate_script(
+                    self._client, self._settings, subject_config, job.query,
+                    job.orientation, job.language,
+                )
             self._artifacts.save_text(job_id, "script.txt", script)
 
             step = await self._step(job_id, PipelineStep.TTS)
