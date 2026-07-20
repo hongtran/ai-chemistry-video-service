@@ -11,7 +11,7 @@ export default function JobDetailPage() {
 
   const fetchJob = useCallback(() => getJob(jobId), [jobId])
   const [stopped, setStopped] = useState(false)
-  const { data: job, error } = usePolling(fetchJob, 2500, !stopped)
+  const { data: job, error } = usePolling(fetchJob, 5000, !stopped)
   const [downloading, setDownloading] = useState(false)
   const [downloadError, setDownloadError] = useState<string | null>(null)
 

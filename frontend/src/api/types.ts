@@ -19,6 +19,13 @@ export type Subject = 'chemistry' | 'tech'
 export type Orientation = 'vertical' | 'horizontal'
 export const SUBJECTS: Subject[] = ['chemistry', 'tech']
 
+// Mirrors SUPPORTED_LANGUAGES in app/languages.py.
+export type Language = 'en' | 'vi'
+export const LANGUAGES: { value: Language; label: string }[] = [
+  { value: 'en', label: 'English' },
+  { value: 'vi', label: 'Tiếng Việt' },
+]
+
 export interface LoginResponse {
   token: string
   token_type: string
@@ -29,12 +36,14 @@ export interface CreateVideoRequest {
   query: string
   subject: Subject
   orientation: Orientation
+  language: Language
 }
 
 export interface CreateVideoResponse {
   id: string
   subject: string
   orientation: string
+  language: string
   status: JobStatus
 }
 
@@ -43,6 +52,7 @@ export interface JobSummary {
   query: string
   subject: string
   orientation: string
+  language: string
   status: JobStatus
   current_step: PipelineStep | null
   created_at: string

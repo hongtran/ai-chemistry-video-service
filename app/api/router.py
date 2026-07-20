@@ -65,11 +65,20 @@ async def request_video(body: CreateVideoRequest, request: Request) -> CreateVid
             ),
         )
 
-    job = Job(query=query, subject=body.subject, orientation=body.orientation)
+    job = Job(
+        query=query,
+        subject=body.subject,
+        orientation=body.orientation,
+        language=body.language,
+    )
     await jobs.create(job)
     await queue.enqueue(job.id)
     return CreateVideoResponse(
-        id=job.id, subject=job.subject, orientation=job.orientation, status=job.status
+        id=job.id,
+        subject=job.subject,
+        orientation=job.orientation,
+        language=job.language,
+        status=job.status,
     )
 
 

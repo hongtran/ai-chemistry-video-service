@@ -1,12 +1,30 @@
 from openai import AsyncOpenAI
 
 from app.config import Settings
+from app.languages import DEFAULT_LANGUAGE, language_name
 from app.llm.client import with_retries
 from app.subjects import SubjectConfig
 
 
 class NarrationError(Exception):
     pass
+
+
+def _language_clause(language: str) -> str:
+    """Instruction forcing a target-language narration. Empty for the default
+    language so the existing (English) behaviour is untouched."""
+    if language == DEFAULT_LANGUAGE:
+        return ""
+    name = language_name(language)
+    return (
+        f"\n\nLanguage: write the ENTIRE narration in {name} — every word in "
+        f"{name}, with no other language mixed in. Speak element and compound "
+        "names using that language's own words; standard chemical notation "
+        "(NaCl, H₂O) is read aloud the way a "
+        f"{name} speaker would say it. Ignore any English-specific pronunciation "
+        "examples above and apply the same idea in "
+        f"{name}."
+    )
 
 
 def _length_clause(subject_config: SubjectConfig, orientation: str) -> str:
@@ -35,9 +53,13 @@ async def generate_script(
     subject_config: SubjectConfig,
     query: str,
     orientation: str = "vertical",
+    language: str = DEFAULT_LANGUAGE,
 ) -> str:
-    system_prompt = subject_config.narration_style + "\n\n" + _length_clause(
-        subject_config, orientation
+    system_prompt = (
+        subject_config.narration_style
+        + "\n\n"
+        + _length_clause(subject_config, orientation)
+        + _language_clause(language)
     )
     is_long_form = orientation in subject_config.long_form_orientations
 

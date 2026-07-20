@@ -15,8 +15,22 @@ class Settings(BaseSettings):
     # paraphrases and silently drops clauses, which alignment then rejects.
     llm_temperature: float = 0.5
     tts_model: str = "gpt-4o-mini-tts"
-    tts_voice: str = "alloy"
+    tts_voice: str = "alloy"  # fallback voice for any language without a mapping
     transcribe_model: str = "whisper-1"
+
+    # Default narration language (ISO 639-1); requests may override it.
+    default_language: str = "en"
+    # Per-language TTS voice. OpenAI's gpt-4o-mini-tts voices are all
+    # multilingual and follow the input text's language, so this is purely
+    # about picking a voice that sounds good for each language. Unmapped
+    # languages fall back to `tts_voice` (see voice_for_language). Override
+    # from the environment as JSON, e.g.
+    #   TTS_VOICE_BY_LANGUAGE='{"en":"alloy","vi":"nova"}'
+    tts_voice_by_language: dict[str, str] = {"en": "alloy", "vi": "nova"}
+    tts_instructions_by_language: dict[str, str] = {
+        "en": "Read the text verbatim, with natural pacing and intonation. Do not add or remove any words, and do not paraphrase.",
+        "vi": "Đọc nguyên văn, với nhịp điệu và ngữ điệu tự nhiên. Không thêm hoặc bớt từ nào, và không diễn giải lại.",
+    }
 
     # Per-call TTS budget, under OpenAI TTS's hard 4096-char input limit.
     # Longer scripts are chunked and ffmpeg-joined (see steps/tts.py).
@@ -75,3 +89,7 @@ class Settings(BaseSettings):
     youtube_upload_chunk_bytes: int = 8 * 1024 * 1024
     # Read timeout for Google calls; a chunk PUT must finish within this.
     youtube_upload_timeout_seconds: int = 600
+
+    def voice_for_language(self, language: str) -> str:
+        """TTS voice for a language, falling back to the global `tts_voice`."""
+        return self.tts_voice_by_language.get(language, self.tts_voice)
