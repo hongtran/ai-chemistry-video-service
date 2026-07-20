@@ -19,6 +19,10 @@ export type Subject = 'chemistry' | 'tech'
 export type Orientation = 'vertical' | 'horizontal'
 export const SUBJECTS: Subject[] = ['chemistry', 'tech']
 
+// 'topic' → LLM writes the narration; 'script' → user supplies it verbatim
+// (the narration pipeline step is skipped).
+export type InputMode = 'topic' | 'script'
+
 // Mirrors SUPPORTED_LANGUAGES in app/languages.py.
 export type Language = 'en' | 'vi'
 export const LANGUAGES: { value: Language; label: string }[] = [
@@ -33,7 +37,9 @@ export interface LoginResponse {
 }
 
 export interface CreateVideoRequest {
-  query: string
+  input_mode: InputMode
+  query?: string
+  script?: string
   subject: Subject
   orientation: Orientation
   language: Language
@@ -41,6 +47,7 @@ export interface CreateVideoRequest {
 
 export interface CreateVideoResponse {
   id: string
+  input_mode: InputMode
   subject: string
   orientation: string
   language: string
@@ -49,6 +56,7 @@ export interface CreateVideoResponse {
 
 export interface JobSummary {
   id: string
+  input_mode: InputMode
   query: string
   subject: string
   orientation: string
@@ -63,6 +71,16 @@ export interface JobDetail extends JobSummary {
   video_path: string | null
   updated_at: string
   artifacts: string[]
+}
+
+// meta.json sidecar (compose.build_meta) — the YouTube upload defaults.
+export interface JobMeta {
+  id?: string
+  name?: string
+  description?: string
+  hashtags?: string[]
+  tags?: string[]
+  createdAt?: string
 }
 
 export interface CreateYouTubeUploadRequest {
@@ -103,5 +121,10 @@ export interface YouTubeUploadDetail {
   updated_at: string
 }
 
-// Router-enforced cap (settings.max_query_length), tighter than the schema's 1000.
+// Router-enforced caps (settings.max_query_length / max_script_length_*).
+// Topic is capped at 300 for both video types; script caps differ by orientation.
 export const MAX_QUERY_LENGTH = 300
+export const MAX_SCRIPT_LENGTH: Record<Orientation, number> = {
+  vertical: 1200,
+  horizontal: 9000,
+}

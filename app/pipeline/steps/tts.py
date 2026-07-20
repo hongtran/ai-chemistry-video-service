@@ -16,6 +16,7 @@ from openai import AsyncOpenAI
 from app.config import Settings
 from app.languages import DEFAULT_LANGUAGE
 from app.llm.client import with_retries
+from app.observability import track_generation
 from app.pipeline.steps.sections import split_for_tts
 
 logger = logging.getLogger(__name__)
@@ -29,13 +30,24 @@ async def _synthesize_chunk(
     client: AsyncOpenAI, settings: Settings, text: str, voice: str
 ) -> bytes:
     async def _call() -> bytes:
-        response = await client.audio.speech.create(
+        # Manual generation: the OpenAI wrapper doesn't auto-trace audio calls.
+        # usage_details lets Langfuse price it once a char-based tts model price
+        # is configured in the UI.
+        with track_generation(
+            settings,
+            name="tts",
             model=settings.tts_model,
-            voice=voice,
-            input=text,
-            response_format="mp3"
-        )
-        return response.content
+            input={"chars": len(text), "voice": voice},
+        ) as gen:
+            response = await client.audio.speech.create(
+                model=settings.tts_model,
+                voice=voice,
+                input=text,
+                response_format="mp3"
+            )
+            if gen is not None:
+                gen.update(usage_details={"input": len(text)})
+            return response.content
 
     return await with_retries(_call, max_attempts=settings.max_retries)
 

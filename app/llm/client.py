@@ -121,4 +121,12 @@ class StubSubjectGuard:
 
 
 def build_openai_client(settings: Settings) -> AsyncOpenAI:
+    # With Langfuse configured, use its drop-in wrapper — interface-identical to
+    # AsyncOpenAI, so every downstream call site is unchanged, but chat
+    # completions automatically record tokens + USD cost. Falls back to the
+    # plain client when tracking is off.
+    if settings.langfuse_enabled:
+        from langfuse.openai import AsyncOpenAI as LangfuseAsyncOpenAI
+
+        return LangfuseAsyncOpenAI(api_key=settings.openai_api_key)
     return AsyncOpenAI(api_key=settings.openai_api_key)

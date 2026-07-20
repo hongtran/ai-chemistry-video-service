@@ -5,6 +5,7 @@ from openai import AsyncOpenAI
 from app.config import Settings
 from app.languages import DEFAULT_LANGUAGE
 from app.llm.client import with_retries
+from app.observability import track_generation
 
 
 class TranscriptionError(Exception):
@@ -29,8 +30,13 @@ async def transcribe_words(
     """
 
     async def _call():
-        with audio_path.open("rb") as f:
-            return await client.audio.transcriptions.create(
+        # Manual generation: the OpenAI wrapper doesn't auto-trace audio calls.
+        # usage_details (audio seconds) lets Langfuse price it once a per-minute
+        # whisper model price is configured in the UI.
+        with audio_path.open("rb") as f, track_generation(
+            settings, name="transcribe", model=settings.transcribe_model
+        ) as gen:
+            result = await client.audio.transcriptions.create(
                 model=settings.transcribe_model,
                 file=f,
                 response_format="verbose_json",
@@ -38,6 +44,11 @@ async def transcribe_words(
                 language=language,
                 temperature=settings.llm_temperature,
             )
+            if gen is not None:
+                seconds = float(getattr(result, "duration", 0.0) or 0.0)
+                if seconds:
+                    gen.update(usage_details={"input": seconds})
+            return result
 
     result = await with_retries(_call, max_attempts=settings.max_retries)
     raw_words = getattr(result, "words", None) or []

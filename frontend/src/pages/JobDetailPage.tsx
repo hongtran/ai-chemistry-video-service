@@ -68,7 +68,11 @@ export default function JobDetailPage() {
           {job.subject} · {job.orientation === 'vertical' ? 'Short (vertical)' : 'Long (horizontal)'}{' '}
           · created {new Date(job.created_at).toLocaleString()}
         </p>
-        <StepProgress currentStep={job.current_step} status={job.status} />
+        <StepProgress
+          currentStep={job.current_step}
+          status={job.status}
+          inputMode={job.input_mode}
+        />
         {job.status === 'FAILED' && (
           <p className="error-text">Pipeline failed — {job.error_message ?? 'unknown error'}</p>
         )}

@@ -11,6 +11,7 @@ from app.api.youtube_router import router as youtube_router
 from app.auth import AdminAuth, require_admin
 from app.config import Settings
 from app.llm.client import LLMSubjectGuard, StubSubjectGuard, build_openai_client
+from app.observability import flush_langfuse, init_langfuse
 from app.pipeline.base import VideoPipeline
 from app.pipeline.orchestrator import RealVideoPipeline
 from app.pipeline.stub import StubPipeline
@@ -37,6 +38,9 @@ def _build_pipeline(settings: Settings, jobs, artifacts, client) -> VideoPipelin
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     settings = Settings()
+    # Must run before build_openai_client so the OpenAI wrapper finds the global
+    # Langfuse client. No-op when Langfuse keys are unset.
+    init_langfuse(settings)
     jobs = InMemoryJobRepository()
     artifacts = LocalArtifactStore(settings.artifacts_dir)
 
@@ -105,6 +109,8 @@ async def lifespan(app: FastAPI):
     await queue.stop()
     await upload_runner.stop()
     await http_client.aclose()
+    # Queue is drained; push any buffered Langfuse events before exit.
+    flush_langfuse()
     logger.info("Job queue stopped")
 
 

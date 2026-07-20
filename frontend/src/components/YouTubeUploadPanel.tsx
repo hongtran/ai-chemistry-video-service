@@ -1,5 +1,11 @@
-import { useCallback, useEffect, useState } from 'react'
-import { ApiError, getGoogleAuthUrl, getUpload, startYouTubeUpload } from '../api/client'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import {
+  ApiError,
+  getGoogleAuthUrl,
+  getJobMeta,
+  getUpload,
+  startYouTubeUpload,
+} from '../api/client'
 import { clearToken, getValidToken, stashReturnJob } from '../lib/auth'
 import { usePolling } from '../hooks/usePolling'
 
@@ -12,6 +18,26 @@ export default function YouTubeUploadPanel({ jobId }: { jobId: string }) {
   const [uploadId, setUploadId] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Prefill the form from the video's meta.json (title/description/tags) so the
+  // user sees the defaults and can edit them. Runs once; hashtags are left out
+  // on purpose — the backend appends meta.hashtags to whatever description we
+  // submit, so including them here would duplicate them.
+  const prefilled = useRef(false)
+  useEffect(() => {
+    if (prefilled.current) return
+    prefilled.current = true
+    getJobMeta(jobId)
+      .then((meta) => {
+        if (meta.name) setTitle((t) => t || meta.name!.slice(0, 100))
+        if (meta.description) setDescription((d) => d || meta.description!)
+        if (meta.tags?.length) setTags((t) => t || meta.tags!.join(', '))
+      })
+      .catch(() => {
+        // meta.json missing/unreadable — leave fields empty; the backend still
+        // falls back to meta.json server-side at upload time.
+      })
+  }, [jobId])
 
   const connect = async () => {
     setBusy(true)
@@ -94,7 +120,7 @@ export default function YouTubeUploadPanel({ jobId }: { jobId: string }) {
       {token && !uploadId && (
         <div className="upload-form">
           <label className="field">
-            <span className="field-label">Title (optional — defaults from the video metadata)</span>
+            <span className="field-label">Title (prefilled from the video metadata — edit if needed)</span>
             <input value={title} maxLength={100} onChange={(e) => setTitle(e.target.value)} />
           </label>
           <label className="field">
