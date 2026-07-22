@@ -1,0 +1,6 @@
+{ "config": { "slug":"test-photo-split","topic":"photo-split","totalDuration":5 },
+  "scenes":[{ "id":"s1","type":"photo-split","start":0,"duration":5,
+    "eyebrow":"GOOD PRACTICE","headline":"Label Everything",
+    "body":"A clear calibration sticker on every instrument makes status obvious at a glance.",
+    "imagePrompt":"A realistic close-up photograph of a laboratory instrument with a small calibration status sticker, shallow depth of field, no readable text",
+    "captions":["A simple sticker","prevents a mistake."] }] }

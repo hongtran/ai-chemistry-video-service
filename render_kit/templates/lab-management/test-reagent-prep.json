@@ -1,0 +1,14 @@
+{ "config": { "slug":"test-reagent-prep","topic":"reagent-prep","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"reagent-prep","start":0,"duration":6,
+    "eyebrow":"SOLUTION PREPARATION","headline":"Dilution Formula",
+    "title":"Making a Dilution",
+    "formulas":[
+      {"name":"Dilution","latex":"C_1V_1=C_2V_2"},
+      {"name":"Molarity","latex":"M=\\dfrac{n}{V}"}
+    ],
+    "legend":[
+      {"sym":"C_1,V_1","desc":"concentration and volume of the stock solution"},
+      {"sym":"C_2,V_2","desc":"concentration and volume you want to prepare"},
+      {"sym":"n","desc":"moles of solute"}
+    ],
+    "captions":["Every dilution follows","one simple **conservation** rule."] }] }

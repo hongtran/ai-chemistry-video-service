@@ -1,0 +1,8 @@
+{ "config": { "slug":"test-audit-trail","topic":"audit-trail","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"audit-trail","start":0,"duration":6,
+    "eyebrow":"CLAUSE 8.7 — CORRECTIVE ACTION","headline":"Closing a Nonconformity",
+    "finding":"Balance used past its due date",
+    "rootCause":"No automated recall reminder",
+    "action":"Add calibration alerts to LIMS",
+    "verification":"Next audit confirms zero overdue",
+    "captions":["Every finding follows a path","to verified closure."] }] }

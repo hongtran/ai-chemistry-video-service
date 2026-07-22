@@ -1,0 +1,10 @@
+{ "config": { "slug":"test-competence-matrix","topic":"competence-matrix","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"competence-matrix","start":0,"duration":6,
+    "eyebrow":"CLAUSE 6.2 — PERSONNEL","headline":"Who Is Authorized","title":"Competence Matrix",
+    "columns":["Titration","GC-MS","Reporting"],
+    "rows":[
+      { "name":"A. Okafor","marks":["yes","yes","yes"] },
+      { "name":"L. Meyer","marks":["yes","training","yes"] },
+      { "name":"R. Sato","marks":["yes","no","training"] }
+    ],
+    "captions":["A matrix shows who is authorized","for each method."] }] }

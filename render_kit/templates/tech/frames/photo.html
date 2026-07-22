@@ -1,0 +1,93 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;700;800&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; font-family:'Space Grotesk','Inter',sans-serif; }
+#main-clip.vertical   { --pad:84px;  --cap-size:58px; --cap-bottom:200px; --cap-maxw:100%; --eyebrow-size:36px; --headline-size:104px; --title-bottom:360px; --scrim-h:900px; }
+#main-clip.horizontal { --pad:130px; --cap-size:44px; --cap-bottom:80px;  --cap-maxw:1180px; --eyebrow-size:32px; --headline-size:88px; --title-bottom:150px; --scrim-h:560px; }
+
+.photo { position:absolute; inset:0; background-image:url("{{image}}"); background-size:cover; background-position:center; will-change:transform; }
+.scrim { position:absolute; left:0; right:0; bottom:0; height:var(--scrim-h); background:linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0) 100%); }
+.frame-edge { position:absolute; inset:0; border:2px solid {{accent}}33; pointer-events:none; }
+.titleblock { position:absolute; z-index:3; left:var(--pad); right:var(--pad); bottom:var(--title-bottom); }
+.eyebrow { font-family:'JetBrains Mono',monospace; font-size:var(--eyebrow-size); font-weight:700; letter-spacing:3px; text-transform:uppercase; color:{{accent}}; }
+.headline { margin-top:14px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:var(--headline-size); line-height:1.0; letter-spacing:-1px; color:#FFFFFF; text-shadow:0 3px 24px rgba(0,0,0,0.5); }
+
+.caption-zone { position:absolute; bottom:var(--cap-bottom); left:0; right:0; display:flex; align-items:center; justify-content:center; z-index:5; }
+.caption { position:relative; width:calc(100% - 2*var(--pad)); max-width:var(--cap-maxw); height:2.4em; font-size:var(--cap-size); }
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:800; text-align:center; line-height:1.3; opacity:0; text-shadow:0 2px 16px rgba(0,0,0,0.6); }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+.hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="photo"></div>
+    <div class="scrim"></div>
+    <div class="frame-edge"></div>
+    <div class="titleblock">
+      <div class="eyebrow">{{eyebrow}}</div>
+      <div class="headline">{{headline}}</div>
+    </div>
+    <div class="caption-zone"><div class="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+(function(){
+  var root = document.getElementById('root');
+  var DUR = parseFloat('{{duration}}') || 5;
+  function $(s){ return root.querySelector(s); }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hl(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+  function splitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g, function(_m, inner){
+    return inner.split(/\s+/).map(function(w){ return '**' + w + '**'; }).join(' '); }); }
+
+  ['.eyebrow','.headline'].forEach(function(sel){ var el=$(sel); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hl(t); });
+
+  var tl = gsap.timeline({ paused:true });
+  // Slow Ken-Burns push across the scene.
+  tl.fromTo($('.photo'), { scale:1.0 }, { scale:1.09, duration:DUR, ease:'none', transformOrigin:'50% 50%' }, 0);
+  tl.fromTo($('.scrim'), { opacity:0 }, { opacity:1, duration:0.5 }, 0.1);
+  tl.fromTo($('.titleblock'), { opacity:0, y:24 }, { opacity:1, y:0, duration:0.5, ease:'power3.out' }, 0.35);
+
+  var CT = {{captionTiming}};
+  var capHost = $('.caption');
+  var caps = (Array.isArray(CT) ? CT : []).map(function(c){
+    var d = document.createElement('div'); d.className = 'cap-chunk';
+    var ws = Array.isArray(c.words) ? c.words : [];
+    d.innerHTML = ws.length
+      ? ws.map(function(w){ return '<span class="cw">' + hl(w.text) + ' </span>'; }).join('')
+      : hl(splitMarks(c.text));
+    capHost.appendChild(d);
+    return d;
+  });
+  caps.forEach(function(el, i){
+    var t = CT[i]; if(!t) return;
+    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
+    if(i < caps.length - 1){
+      var nextStart = CT[i+1] ? CT[i+1].start : t.end;
+      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+    }
+    // Karaoke: only the word being spoken holds the highlight color; every
+    // other word keeps the normal caption color. Emphasis pills (.hl) opt out.
+    var ws = Array.isArray(t.words) ? t.words : [];
+    var spans = el.querySelectorAll('.cw');
+    ws.forEach(function(w, wi){
+      var span = spans[wi]; if(!span || span.querySelector('.hl')) return;
+      tl.to(span, { color:'{{capHighlight}}', duration:0.12, ease:'power2.out' }, w.start);
+      tl.to(span, { color:'#FFFFFF', duration:0.15 }, Math.max(w.start + 0.12, w.end));
+    });
+  });
+
+  window.__timelines['{{id}}'] = tl;
+})();
+</script>
+</template>
+</body>
+</html>

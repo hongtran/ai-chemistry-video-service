@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;800;900&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; }
+#eyebrow { position:absolute; top:120px; left:0; right:0; text-align:center; font-family:'Inter',sans-serif; font-size:34px; font-weight:800; letter-spacing:6px; text-transform:uppercase; opacity:.85; }
+#title { position:absolute; top:220px; left:0; right:0; text-align:center; padding:0 80px; font-family:'Anton',sans-serif; font-size:92px; line-height:1.15; text-transform:uppercase; }
+#hero { position:absolute; top:480px; left:0; right:0; bottom:400px; display:flex; align-items:center; justify-content:center; }
+#matrix { border-collapse:separate; border-spacing:0; width:940px; font-family:'Inter',sans-serif; }
+#matrix th, #matrix td { padding:22px 18px; text-align:center; }
+#matrix thead th { font-weight:800; font-size:30px; letter-spacing:1px; opacity:.7; border-bottom:3px solid rgba(255,255,255,0.18); }
+#matrix thead th.rowhead { text-align:left; }
+#matrix tbody td.name { text-align:left; font-weight:900; font-size:38px; white-space:nowrap; }
+#matrix tbody tr:not(:last-child) td { border-bottom:2px solid rgba(255,255,255,0.10); }
+.mark { display:inline-flex; align-items:center; justify-content:center; width:60px; height:60px; border-radius:50%; font-size:38px; font-weight:900; }
+.mark.yes { background:rgba(52,199,89,0.18); color:#34C759; }
+.mark.no { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.35); }
+.mark.training { background:rgba(255,176,32,0.18); color:#FFB020; }
+#legend { position:absolute; bottom:330px; left:0; right:0; display:flex; gap:44px; justify-content:center; font-family:'Inter',sans-serif; font-weight:700; font-size:26px; opacity:.8; }
+#legend span { display:inline-flex; align-items:center; gap:12px; }
+#legend i { width:22px; height:22px; border-radius:50%; font-style:normal; }
+#caption-zone { position:absolute; bottom:230px; left:0; right:0; padding:0 90px; display:flex; align-items:center; justify-content:center; }
+#caption { position:relative; width:100%; height:2.4em; }
+.hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+
+/* Karaoke caption chunk (built by hfBuildCaptions; one .cw span per word) */
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:900; text-align:center; line-height:1.25; font-size:var(--cap-size,66px); opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+
+#main-clip.vertical   { --cap-size:66px; }
+#main-clip.horizontal { --cap-size:44px; }
+#main-clip.horizontal #caption-zone { bottom:60px; padding:0 160px; }
+#main-clip.horizontal #caption { max-width:1360px; margin:0 auto; }
+
+#main-clip.horizontal #eyebrow { top:70px; }
+#main-clip.horizontal #title   { top:150px; font-size:80px; }
+#main-clip.horizontal #hero    { top:320px; bottom:210px; }
+#main-clip.horizontal #matrix  { width:1400px; }
+#main-clip.horizontal #legend  { bottom:120px; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div id="eyebrow">{{eyebrow}}</div>
+    <div id="title">{{title}}</div>
+    <div id="hero"><table id="matrix"><thead></thead><tbody></tbody></table></div>
+    <div id="legend">
+      <span><i class="mark yes" style="width:22px;height:22px"></i>Authorized</span>
+      <span><i class="mark training" style="width:22px;height:22px"></i>In training</span>
+      <span><i class="mark no" style="width:22px;height:22px"></i>Not authorized</span>
+    </div>
+    <div id="caption-zone"><div id="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+['eyebrow','title'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hfHighlight(t); });
+function hfSplitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g,function(_m,inner){ return inner.split(/\s+/).map(function(w){ return '**'+w+'**'; }).join(' '); }); }
+function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.className='cap-chunk'; var ws=Array.isArray(c.words)?c.words:[]; d.innerHTML= ws.length ? ws.map(function(w){ return '<span class="cw">'+hfHighlight(w.text)+' </span>'; }).join('') : hfHighlight(hfSplitMarks(c.text)); host.appendChild(d); return d; }); }
+function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); }
+  var ws=Array.isArray(t.words)?t.words:[]; var spans=el.querySelectorAll('.cw'); ws.forEach(function(w,wi){ var span=spans[wi]; if(!span||span.querySelector('.hl'))return; tl.to(span,{color:'{{capHighlight}}',duration:0.12,ease:'power2.out'},w.start); tl.to(span,{color:'{{fg}}',duration:0.15},Math.max(w.start+0.12,w.end)); }); }); }
+
+var GLYPH = { yes:'✓', no:'—', training:'~' };
+var columns = {{columns}}; columns = Array.isArray(columns) ? columns.slice(0,4) : [];
+var rows = {{rows}}; rows = Array.isArray(rows) ? rows.slice(0,5) : [];
+
+var thead = document.querySelector('#matrix thead');
+var tbody = document.querySelector('#matrix tbody');
+var htr = document.createElement('tr');
+htr.innerHTML = '<th class="rowhead"></th>' + columns.map(function(c){ return '<th>'+hfEsc(String(c))+'</th>'; }).join('');
+thead.appendChild(htr);
+
+var cellEls = [];
+rows.forEach(function(r){
+  var tr = document.createElement('tr');
+  var name = r && r.name != null ? r.name : '';
+  var marks = r && Array.isArray(r.marks) ? r.marks : [];
+  var cells = '<td class="name">'+hfEsc(String(name))+'</td>';
+  for (var i = 0; i < columns.length; i++) {
+    var m = String(marks[i] || 'no').toLowerCase();
+    if (!GLYPH[m]) m = 'no';
+    cells += '<td><span class="mark '+m+'">'+GLYPH[m]+'</span></td>';
+  }
+  tr.innerHTML = cells;
+  tbody.appendChild(tr);
+});
+cellEls = Array.prototype.slice.call(tbody.querySelectorAll('.mark'));
+var nameEls = Array.prototype.slice.call(tbody.querySelectorAll('.name'));
+if (rows.length === 0 || columns.length === 0) { document.getElementById('matrix').style.display='none'; document.getElementById('legend').style.display='none'; }
+
+gsap.set('#matrix thead', { opacity:0, y:-14 });
+gsap.set(nameEls, { opacity:0, x:-20 });
+gsap.set(cellEls, { opacity:0, scale:0, transformOrigin:'center' });
+gsap.set('#legend', { opacity:0 });
+gsap.set('#eyebrow', { opacity:0, y:-12 });
+gsap.set('#title', { opacity:0, y:18 });
+
+var tl = gsap.timeline({ paused:true });
+tl.to('#eyebrow', { opacity:1, y:0, duration:0.3, ease:'power2.out' }, 0.1);
+tl.to('#title', { opacity:1, y:0, duration:0.4, ease:'power3.out' }, 0.2);
+tl.to('#matrix thead', { opacity:1, y:0, duration:0.3, ease:'power2.out' }, 0.4);
+tl.to(nameEls, { opacity:1, x:0, duration:0.3, ease:'power2.out', stagger:0.1 }, 0.5);
+tl.to(cellEls, { opacity:1, scale:1, duration:0.28, ease:'back.out(2)', stagger:0.05 }, 0.65);
+tl.to('#legend', { opacity:1, duration:0.35 }, 1.2);
+
+var captionTiming = {{captionTiming}};
+var chunks = hfBuildCaptions(captionTiming);
+hfAnimateCaptions(tl, chunks, captionTiming);
+
+window.__timelines['{{id}}'] = tl;
+</script>
+</template>
+</body>
+</html>

@@ -1,6 +1,0 @@
-{ "config": { "slug":"test-stats","topic":"stats","totalDuration":5 },
-  "scenes":[{ "id":"s1","type":"stats","start":0,"duration":5,
-    "eyebrow":"The math","headline":"Each step = **10×**",
-    "bg":"#FFD60A","fg":"#0B0E14","accent":"#0B0E14",
-    "stat":"10,000×","statLabel":"pH 4 vs pH 8",
-    "captions":["The scale is **logarithmic**.","Tiny steps, huge jumps."] }] }

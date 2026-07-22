@@ -1,0 +1,7 @@
+{ "config": { "slug":"test-cta","topic":"cta","totalDuration":5 },
+  "scenes":[{ "id":"s1","type":"cta","start":0,"duration":5,
+    "bg":"#0B0E14","fg":"#FFFFFF","accent":"#FFD60A",
+    "eyebrow":"THE TAKEAWAY","headline":"Competence, Proven",
+    "subheadline":"ISO/IEC 17025 turns good practice into evidence anyone can trust.",
+    "imagePrompt":"A realistic photograph of a quality manager reviewing an accreditation certificate on a wall in a modern lab, warm hopeful lighting, cinematic, no text",
+    "captions":["Do the work well,","and **prove** it."] }] }

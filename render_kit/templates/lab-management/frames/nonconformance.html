@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;800;900&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; }
+#eyebrow { position:absolute; top:120px; left:0; right:0; text-align:center; font-family:'Inter',sans-serif; font-size:34px; font-weight:800; letter-spacing:6px; text-transform:uppercase; opacity:.85; }
+#hero { position:absolute; top:300px; left:0; right:0; bottom:430px; display:flex; align-items:center; justify-content:center; }
+#card { position:relative; width:860px; padding:56px 52px; border:4px solid {{accent}}; border-radius:28px; background:rgba(255,255,255,0.04); display:flex; flex-direction:column; align-items:center; gap:28px; }
+#severity { font-family:'Anton',sans-serif; font-size:52px; letter-spacing:8px; padding:14px 52px; color:#FFFFFF; text-transform:uppercase; border-radius:10px; }
+#clause { font-family:'Inter',sans-serif; font-weight:800; font-size:32px; letter-spacing:2px; opacity:.85; text-transform:uppercase; }
+#finding { font-family:'Inter',sans-serif; font-weight:900; font-size:52px; line-height:1.15; text-align:center; }
+#action { width:100%; margin-top:6px; padding-top:26px; border-top:2px solid rgba(255,255,255,0.16); }
+#action .lbl { font-family:'Inter',sans-serif; font-weight:800; font-size:24px; letter-spacing:3px; text-transform:uppercase; opacity:.6; margin-bottom:10px; text-align:center; }
+#action .txt { font-family:'Inter',sans-serif; font-weight:700; font-size:36px; line-height:1.25; text-align:center; color:{{accent}}; }
+#caption-zone { position:absolute; bottom:230px; left:0; right:0; padding:0 90px; display:flex; align-items:center; justify-content:center; }
+#caption { position:relative; width:100%; height:2.4em; }
+.hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+
+/* Karaoke caption chunk (built by hfBuildCaptions; one .cw span per word) */
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:900; text-align:center; line-height:1.25; font-size:var(--cap-size,66px); opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+
+#main-clip.vertical   { --cap-size:66px; }
+#main-clip.horizontal { --cap-size:44px; }
+#main-clip.horizontal #caption-zone { bottom:60px; padding:0 160px; }
+#main-clip.horizontal #caption { max-width:1360px; margin:0 auto; }
+
+#main-clip.horizontal #eyebrow  { top:60px; }
+#main-clip.horizontal #hero     { top:150px; bottom:200px; }
+#main-clip.horizontal #card     { width:1240px; padding:44px 60px; gap:20px; }
+#main-clip.horizontal #finding  { font-size:46px; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div id="eyebrow">{{eyebrow}}</div>
+    <div id="hero">
+      <div id="card">
+        <div id="severity">{{severity}}</div>
+        <div id="clause">{{clause}}</div>
+        <div id="finding">{{finding}}</div>
+        <div id="action">
+          <div class="lbl">Corrective Action</div>
+          <div class="txt">{{correctiveAction}}</div>
+        </div>
+      </div>
+    </div>
+    <div id="caption-zone"><div id="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+['eyebrow','finding'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hfHighlight(t); });
+function hfSplitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g,function(_m,inner){ return inner.split(/\s+/).map(function(w){ return '**'+w+'**'; }).join(' '); }); }
+function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.className='cap-chunk'; var ws=Array.isArray(c.words)?c.words:[]; d.innerHTML= ws.length ? ws.map(function(w){ return '<span class="cw">'+hfHighlight(w.text)+' </span>'; }).join('') : hfHighlight(hfSplitMarks(c.text)); host.appendChild(d); return d; }); }
+function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); }
+  // Karaoke: only the word being spoken holds capHighlight; every other word
+  // keeps the caption color. Emphasis pills (.hl) opt out.
+  var ws=Array.isArray(t.words)?t.words:[]; var spans=el.querySelectorAll('.cw'); ws.forEach(function(w,wi){ var span=spans[wi]; if(!span||span.querySelector('.hl'))return; tl.to(span,{color:'{{capHighlight}}',duration:0.12,ease:'power2.out'},w.start); tl.to(span,{color:'{{fg}}',duration:0.15},Math.max(w.start+0.12,w.end)); }); }); }
+
+// Severity banner: CRITICAL/MAJOR are the more severe tiers (red), MINOR the
+// lesser (amber). Default to amber for anything unrecognized.
+var sev = (document.getElementById('severity').textContent || '').trim().toUpperCase();
+document.getElementById('severity').style.background = (sev === 'CRITICAL' || sev === 'MAJOR') ? '#E4002B' : '#F5A623';
+
+// Hide optional / empty rows so the card never shows a dangling label.
+if (!document.getElementById('clause').textContent.trim()) document.getElementById('clause').style.display='none';
+if (!document.getElementById('action').querySelector('.txt').textContent.trim()) document.getElementById('action').style.display='none';
+
+gsap.set('#card', { opacity:0, scale:0.82, transformOrigin:'center' });
+gsap.set('#severity', { opacity:0, y:-14 });
+gsap.set('#clause', { opacity:0 });
+gsap.set('#finding', { opacity:0, y:16 });
+gsap.set('#action', { opacity:0, y:12 });
+gsap.set('#eyebrow', { opacity:0, y:-12 });
+
+var tl = gsap.timeline({ paused:true });
+tl.to('#eyebrow', { opacity:1, y:0, duration:0.3, ease:'power2.out' }, 0.1);
+tl.to('#card', { opacity:1, scale:1, duration:0.5, ease:'back.out(1.4)' }, 0.15);
+tl.to('#severity', { opacity:1, y:0, duration:0.3, ease:'back.out(2)' }, 0.4);
+tl.to('#clause', { opacity:1, duration:0.3 }, 0.6);
+tl.to('#finding', { opacity:1, y:0, duration:0.35, ease:'power3.out' }, 0.72);
+tl.to('#action', { opacity:1, y:0, duration:0.35, ease:'power2.out' }, 1.05);
+
+var captionTiming = {{captionTiming}};
+var chunks = hfBuildCaptions(captionTiming);
+hfAnimateCaptions(tl, chunks, captionTiming);
+
+window.__timelines['{{id}}'] = tl;
+</script>
+</template>
+</body>
+</html>

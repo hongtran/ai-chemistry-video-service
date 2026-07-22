@@ -1,0 +1,11 @@
+{ "config": { "slug":"test-traceability-chain","topic":"traceability-chain","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"traceability-chain","start":0,"duration":6,
+    "eyebrow":"METROLOGICAL TRACEABILITY","headline":"An Unbroken Chain","title":"Traceability to the SI",
+    "nodes":[
+      { "label":"SI Definition","sub":"the kelvin" },
+      { "label":"National Standard","sub":"NMI" },
+      { "label":"Reference Standard","sub":"the lab's best" },
+      { "label":"Working Standard","sub":"daily use" },
+      { "label":"Measurement","sub":"your result" }
+    ],
+    "captions":["Each measurement links back","to the SI unit itself."] }] }

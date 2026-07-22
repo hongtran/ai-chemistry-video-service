@@ -56,7 +56,13 @@ class StubPipeline:
                 "transcript.json",
                 {"text": "stub.", "words": [{"text": "stub", "start": 0.0, "end": 0.5}]},
             )
-        elif step is PipelineStep.SCENE_SPLIT:
+        elif step is PipelineStep.SEGMENT:
+            self._artifacts.save_json(
+                job_id,
+                "scenes_index.json",
+                [{"scene_id": "scene-1", "idx_sentences": [1], "captions": [query]}],
+            )
+        elif step is PipelineStep.AUTHORING:
             self._artifacts.save_json(job_id, "scenes.json", [{"type": "stub", "caption": query}])
         elif step is PipelineStep.COMPOSE:
             horizontal = orientation == "horizontal"

@@ -1,0 +1,8 @@
+{ "config": { "slug":"test-nonconformance","topic":"nonconformance","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"nonconformance","start":0,"duration":6,
+    "eyebrow":"CLAUSE 7.10 — NONCONFORMING WORK","headline":"A Major Finding",
+    "severity":"MAJOR",
+    "clause":"Clause 6.4.1",
+    "finding":"Instrument used beyond its calibration due date.",
+    "correctiveAction":"Quarantine results; recalibrate before reuse.",
+    "captions":["A major nonconformity","means results are in doubt."] }] }

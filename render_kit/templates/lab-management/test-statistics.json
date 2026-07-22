@@ -1,0 +1,14 @@
+{ "config": { "slug":"test-statistics","topic":"stats","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"statistics","start":0,"duration":6,
+    "eyebrow":"CLAUSE 7.7 — QUALITY CONTROL","headline":"Statistics & Error",
+    "title":"QC Statistics",
+    "formulas":[
+      {"name":"Mean","latex":"\\bar{x}=\\dfrac{\\sum_{i=1}^{n} x_i}{n}"},
+      {"name":"Std Deviation (SD)","latex":"SD=\\sqrt{\\dfrac{\\sum_{i=1}^{n}(x_i-\\bar{x})^2}{n-1}}"},
+      {"name":"Coefficient of Variation (CV)","latex":"CV(\\%)=\\left(\\dfrac{SD}{\\bar{x}}\\right)\\times 100\\%"}
+    ],
+    "legend":[
+      {"sym":"x_i","desc":"individual measured values"},
+      {"sym":"n","desc":"number of measurements"}
+    ],
+    "captions":["Standard deviation and CV","tell you how **reproducible**","a result really is."] }] }

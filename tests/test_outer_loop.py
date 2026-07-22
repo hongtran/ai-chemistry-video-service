@@ -1,18 +1,17 @@
-"""Outer-loop behaviour: alignment + layout gate share up to
-settings.outer_retry_limit rounds, and each failure re-splits only the
-section(s) that own the offending scenes."""
+"""Outer-loop behaviour (split-first pipeline): alignment runs ONCE and never
+retries (best-effort by design); only the layout gate loops, up to
+settings.outer_retry_limit rounds, re-authoring only the offending scene(s)."""
 import unittest
 from pathlib import Path
 from unittest import mock
 
 from app.config import Settings
-from app.domain.models import JobStatus, PipelineStep
+from app.domain.models import Job, JobStatus, PipelineStep
 from app.pipeline import orchestrator as orch
 from app.pipeline.orchestrator import RealVideoPipeline
-from app.pipeline.steps import layout_gate, scene_split
-from app.pipeline.steps.align import AlignmentError
+from app.pipeline.steps import layout_gate
+from app.pipeline.steps.segment import SceneIndex
 from app.storage.jobs import InMemoryJobRepository
-from app.domain.models import Job
 
 
 def _scene(sid: str) -> dict:
@@ -59,29 +58,28 @@ class OuterLoopTests(unittest.IsolatedAsyncioTestCase):
             self.jobs, self.artifacts, client=object(), settings=self.settings
         )
         self.steps: list[str] = []
-        self.resplit_feedback: list[str] = []
+        self.reauthor_feedback: list[str] = []
 
-    def _stack(self, *, align_results, gate_results):
-        """Patch every step around the outer loop. align_results/gate_results
-        are per-round outcomes (an Exception is raised, else returned)."""
-        aligns, gates = list(align_results), list(gate_results)
+    def _stack(self, *, gate_results, timed_scene=None):
+        """Patch every step around the outer loop. gate_results is a per-round
+        list of layout-gate outcomes (an Exception is raised, else returned)."""
+        gates = list(gate_results)
+        scenes_index = [SceneIndex(scene_id="hook", idx_sentences=[1], captions=["a b", "c d"])]
+        timed = timed_scene or _timed("hook")
 
-        async def fake_split_sections(subject_config, sections, orientation, script, transcript, language):
-            for s in sections:
-                s.scenes = [_scene(f"{s.id_prefix}hook")]
-            return {"description": "d"}
+        async def fake_segment_script(client, settings, subject_config, sentences, **kw):
+            return scenes_index, {"description": "d"}
 
-        async def fake_resplit(subject_config, targets, feedback):
-            self.resplit_feedback.append(feedback)
-            for s in targets:
-                s.scenes = [_scene(f"{s.id_prefix}hook")]
-            return {}
+        async def fake_author_scenes(client, settings, subject_config, idx, by_index, script, **kw):
+            return [_scene("hook")]
+
+        async def fake_reauthor_scenes(client, settings, subject_config, offending, by_index,
+                                        script, all_types, feedback, **kw):
+            self.reauthor_feedback.append(feedback)
+            return [_scene(s.scene_id) for s in offending]
 
         def fake_align(scenes, words, duration):
-            out = aligns.pop(0)
-            if isinstance(out, Exception):
-                raise out
-            return out
+            return [dict(timed)]
 
         async def fake_gate(settings, subject_config, data, data_path):
             out = gates.pop(0)
@@ -98,11 +96,13 @@ class OuterLoopTests(unittest.IsolatedAsyncioTestCase):
         return (
             mock.patch.object(orch.narration, "generate_script",
                               mock.AsyncMock(return_value="a script " * 20)),
+            mock.patch.object(orch.segment, "segment_script", fake_segment_script),
+            mock.patch.object(orch.segment, "assert_three_way_equality", lambda *a, **k: None),
             mock.patch.object(orch.tts, "synthesize", mock.AsyncMock(return_value=b"mp3")),
             mock.patch.object(orch.transcribe, "transcribe_words",
                               mock.AsyncMock(return_value=([{"text": "a", "start": 0, "end": 1}], 4.0, "a b c d"))),
-            mock.patch.object(self.pipeline, "_split_sections", fake_split_sections),
-            mock.patch.object(self.pipeline, "_resplit_sections", fake_resplit),
+            mock.patch.object(orch.author, "author_scenes", fake_author_scenes),
+            mock.patch.object(orch.author, "reauthor_scenes", fake_reauthor_scenes),
             mock.patch.object(orch, "align_scenes", fake_align),
             mock.patch.object(orch.layout_gate, "run_layout_gate", fake_gate),
             mock.patch.object(orch.compose, "validate_data", lambda d, s: None),
@@ -110,8 +110,8 @@ class OuterLoopTests(unittest.IsolatedAsyncioTestCase):
             mock.patch.object(self.pipeline, "_step", spy_step),
         )
 
-    async def _run(self, *, align_results, gate_results):
-        patches = self._stack(align_results=align_results, gate_results=gate_results)
+    async def _run(self, *, gate_results):
+        patches = self._stack(gate_results=gate_results)
         for p in patches:
             p.start()
         try:
@@ -122,86 +122,61 @@ class OuterLoopTests(unittest.IsolatedAsyncioTestCase):
         return await self.jobs.get(self.job.id)
 
     async def test_clean_first_round_renders_without_retrying(self) -> None:
-        job = await self._run(align_results=[[_timed("hook")]], gate_results=[[]])
+        job = await self._run(gate_results=[[]])
 
         self.assertEqual(job.status, JobStatus.COMPLETED)
-        self.assertEqual(self.resplit_feedback, [])
+        self.assertEqual(self.reauthor_feedback, [])
         self.assertEqual(self.steps.count(PipelineStep.ALIGNMENT.value), 1)
         self.assertEqual(self.steps.count(PipelineStep.LAYOUT_GATE.value), 1)
         self.assertIn(PipelineStep.RENDER.value, self.steps)
 
-    async def test_alignment_failure_recovers_on_the_next_round(self) -> None:
-        job = await self._run(
-            align_results=[AlignmentError("drifted", ["hook"]), [_timed("hook")]],
-            gate_results=[[]],
-        )
-
+    async def test_alignment_runs_once_never_retries(self) -> None:
+        job = await self._run(gate_results=[[]])
+        # Alignment isn't in the per-round loop at all — one call regardless.
+        self.assertEqual(self.steps.count(PipelineStep.ALIGNMENT.value), 1)
         self.assertEqual(job.status, JobStatus.COMPLETED)
-        self.assertEqual(len(self.resplit_feedback), 1)
-        self.assertIn("FAILED WORD ALIGNMENT", self.resplit_feedback[0])
-        self.assertEqual(self.steps.count(PipelineStep.ALIGNMENT.value), 2)
 
     async def test_layout_errors_recover_on_the_next_round(self) -> None:
         issue = {"code": "text_box_overflow", "sceneId": "hook", "sceneType": "cover",
                  "selector": "#h", "text": "long", "message": "m"}
-        job = await self._run(
-            align_results=[[_timed("hook")], [_timed("hook")]],
-            gate_results=[[issue], []],
-        )
+        job = await self._run(gate_results=[[issue], []])
 
         self.assertEqual(job.status, JobStatus.COMPLETED)
-        self.assertEqual(len(self.resplit_feedback), 1)
-        self.assertIn("layout errors", self.resplit_feedback[0])
+        self.assertEqual(len(self.reauthor_feedback), 1)
+        self.assertIn("layout errors", self.reauthor_feedback[0])
         self.assertEqual(self.steps.count(PipelineStep.LAYOUT_GATE.value), 2)
+        # Timing survives the re-author untouched.
+        final_scenes = self.artifacts.saved["scenes.json"]
+        self.assertEqual(final_scenes[0]["start"], 0.0)
+        self.assertEqual(final_scenes[0]["duration"], 4.0)
 
     async def test_persistent_layout_errors_fail_the_job_after_all_rounds(self) -> None:
         issue = {"code": "text_box_overflow", "sceneId": "hook", "sceneType": "cover",
                  "selector": "#h", "text": "long", "message": "m"}
-        job = await self._run(
-            align_results=[[_timed("hook")]] * 3,
-            gate_results=[[issue]] * 3,
-        )
+        job = await self._run(gate_results=[[issue]] * 3)
 
         self.assertEqual(job.status, JobStatus.FAILED)
         self.assertTrue(job.error_message.startswith("layout_gate:"), job.error_message)
         self.assertIn("after 3 rounds", job.error_message)
         self.assertNotIn(PipelineStep.RENDER.value, self.steps)
         # Two corrective rounds, then the third gives up.
-        self.assertEqual(len(self.resplit_feedback), 2)
-
-    async def test_persistent_alignment_failure_fails_the_job(self) -> None:
-        job = await self._run(
-            align_results=[AlignmentError("drifted", ["hook"])] * 3,
-            gate_results=[],
-        )
-
-        self.assertEqual(job.status, JobStatus.FAILED)
-        self.assertTrue(job.error_message.startswith("alignment:"), job.error_message)
-        self.assertIn("after 3 rounds", job.error_message)
+        self.assertEqual(len(self.reauthor_feedback), 2)
 
     async def test_gate_infra_failure_fails_the_job_immediately(self) -> None:
-        job = await self._run(
-            align_results=[[_timed("hook")]],
-            gate_results=[layout_gate.LayoutGateError("npx exploded")],
-        )
+        job = await self._run(gate_results=[layout_gate.LayoutGateError("npx exploded")])
 
         self.assertEqual(job.status, JobStatus.FAILED)
         self.assertTrue(job.error_message.startswith("layout_gate:"), job.error_message)
         self.assertIn("npx exploded", job.error_message)
 
 
-class IssueGroupingTests(unittest.TestCase):
-    def test_issues_group_by_owning_section(self) -> None:
-        grouped = orch._issues_by_section([
-            {"sceneId": "s0-hook"}, {"sceneId": "s2-flow"}, {"sceneId": "s0-intro"},
+class OffendingIdsGroupingTests(unittest.TestCase):
+    def test_issues_group_by_scene_id(self) -> None:
+        grouped = orch._offending_ids([
+            {"sceneId": "hook"}, {"sceneId": "flow"}, {"sceneId": "hook"},
         ])
-        self.assertEqual(sorted(grouped), [0, 2])
-        self.assertEqual(len(grouped[0]), 2)
-
-    def test_unprefixed_ids_group_to_section_zero(self) -> None:
-        grouped = orch._issues_by_section([{"sceneId": "hook"}, {"sceneId": "?"}])
-        self.assertEqual(list(grouped), [0])
-        self.assertEqual(len(grouped[0]), 2)
+        self.assertEqual(sorted(grouped), ["flow", "hook"])
+        self.assertEqual(len(grouped["hook"]), 2)
 
 
 if __name__ == "__main__":

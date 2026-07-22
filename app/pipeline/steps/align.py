@@ -6,13 +6,19 @@ absolute scene start/duration plus scene-local captionTiming, including a
 words[] entry per chunk ({text,start,end} per whitespace token) for the
 karaoke highlight.
 
-Raises AlignmentError with a precise description of what diverged — the
-orchestrator uses that message (and .scene_ids) to drive a corrective
-re-scene-split before failing the job.
+Best-effort by design (split-first pipeline): captions come from the clean
+script while the timing signal is Whisper of the TTS, so some drift is normal.
+A chunk that can't be anchored becomes a timing GAP that is interpolated from
+its neighbors rather than a hard failure — alignment never raises for coverage
+and never asks for a re-split. The word normalization below is unchanged; only
+the failure handling is tolerant. A coverage summary is logged as a warning.
 """
 import copy
 import difflib
+import logging
 import re
+
+logger = logging.getLogger(__name__)
 
 # How far ahead (in transcript words) we search for the start of a chunk /
 # the next expected word. Absorbs TTS hiccups and filler without letting a
@@ -223,35 +229,100 @@ def _interpolate_missing(tokens: list[dict]) -> None:
             tokens[i]["start"] = tokens[i]["end"] = 0.0
 
 
+def _interp_series(
+    values: list[float | None], lo: float, hi: float
+) -> list[float]:
+    """Fill None entries in a monotonic time series by linear interpolation
+    between the nearest known neighbours; leading/trailing Nones spread toward
+    `lo`/`hi`. With no known value at all, spread evenly across [lo, hi]."""
+    n = len(values)
+    if n == 0:
+        return []
+    known = [(i, v) for i, v in enumerate(values) if v is not None]
+    if not known:
+        return [lo + (hi - lo) * i / n for i in range(n)]
+
+    out: list[float] = [0.0] * n
+    first_i, first_v = known[0]
+    for i in range(first_i):
+        out[i] = lo + (first_v - lo) * (i / first_i if first_i else 0.0)
+    for k, (idx, val) in enumerate(known):
+        out[idx] = val
+        if k + 1 < len(known):
+            nidx, nval = known[k + 1]
+            gap = nidx - idx
+            for j in range(1, gap):
+                out[idx + j] = val + (nval - val) * j / gap
+    last_i, last_v = known[-1]
+    tail = n - last_i
+    for i in range(last_i + 1, n):
+        out[i] = last_v + (hi - last_v) * ((i - last_i) / tail if tail else 0.0)
+
+    # Enforce non-decreasing so karaoke never runs backwards.
+    for i in range(1, n):
+        if out[i] < out[i - 1]:
+            out[i] = out[i - 1]
+    return out
+
+
+def _proportional_fill(aligned: list[dict], total_duration: float) -> list[dict]:
+    """No usable audio words: lay scenes end-to-end across total_duration,
+    weighted by each scene's caption word count, and spread each scene's chunks
+    and words evenly. Best-effort timing so the video still renders."""
+    weights = [
+        max(1, sum(len(c.split()) for c in (s.get("captions") or [])))
+        for s in aligned
+    ]
+    total_w = sum(weights) or 1
+    cursor = 0.0
+    for scene, w in zip(aligned, weights):
+        dur = total_duration * w / total_w
+        start = cursor
+        cursor += dur
+        scene["start"] = round(start, 2)
+        scene["duration"] = round(dur, 2)
+        captions = scene.get("captions") or []
+        n_chunks = len(captions) or 1
+        timing = []
+        for ci, chunk in enumerate(captions):
+            c_start = dur * ci / n_chunks
+            c_end = dur * (ci + 1) / n_chunks
+            toks = chunk.split() or [chunk]
+            timing.append({
+                "text": chunk,
+                "start": round(c_start, 2),
+                "end": round(c_end, 2),
+                "words": [
+                    {
+                        "text": t,
+                        "start": round(c_start + (c_end - c_start) * ti / len(toks), 2),
+                        "end": round(c_start + (c_end - c_start) * (ti + 1) / len(toks), 2),
+                    }
+                    for ti, t in enumerate(toks)
+                ],
+            })
+        scene["captionTiming"] = timing
+    return aligned
+
+
 def align_scenes(
     scenes: list[dict], words: list[dict], total_duration: float
 ) -> list[dict]:
     """Returns deep-copied scenes with start/duration/captionTiming (incl.
-    per-word timing for karaoke) filled in."""
-    if not words:
-        raise AlignmentError("transcript has no words")
-
-    flat = _flatten_words(words)
-    if not flat:
-        raise AlignmentError("transcript has no alignable words")
-
+    per-word timing for karaoke) filled in. Best-effort: unanchored chunks are
+    interpolated, never raised on."""
     aligned = copy.deepcopy(scenes)
+    flat = _flatten_words(words) if words else []
+    if not flat:
+        logger.warning("alignment: no usable transcript words — proportional fill")
+        return _proportional_fill(aligned, total_duration)
+
     pos = 0
-    # Per scene: list of (chunk_text, chunk_start_abs, chunk_end_abs, token_stream)
-    scene_spans: list[list[tuple[str, float, float, list[dict]]]] = []
-    print(f"flat : {flat}")
-    for scene_index, scene in enumerate(aligned):
-        scene_id = scene.get("id", "?")
+    # Per scene: list of [chunk_text, start_abs|None, end_abs|None, tokens].
+    scene_spans: list[list[list]] = []
+    for scene in aligned:
         captions = scene.get("captions") or []
-        if not captions:
-            raise AlignmentError(
-                f"scene '{scene_id}' has no captions — every scene needs its "
-                "portion of the narration in 'captions'",
-                scene_ids=[scene_id],
-            )
-        spans: list[tuple[str, float, float, list[dict]]] = []
-        scene_token_stream: list[dict] = []
-        print(f"scene : {scene_id} : {captions}")
+        spans: list[list] = []
         for chunk in captions:
             marked = _split_marks(chunk)
             tokens = marked.split()
@@ -259,36 +330,17 @@ def align_scenes(
             expected = [w for sub in expected_per_token for w in sub]
             if not expected:
                 continue
-            print(f"chunk : {chunk} : {expected}")
             result = _match_chunk(expected, flat, pos)
             if result is None:
-                # Show the ORIGINAL spoken words around the failure point so
-                # the re-split feedback tells the LLM exactly what to copy.
-                wi = flat[min(pos, len(flat) - 1)]["wi"]
-                context = " ".join(
-                    w["text"] for w in words[wi : wi + _CHUNK_LOOKAHEAD]
-                )
-                message = (
-                    f"scene '{scene_id}': caption chunk \"{chunk}\" does not match "
-                    f'the spoken audio near "...{context}..." — captions must copy '
-                    "the transcript (the words actually spoken) verbatim, in order"
-                )
-                report = _coverage_report(aligned, words)
-                if report:
-                    message += "\n" + report
-                # Dropped text sits on a boundary: it belongs either at the end
-                # of the previous scene or the start of this one, so blame both
-                # — otherwise a long-form retry can re-split a section that had
-                # nothing to do with the omission.
-                blamed = [scene_id]
-                if scene_index > 0:
-                    previous = aligned[scene_index - 1].get("id")
-                    if previous:
-                        blamed.insert(0, previous)
-                raise AlignmentError(message, scene_ids=blamed)
+                # Unanchored chunk: a timing gap. Keep `pos` where it is so the
+                # NEXT chunk can still anchor at its true position, and leave
+                # this chunk's times None for interpolation below.
+                chunk_tokens = [{"text": t, "start": None, "end": None} for t in tokens]
+                spans.append([chunk, None, None, chunk_tokens])
+                continue
             positions, start, end, pos = result
 
-            chunk_tokens: list[dict] = []
+            chunk_tokens = []
             offset = 0
             for tok_text, sub in zip(tokens, expected_per_token):
                 n = len(sub)
@@ -299,26 +351,53 @@ def align_scenes(
                     t_end = max(flat[p]["end"] for p in tok_positions)
                 else:
                     t_start = t_end = None
-                token_entry = {"text": tok_text, "start": t_start, "end": t_end}
-                chunk_tokens.append(token_entry)
-                scene_token_stream.append(token_entry)
-
-            spans.append((chunk, start, end, chunk_tokens))
-        if not spans:
-            raise AlignmentError(
-                f"scene '{scene_id}': no alignable caption words", scene_ids=[scene_id]
-            )
-        _interpolate_missing(scene_token_stream)
+                chunk_tokens.append({"text": tok_text, "start": t_start, "end": t_end})
+            spans.append([chunk, start, end, chunk_tokens])
         scene_spans.append(spans)
 
-    # Scene boundaries: each scene starts where its first chunk starts
-    # (scene 0 pinned to 0); duration runs to the next scene's start so the
-    # timeline tiles the full audio with no gaps.
-    starts = [spans[0][1] for spans in scene_spans]
+    report = _coverage_report(aligned, words)
+    if report:
+        logger.warning("alignment coverage (best-effort timing applied):\n%s", report)
+
+    # Scene starts: first anchored span start per scene, interpolated where a
+    # scene had nothing anchor.
+    raw_starts: list[float | None] = [
+        next((s[1] for s in spans if s[1] is not None), None) for spans in scene_spans
+    ]
+    last_anchor = next(
+        (s[2] for spans in reversed(scene_spans) for s in reversed(spans) if s[2] is not None),
+        total_duration,
+    )
+    horizon = max(total_duration, last_anchor)
+    starts = _interp_series(raw_starts, 0.0, horizon)
     starts[0] = 0.0
+
     for i, (scene, spans) in enumerate(zip(aligned, scene_spans)):
         scene_start = starts[i]
-        scene_end = starts[i + 1] if i + 1 < len(starts) else max(total_duration, spans[-1][2])
+        scene_end = starts[i + 1] if i + 1 < len(starts) else horizon
+        if scene_end < scene_start:
+            scene_end = scene_start
+        # Fill any gap spans' start/end across this scene, then distribute their
+        # tokens; interpolate any interior token Nones from matched chunks.
+        span_starts = _interp_series([s[1] for s in spans], scene_start, scene_end)
+        span_ends = _interp_series([s[2] for s in spans], scene_start, scene_end)
+        token_stream: list[dict] = []
+        for si, span in enumerate(spans):
+            if span[1] is None:
+                span[1] = span_starts[si]
+            if span[2] is None or span[2] < span[1]:
+                span[2] = max(span_ends[si], span[1])
+            toks = span[3]
+            for ti, tok in enumerate(toks):
+                if tok["start"] is None:
+                    # spread this chunk's unmatched tokens across its span
+                    frac = ti / len(toks)
+                    nfrac = (ti + 1) / len(toks)
+                    tok["start"] = span[1] + (span[2] - span[1]) * frac
+                    tok["end"] = span[1] + (span[2] - span[1]) * nfrac
+            token_stream.extend(toks)
+        _interpolate_missing(token_stream)
+
         scene["start"] = round(scene_start, 2)
         scene["duration"] = round(scene_end - scene_start, 2)
         scene["captionTiming"] = [

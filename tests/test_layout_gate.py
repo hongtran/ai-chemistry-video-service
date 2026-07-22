@@ -94,7 +94,7 @@ class LayoutFeedbackTests(unittest.TestCase):
 class RunLayoutGateTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self) -> None:
         self.settings = Settings()
-        self.config = get_subject_config("chemistry", self.settings)
+        self.config = get_subject_config("lab-management", self.settings)
         self.data_path = Path("/tmp/does-not-matter.json")
 
     def _patch(self, inspect_result):
@@ -174,7 +174,7 @@ class RunLayoutGateTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("populate", str(caught.exception))
 
     async def test_missing_populate_script_raises_before_running_anything(self) -> None:
-        config = get_subject_config("chemistry", self.settings)
+        config = get_subject_config("lab-management", self.settings)
         object.__setattr__(config, "renderer_template", "no-such-template")
         with self.assertRaises(LayoutGateError):
             await run_layout_gate(self.settings, config, _DATA, self.data_path)

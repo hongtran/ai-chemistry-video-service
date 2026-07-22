@@ -1,0 +1,9 @@
+{ "config": { "slug":"test-equipment-register","topic":"equipment-register","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"equipment-register","start":0,"duration":6,
+    "eyebrow":"CLAUSE 6.4 — EQUIPMENT","headline":"Equipment","title":"Equipment Register",
+    "parts":[
+      { "label":"Analytical Balance","status":"calibrated","due":"Due Mar 2027" },
+      { "label":"pH Meter","status":"due","due":"Due this month" },
+      { "label":"Reference Thermometer","status":"overdue","due":"Overdue 12 days" }
+    ],
+    "captions":["Every instrument carries","a calibration status."] }] }

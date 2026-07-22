@@ -6,6 +6,7 @@ import {
   MAX_QUERY_LENGTH,
   MAX_SCRIPT_LENGTH,
   SUBJECTS,
+  SUBJECT_LABELS,
   type InputMode,
   type Language,
   type Orientation,
@@ -27,7 +28,7 @@ const INPUT_MODES: { label: string; hint: string; mode: InputMode }[] = [
 export default function CreateVideoForm() {
   const navigate = useNavigate()
   const [inputMode, setInputMode] = useState<InputMode>('topic')
-  const [subject, setSubject] = useState<Subject>('chemistry')
+  const [subject, setSubject] = useState<Subject>('tech')
   const [orientation, setOrientation] = useState<Orientation>('vertical')
   const [language, setLanguage] = useState<Language>('en')
   const [query, setQuery] = useState('')
@@ -43,6 +44,13 @@ export default function CreateVideoForm() {
   const changeOrientation = (next: Orientation) => {
     setOrientation(next)
     setScript((s) => s.slice(0, MAX_SCRIPT_LENGTH[next]))
+  }
+
+  // Lab Management content is authored in Vietnamese, so picking it auto-selects
+  // the Vietnamese language (the user can still change language afterwards).
+  const changeSubject = (next: Subject) => {
+    setSubject(next)
+    if (next === 'lab-management') setLanguage('vi')
   }
 
   const submit = async (event: React.FormEvent) => {
@@ -90,10 +98,10 @@ export default function CreateVideoForm() {
       <div className="form-row">
         <label className="field">
           <span className="field-label">Subject</span>
-          <select value={subject} onChange={(e) => setSubject(e.target.value as Subject)}>
+          <select value={subject} onChange={(e) => changeSubject(e.target.value as Subject)}>
             {SUBJECTS.map((s) => (
               <option key={s} value={s}>
-                {s}
+                {SUBJECT_LABELS[s]}
               </option>
             ))}
           </select>

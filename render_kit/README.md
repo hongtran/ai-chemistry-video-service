@@ -1,6 +1,6 @@
 # render_kit
 
-Self-contained rendering toolkit for the chemistry video service. The Phase-2
+Self-contained rendering toolkit for the video service. The Phase-2
 render step (`app/pipeline/steps/render.py`) shells out to
 `render_kit/scripts/build-video.sh` — this directory holds everything that script
 needs, so the project can be cloned and rendered without the original
@@ -13,10 +13,10 @@ changes).
 
 ```
 scripts/build-video.sh          entry point the service calls
-templates/chemistry/
+templates/lab-management/       ISO/IEC 17025 subject (also: templates/tech/)
   populate.js                   turns a data.json into a renderable videos/<slug>/ project
   frame-defaults.mjs            valid frame types + per-type defaults + validation
-  frames/*.html                 per-scene-type templates (cover, atom, ph-bar, …)
+  frames/*.html                 per-scene-type templates (cover, equipment-register, calibration-cert, …)
   index.template.html           root composition template
   schema.json                   data.json schema
   stubs/silence.mp3             silence fallback so lint passes before real audio exists
@@ -38,7 +38,7 @@ The service invokes this automatically. To render manually / verify the kit:
 ```bash
 # from the project root
 bash render_kit/scripts/build-video.sh \
-  render_kit/templates/chemistry/data-how-does-the-ph-scale-work.json \
+  render_kit/templates/lab-management/data.json \
   --out_path /tmp/render-check.mp4
 ```
 

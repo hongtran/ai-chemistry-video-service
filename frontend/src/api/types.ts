@@ -5,9 +5,11 @@ export type UploadStatus = 'PENDING' | 'UPLOADING' | 'COMPLETED' | 'FAILED'
 
 export const PIPELINE_STEPS = [
   'narration',
+  'segment',
   'tts',
   'transcription',
-  'scene_split',
+  'authoring',
+  'image_gen',
   'alignment',
   'compose',
   'layout_gate',
@@ -15,9 +17,13 @@ export const PIPELINE_STEPS = [
 ] as const
 export type PipelineStep = (typeof PIPELINE_STEPS)[number]
 
-export type Subject = 'chemistry' | 'tech'
+export type Subject = 'lab-management' | 'tech'
 export type Orientation = 'vertical' | 'horizontal'
-export const SUBJECTS: Subject[] = ['chemistry', 'tech']
+export const SUBJECTS: Subject[] = ['tech', 'lab-management']
+export const SUBJECT_LABELS: Record<Subject, string> = {
+  'lab-management': 'Laboratory Management (ISO/IEC 17025)',
+  tech: 'Tech',
+}
 
 // 'topic' → LLM writes the narration; 'script' → user supplies it verbatim
 // (the narration pipeline step is skipped).

@@ -1,0 +1,10 @@
+{ "config": { "slug":"test-calibration-cert","topic":"calibration-cert","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"calibration-cert","start":0,"duration":6,
+    "eyebrow":"CLAUSE 6.5 — TRACEABILITY","headline":"Calibration Certificate",
+    "instrument":"Reference Thermometer, S/N 4471",
+    "certNo":"CAL-2026-0311",
+    "calDate":"14 Feb 2026",
+    "dueDate":"14 Feb 2027",
+    "uncertainty":"± 0.02 °C (k = 2)",
+    "traceableTo":"National standard (NMI) / SI",
+    "captions":["A certificate ties your result","back to the SI unit."] }] }

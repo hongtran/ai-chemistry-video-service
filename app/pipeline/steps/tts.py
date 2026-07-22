@@ -4,13 +4,21 @@ Short scripts are one TTS call. Long-form scripts exceed the TTS API's input
 limit, so they're split at sentence boundaries, synthesized per chunk, and
 ffmpeg-concatenated into ONE narration.mp3 — downstream Whisper and alignment
 only ever see a single continuous track.
+
+Vietnamese (language="vi") is synthesized via ElevenLabs instead of OpenAI
+TTS — noticeably better Vietnamese prosody than gpt-4o-mini-tts. Every other
+language keeps using OpenAI TTS.
 """
 import asyncio
 import logging
+import random
 import shutil
 import tempfile
 from pathlib import Path
 
+import httpx
+from elevenlabs.client import AsyncElevenLabs
+from elevenlabs.core.api_error import ApiError
 from openai import AsyncOpenAI
 
 from app.config import Settings
@@ -20,6 +28,8 @@ from app.observability import track_generation
 from app.pipeline.steps.sections import split_for_tts
 
 logger = logging.getLogger(__name__)
+
+ELEVENLABS_LANGUAGE = "vi"
 
 
 class TTSError(Exception):
@@ -50,6 +60,79 @@ async def _synthesize_chunk(
             return response.content
 
     return await with_retries(_call, max_attempts=settings.max_retries)
+
+
+async def _with_elevenlabs_retries(
+    call, *, max_attempts: int, base_delay: float = 1.0
+) -> bytes:
+    """Same backoff policy as with_retries (app.llm.client), but for the
+    elevenlabs SDK's exception type — ElevenLabs isn't an OpenAI call so it
+    can't reuse that helper's OpenAI-specific exception tuple. Only retries
+    rate limits (429) and server errors (5xx); 4xx errors like 402 Payment
+    Required are permanent until a human fixes the account, so they raise
+    immediately."""
+    last_exc: Exception | None = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            return await call()
+        except ApiError as exc:
+            retryable = exc.status_code == 429 or (
+                exc.status_code is not None and exc.status_code >= 500
+            )
+            if not retryable:
+                raise
+            last_exc = exc
+        except (httpx.TimeoutException, httpx.TransportError) as exc:
+            last_exc = exc
+
+        if attempt == max_attempts:
+            break
+        delay = base_delay * (2 ** (attempt - 1)) + random.uniform(0, 0.5)
+        logger.warning(
+            "ElevenLabs TTS call failed (attempt %d/%d): %s — retrying in %.1fs",
+            attempt, max_attempts, last_exc, delay,
+        )
+        await asyncio.sleep(delay)
+    raise last_exc  # type: ignore[misc]
+
+
+async def _synthesize_chunk_elevenlabs(settings: Settings, text: str) -> bytes:
+    if not settings.elevenlabs_api_key:
+        raise TTSError("ELEVENLABS_API_KEY is required for language=vi TTS")
+    if not settings.elevenlabs_voice_id:
+        raise TTSError("ELEVENLABS_VOICE_ID is required for language=vi TTS")
+
+    eleven = AsyncElevenLabs(api_key=settings.elevenlabs_api_key)
+
+    async def _call() -> bytes:
+        with track_generation(
+            settings,
+            name="tts",
+            model=settings.elevenlabs_model_id,
+            input={"chars": len(text), "voice": settings.elevenlabs_voice_id},
+        ) as gen:
+            response = eleven.text_to_speech.convert(
+                voice_id=settings.elevenlabs_voice_id,
+                model_id=settings.elevenlabs_model_id,
+                text=text,
+                output_format="mp3_44100_128",
+            )
+            audio = b"".join([chunk async for chunk in response])
+            if gen is not None:
+                gen.update(usage_details={"input": len(text)})
+            return audio
+
+    try:
+        return await _with_elevenlabs_retries(_call, max_attempts=settings.max_retries)
+    except ApiError as exc:
+        if exc.status_code == 402:
+            raise TTSError(
+                "ElevenLabs returned 402 Payment Required — the account behind "
+                "ELEVENLABS_API_KEY is out of credits or on a plan that doesn't "
+                "cover this request. Check usage/billing at "
+                "https://elevenlabs.io/app/usage."
+            ) from exc
+        raise
 
 
 async def _concat_mp3(parts: list[bytes]) -> bytes:
@@ -104,16 +187,25 @@ async def synthesize(
     script: str,
     language: str = DEFAULT_LANGUAGE,
 ) -> bytes:
-    voice = settings.voice_for_language(language)
     chunks = split_for_tts(script, settings.tts_max_chars)
     if not chunks:
         raise TTSError("nothing to synthesize: script is empty")
+
+    if language == ELEVENLABS_LANGUAGE:
+        async def _synth(text: str) -> bytes:
+            return await _synthesize_chunk_elevenlabs(settings, text)
+    else:
+        voice = settings.voice_for_language(language)
+
+        async def _synth(text: str) -> bytes:
+            return await _synthesize_chunk(client, settings, text, voice)
+
     if len(chunks) == 1:
-        return await _synthesize_chunk(client, settings, chunks[0], voice)
+        return await _synth(chunks[0])
 
     logger.info(
         "narration is %d chars — synthesizing in %d chunks, then joining",
         len(script), len(chunks),
     )
-    parts = [await _synthesize_chunk(client, settings, c, voice) for c in chunks]
+    parts = [await _synth(c) for c in chunks]
     return await _concat_mp3(parts)

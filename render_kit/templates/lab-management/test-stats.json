@@ -1,0 +1,6 @@
+{ "config": { "slug":"test-stats","topic":"stats","totalDuration":5 },
+  "scenes":[{ "id":"s1","type":"stats","start":0,"duration":5,
+    "bg":"#3DA5FF","fg":"#0B0E14","accent":"#0B0E14",
+    "eyebrow":"WHY IT MATTERS","headline":"Most Findings Are Avoidable",
+    "stat":"70%","statLabel":"of audit findings are documentation gaps",
+    "captions":["Most audit findings","are **documentation** gaps."] }] }
