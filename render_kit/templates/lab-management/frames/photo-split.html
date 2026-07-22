@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;800;900&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; }
+#photo { position:absolute; top:0; left:0; right:0; height:940px; overflow:hidden; }
+#photo .img { position:absolute; inset:0; background-image:url("{{image}}"); background-size:cover; background-position:center; will-change:transform; }
+#textpanel { position:absolute; top:1000px; left:0; right:0; bottom:0; padding:0 90px; }
+#eyebrow { font-family:'Inter',sans-serif; font-size:34px; font-weight:800; letter-spacing:6px; text-transform:uppercase; opacity:.9; color:{{accent}}; }
+#headline { margin-top:30px; font-family:'Anton',sans-serif; font-weight:400; font-size:92px; line-height:1.15; text-transform:uppercase; }
+#body { margin-top:24px; font-family:'Inter',sans-serif; font-weight:500; font-size:40px; line-height:1.3; opacity:.92; }
+#caption-zone { position:absolute; bottom:230px; left:0; right:0; padding:0 90px; display:flex; align-items:center; justify-content:center; }
+#caption { position:relative; width:100%; height:2.4em; }
+.hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+
+/* Karaoke caption chunk (built by hfBuildCaptions; one .cw span per word) */
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:900; text-align:center; line-height:1.25; font-size:var(--cap-size,66px); opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+
+#main-clip.vertical   { --cap-size:66px; }
+#main-clip.horizontal { --cap-size:44px; }
+#main-clip.horizontal #caption-zone { bottom:60px; padding:0 160px; }
+#main-clip.horizontal #caption { max-width:1360px; margin:0 auto; }
+
+/* Horizontal: image left half, text right half. */
+#main-clip.horizontal #photo     { top:0; left:0; width:960px; right:auto; height:1080px; }
+#main-clip.horizontal #textpanel { top:0; left:960px; right:0; bottom:0; padding:0 80px; display:flex; flex-direction:column; justify-content:center; }
+#main-clip.horizontal #headline  { font-size:78px; }
+#main-clip.horizontal #body      { font-size:36px; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div id="photo"><div class="img" data-layout-allow-overflow></div></div>
+    <div id="textpanel">
+      <div id="eyebrow">{{eyebrow}}</div>
+      <div id="headline">{{headline}}</div>
+      <div id="body">{{body}}</div>
+    </div>
+    <div id="caption-zone"><div id="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+['eyebrow','headline','body'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hfHighlight(t); });
+function hfSplitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g,function(_m,inner){ return inner.split(/\s+/).map(function(w){ return '**'+w+'**'; }).join(' '); }); }
+function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.className='cap-chunk'; var ws=Array.isArray(c.words)?c.words:[]; d.innerHTML= ws.length ? ws.map(function(w){ return '<span class="cw">'+hfHighlight(w.text)+' </span>'; }).join('') : hfHighlight(hfSplitMarks(c.text)); host.appendChild(d); return d; }); }
+function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); }
+  // Karaoke: only the word being spoken holds capHighlight; every other word
+  // keeps the caption color. Emphasis pills (.hl) opt out.
+  var ws=Array.isArray(t.words)?t.words:[]; var spans=el.querySelectorAll('.cw'); ws.forEach(function(w,wi){ var span=spans[wi]; if(!span||span.querySelector('.hl'))return; tl.to(span,{color:'{{capHighlight}}',duration:0.12,ease:'power2.out'},w.start); tl.to(span,{color:'{{fg}}',duration:0.15},Math.max(w.start+0.12,w.end)); }); }); }
+
+var dur = parseFloat('{{duration}}') || 5;
+gsap.set('#photo .img', { scale:1.0, transformOrigin:'50% 50%' });
+gsap.set('#eyebrow', { opacity:0, x:-16 });
+gsap.set('#headline', { opacity:0, y:18 });
+gsap.set('#body', { opacity:0, y:14 });
+
+var tl = gsap.timeline({ paused:true });
+tl.to('#photo .img', { scale:1.08, duration:dur, ease:'none' }, 0);
+tl.to('#eyebrow', { opacity:1, x:0, duration:0.35, ease:'power2.out' }, 0.2);
+tl.to('#headline', { opacity:1, y:0, duration:0.4, ease:'power3.out' }, 0.35);
+tl.to('#body', { opacity:1, y:0, duration:0.4, ease:'power2.out' }, 0.55);
+
+var captionTiming = {{captionTiming}};
+var chunks = hfBuildCaptions(captionTiming);
+hfAnimateCaptions(tl, chunks, captionTiming);
+
+window.__timelines['{{id}}'] = tl;
+</script>
+</template>
+</body>
+</html>

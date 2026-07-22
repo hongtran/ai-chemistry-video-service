@@ -1,0 +1,9 @@
+{
+  "config": { "slug": "tech-photo", "topic": "Photo test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "photo", "start": 0, "duration": 6,
+    "eyebrow": "~/workspace", "headline": "Where the **code** lives",
+    "imagePrompt": "A realistic photograph of a developer's desk at night: laptop showing code, mechanical keyboard, monitor glow, dark room",
+    "captions": ["Every great app", "starts on a **desk** like this."]
+  }]
+}

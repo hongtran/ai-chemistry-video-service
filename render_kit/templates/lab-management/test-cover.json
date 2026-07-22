@@ -1,0 +1,6 @@
+{ "config": { "slug":"test-cover","topic":"cover","totalDuration":5 },
+  "scenes":[{ "id":"s1","type":"cover","start":0,"duration":5,
+    "bg":"#0B0E14","fg":"#FFFFFF","accent":"#FFD60A",
+    "eyebrow":"ISO/IEC 17025","headline":"Calibration & Traceability",
+    "imagePrompt":"A realistic wide photograph of a modern calibration laboratory, a technician adjusting a precision reference instrument under clean bright lighting, cinematic, no text",
+    "captions":["What does it take","for a lab result","to be **trusted**?"] }] }

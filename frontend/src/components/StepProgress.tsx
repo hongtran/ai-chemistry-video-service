@@ -7,9 +7,11 @@ import {
 
 const STEP_LABELS: Record<PipelineStep, string> = {
   narration: 'Narration',
+  segment: 'Scene split',
   tts: 'Text-to-speech',
   transcription: 'Transcription',
-  scene_split: 'Scene split',
+  authoring: 'Scene authoring',
+  image_gen: 'Image generation',
   alignment: 'Alignment',
   compose: 'Compose',
   layout_gate: 'Layout gate',

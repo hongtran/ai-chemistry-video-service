@@ -21,7 +21,7 @@ set -euo pipefail
 INVOKE_DIR="$(pwd)"
 OUT_PATH=""
 AUDIO_FILE=""
-TEMPLATE="chemistry"
+TEMPLATE="lab-management"
 POSITIONAL=()
 while [ $# -gt 0 ]; do
   case "$1" in

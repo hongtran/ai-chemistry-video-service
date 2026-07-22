@@ -3,7 +3,7 @@
 Backend prototype: a learner submits a subject-scoped educational query, the service runs it as an
 async video-generation job (LLM narration → TTS → word-level transcript → typed scene
 split → data.json → hyperframes render), and the client polls status and downloads the
-finished video. Chemistry is the only enabled subject today; the pipeline is structured
+finished video. Laboratory Management (ISO/IEC 17025) is the primary enabled subject today; the pipeline is structured
 so additional subjects can be added through subject config, prompts, schemas, and
 renderer templates.
 
@@ -31,7 +31,7 @@ formatted `"<step>: <reason>"`).
 
 Subject validation is **not** part of the job lifecycle: the LLM guard runs synchronously
 in the POST handler — a query outside the requested subject gets an immediate `400` and
-no job is created. Today, only `subject="chemistry"` is accepted.
+no job is created. Accepted subjects: `subject="lab-management"` (default) and `subject="tech"`.
 
 ## Run local
 
@@ -88,7 +88,7 @@ Notes:
 
 | Method & path | Purpose | Responses |
 |---|---|---|
-| `POST /videos` `{"query": "...", "subject": "chemistry"}` | request a video | `202` `{id, subject, status}` · `400` outside subject / bad query · `422` unsupported subject · `503` guard unavailable |
+| `POST /videos` `{"query": "...", "subject": "lab-management"}` | request a video | `202` `{id, subject, status}` · `400` outside subject / bad query · `422` unsupported subject · `503` guard unavailable |
 | `GET /videos?status=` | list jobs | `200` summaries · `400` bad status value |
 | `GET /videos/{id}` | job detail + artifact names | `200` · `404` |
 | `GET /videos/{id}/video` | download finished mp4 | `200` mp4 · `409` not ready (includes status/step/error) · `404` |
@@ -98,8 +98,8 @@ Notes:
 
 ```bash
 curl -s -X POST localhost:8000/api/v1/videos -H 'content-type: application/json' \
-  -d '{"query": "How does the pH scale work?", "subject": "chemistry"}'
-# → {"id": "…", "subject": "chemistry", "status": "PENDING"}
+  -d '{"query": "How does calibration traceability work?", "subject": "lab-management"}'
+# → {"id": "…", "subject": "lab-management", "status": "PENDING"}
 
 curl -s localhost:8000/api/v1/videos/<id>          # poll: watch current_step advance
 curl -sO localhost:8000/api/v1/videos/<id>/video   # when COMPLETED

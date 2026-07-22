@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;800;900&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; }
+#eyebrow { position:absolute; top:120px; left:0; right:0; text-align:center; font-family:'Inter',sans-serif; font-size:34px; font-weight:800; letter-spacing:6px; text-transform:uppercase; opacity:.85; }
+#title { position:absolute; top:220px; left:0; right:0; text-align:center; padding:0 80px; font-family:'Anton',sans-serif; font-size:88px; line-height:1.15; text-transform:uppercase; }
+#hero { position:absolute; top:470px; left:0; right:0; bottom:400px; display:flex; align-items:center; justify-content:center; }
+#chain { display:flex; flex-direction:column; align-items:center; gap:0; }
+.node { display:flex; align-items:center; gap:24px; width:820px; padding:22px 34px; border-radius:18px; background:rgba(255,255,255,0.05); border:2px solid rgba(255,255,255,0.12); }
+.node .dot { flex:0 0 auto; width:34px; height:34px; border-radius:50%; background:{{accent}}; box-shadow:0 0 0 8px rgba(61,165,255,0.15); }
+.node .body { flex:1; }
+.node .lbl { font-family:'Inter',sans-serif; font-weight:900; font-size:42px; line-height:1.05; }
+.node .sub { font-family:'Inter',sans-serif; font-weight:700; font-size:26px; opacity:.65; }
+.node.endpoint { background:{{accent}}; border-color:{{accent}}; color:#0B0E14; }
+.node.endpoint .dot { background:#0B0E14; box-shadow:none; }
+.node.endpoint .sub { opacity:.8; }
+.link { width:5px; height:34px; background:linear-gradient(to bottom, {{accent}}, {{accent}}); opacity:.55; }
+#caption-zone { position:absolute; bottom:230px; left:0; right:0; padding:0 90px; display:flex; align-items:center; justify-content:center; }
+#caption { position:relative; width:100%; height:2.4em; }
+.hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+
+/* Karaoke caption chunk (built by hfBuildCaptions; one .cw span per word) */
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:900; text-align:center; line-height:1.25; font-size:var(--cap-size,66px); opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+
+#main-clip.vertical   { --cap-size:66px; }
+#main-clip.horizontal { --cap-size:44px; }
+#main-clip.horizontal #caption-zone { bottom:60px; padding:0 160px; }
+#main-clip.horizontal #caption { max-width:1360px; margin:0 auto; }
+
+#main-clip.horizontal #eyebrow { top:70px; }
+#main-clip.horizontal #title   { top:150px; font-size:76px; }
+#main-clip.horizontal #hero    { top:300px; bottom:190px; }
+#main-clip.horizontal .node    { width:1200px; padding:14px 34px; }
+#main-clip.horizontal .link    { height:22px; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div id="eyebrow">{{eyebrow}}</div>
+    <div id="title">{{title}}</div>
+    <div id="hero"><div id="chain"></div></div>
+    <div id="caption-zone"><div id="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+['eyebrow','title'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hfHighlight(t); });
+function hfSplitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g,function(_m,inner){ return inner.split(/\s+/).map(function(w){ return '**'+w+'**'; }).join(' '); }); }
+function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.className='cap-chunk'; var ws=Array.isArray(c.words)?c.words:[]; d.innerHTML= ws.length ? ws.map(function(w){ return '<span class="cw">'+hfHighlight(w.text)+' </span>'; }).join('') : hfHighlight(hfSplitMarks(c.text)); host.appendChild(d); return d; }); }
+function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); }
+  var ws=Array.isArray(t.words)?t.words:[]; var spans=el.querySelectorAll('.cw'); ws.forEach(function(w,wi){ var span=spans[wi]; if(!span||span.querySelector('.hl'))return; tl.to(span,{color:'{{capHighlight}}',duration:0.12,ease:'power2.out'},w.start); tl.to(span,{color:'{{fg}}',duration:0.15},Math.max(w.start+0.12,w.end)); }); }); }
+
+// Metrological traceability: an unbroken chain from the SI unit (top) down to
+// the measurement (bottom). First and last nodes are highlighted as endpoints.
+var nodes = {{nodes}}; nodes = Array.isArray(nodes) ? nodes.slice(0, 5) : [];
+var chain = document.getElementById('chain');
+var els = [];
+nodes.forEach(function(n, i){
+  var label = n && n.label != null ? n.label : '';
+  var sub = n && n.sub ? n.sub : '';
+  var isEnd = (i === 0 || i === nodes.length - 1);
+  var node = document.createElement('div'); node.className = 'node' + (isEnd ? ' endpoint' : '');
+  node.innerHTML = '<div class="dot"></div><div class="body"><div class="lbl">'+hfHighlight(String(label))+'</div>' + (sub ? '<div class="sub">'+hfEsc(String(sub))+'</div>' : '') + '</div>';
+  chain.appendChild(node); els.push(node);
+  if (i < nodes.length - 1) { var lk = document.createElement('div'); lk.className = 'link'; chain.appendChild(lk); els.push(lk); }
+});
+if (els.length === 0) chain.style.display='none';
+
+gsap.set(els, { opacity:0, y:-18 });
+gsap.set('#eyebrow', { opacity:0, y:-12 });
+gsap.set('#title', { opacity:0, y:18 });
+
+var tl = gsap.timeline({ paused:true });
+tl.to('#eyebrow', { opacity:1, y:0, duration:0.3, ease:'power2.out' }, 0.1);
+tl.to('#title', { opacity:1, y:0, duration:0.4, ease:'power3.out' }, 0.2);
+tl.to(els, { opacity:1, y:0, duration:0.3, ease:'power3.out', stagger:0.1 }, 0.45);
+
+var captionTiming = {{captionTiming}};
+var chunks = hfBuildCaptions(captionTiming);
+hfAnimateCaptions(tl, chunks, captionTiming);
+
+window.__timelines['{{id}}'] = tl;
+</script>
+</template>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "config": { "slug": "tech-photo-split", "topic": "Photo split test", "totalDuration": 6 },
+  "scenes": [{
+    "id": "s1", "type": "photo-split", "start": 0, "duration": 6,
+    "eyebrow": "DATA CENTER", "headline": "Where **models** run",
+    "body": "Racks of GPUs train and serve the models you call through an API.",
+    "imagePrompt": "A realistic photograph of a modern data center aisle with rows of server racks, blue LED lights, cables",
+    "captions": ["Your prompt travels", "to a room **like this**."]
+  }]
+}

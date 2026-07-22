@@ -1,0 +1,13 @@
+{ "config": { "slug":"test-uncertainty","topic":"uncertainty","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"uncertainty","start":0,"duration":6,
+    "eyebrow":"CLAUSE 6.5 — UNCERTAINTY","headline":"Expanded Uncertainty",
+    "title":"Measurement Uncertainty",
+    "formulas":[
+      {"name":"Standard Uncertainty of the Mean","latex":"u(\\bar{x})=\\dfrac{SD}{\\sqrt{n}}"},
+      {"name":"Expanded Uncertainty","latex":"U=k\\cdot u_c"}
+    ],
+    "legend":[
+      {"sym":"u_c","desc":"combined standard uncertainty"},
+      {"sym":"k","desc":"coverage factor (k = 2 for ~95% confidence)"}
+    ],
+    "captions":["Every result needs a stated","**uncertainty** to be trusted."] }] }

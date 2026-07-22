@@ -1,0 +1,247 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Laboratory Management (ISO/IEC 17025) HyperFrames Data",
+  "type": "object",
+  "required": ["config", "scenes"],
+  "properties": {
+    "config": {
+      "type": "object",
+      "required": ["topic", "slug", "totalDuration"],
+      "properties": {
+        "topic":         { "type": "string", "description": "Human-readable topic title" },
+        "slug":          { "type": "string", "description": "kebab-case output directory name" },
+        "totalDuration": { "type": "number", "description": "Total video duration in seconds" },
+        "orientation":   { "type": "string", "enum": ["vertical", "horizontal"], "description": "Canvas orientation. 'vertical' → 1080×1920 (9:16, default), 'horizontal' → 1920×1080 (16:9). Resolves width/height and picks each frame's layout." },
+        "width":         { "type": "number" },
+        "height":        { "type": "number" },
+        "capHighlight":  { "type": "string", "description": "Karaoke spoken-word highlight color (hex). Defaults to #FFD24A; independent of each frame's accent so captions read as one system." },
+        "description":   { "type": "string", "description": "YouTube description (2-4 sentences). Written to meta.json; not used at render." },
+        "hashtags":      { "type": "array", "items": { "type": "string" }, "description": "YouTube hashtags (3-6, lowercase, no #). Written to meta.json; not used at render." },
+        "tags":          { "type": "array", "items": { "type": "string" }, "description": "YouTube search-keyword tags (5-10 phrases). Written to meta.json; not used at render." },
+        "bgm":           { "type": "string", "description": "BGM path relative to videos/<slug>/" },
+        "audio":         { "type": "string", "description": "Single full-script narration path relative to videos/<slug>/. Written by the alignment step; replaces the old per-scene scenes[].audio." },
+        "voiceStyle":    { "type": "string", "description": "Metadata for LLM pipeline; not used at render" }
+      }
+    },
+    "scenes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "start", "duration"],
+        "properties": {
+          "id":         { "type": "string", "description": "Unique kebab-case id → filename and composition-id" },
+          "type": {
+            "type": "string",
+            "description": "Frame type selector. Every type renders in both orientations at the canvas size resolved from config.orientation (vertical 1080×1920 by default, horizontal 1920×1080).",
+            "enum": ["cover", "stats", "quote", "diagram", "cta",
+                     "equipment-register", "calibration-cert", "document-control",
+                     "audit-trail", "competence-matrix", "traceability-chain",
+                     "nonconformance",
+                     "reagent-prep", "statistics", "uncertainty",
+                     "photo", "photo-split"],
+            "typeUsage": {
+              "cover": "DEFAULT for the opening scene / topic intro. A safe general choice. Include an 'imagePrompt' for a topic-relevant HOOK photograph rendered full-bleed behind the headline.",
+              "stats": "use when the scene centers on ONE striking number or figure (e.g. an audit-finding rate, a calibration interval, an uncertainty percentage).",
+              "diagram": "DEFAULT for general explanatory content — a set of labelled ideas/steps with no dedicated visual (e.g. the stages of a process). A safe general choice when nothing more specific fits.",
+              "cta": "DEFAULT for the closing scene / takeaway / call to action. Include an 'imagePrompt' for a CONCLUSION photograph rendered full-bleed behind the headline.",
+              "quote": "use ONLY when the narration is a pull quote, principle, or citation. Show the quote text and attribution.",
+              "equipment-register": "use ONLY when the narration is about laboratory equipment and its calibration status (Clause 6.4). Shows an equipment register: a grid of instruments each with a calibration-status chip (calibrated / due / overdue) and a due date.",
+              "calibration-cert": "use ONLY when the narration is about a calibration certificate, metrological traceability, or measurement uncertainty for a specific instrument (Clause 6.5). Shows a certificate card with instrument, dates, uncertainty and the standard it is traceable to.",
+              "document-control": "use ONLY when the narration is about the documentation hierarchy or document/record control (Clause 8.3/7.5). Shows a tiered pyramid from the quality manual down to records.",
+              "audit-trail": "use ONLY when the narration walks through a corrective-action / CAPA path (Clause 8.7): a finding, its root cause, the corrective action, and its verification. Shows the four stages as a connected flow.",
+              "competence-matrix": "use ONLY when the narration is about personnel competence and authorization (Clause 6.2). Shows a matrix of staff (rows) versus methods/tasks (columns) with authorized / training / not-authorized marks.",
+              "traceability-chain": "use ONLY when the narration describes metrological traceability as a chain from the SI unit down to the measurement. Shows the linked nodes (SI → national standard → reference → working standard → measurement).",
+              "nonconformance": "use ONLY when the narration is about a specific nonconformity / nonconforming work and its severity (Clause 7.10/8.7). Shows a severity banner (CRITICAL/MAJOR/MINOR), the clause reference, the finding, and the corrective action.",
+              "reagent-prep": "use ONLY when the narration walks through the MATH of preparing a reagent or solution — dilution (C1V1 = C2V2), molarity, mass from concentration, %(w/v), or ppm. Shows a formula card with the equation(s) and a variable legend.",
+              "statistics": "use ONLY when the narration is about the STATISTICAL formulas used to evaluate test-result reliability or QC (Clause 7.7/6.5) — mean, sample standard deviation (SD), coefficient of variation (CV%), or similar. Shows a formula card with the equation(s) and a variable legend.",
+              "uncertainty": "use ONLY when the narration derives a MEASUREMENT UNCERTAINTY formula (Clause 6.5/7.6) — standard uncertainty of the mean, combined standard uncertainty, or expanded uncertainty (U = k·u_c). Shows a formula card with the equation(s) and a variable legend.",
+              "photo": "use when the scene is best shown with a REALISTIC PHOTOGRAPH filling the screen (a real lab, an instrument, a technician at work) rather than a diagram. Write a vivid 'imagePrompt'; the system generates the picture. Do NOT overuse — prefer concept-specific types when the content is schematic.",
+              "photo-split": "like 'photo' but pairs the generated photograph with a short block of text (headline + body) beside it — use when you want a realistic image AND a sentence of explanation on screen together."
+            }
+          },
+          "start":    { "type": "number", "description": "Computed by scripts/align-captions.mjs from real narration timestamps once that pipeline has run; hand-authored otherwise." },
+          "duration": { "type": "number", "description": "Computed by scripts/align-captions.mjs from real narration timestamps once that pipeline has run; hand-authored otherwise." },
+          "sfx":      { "anyOf": [{ "type": "string" }, { "type": "null" }] },
+          "transition": { "type": "string", "enum": ["fade", "slide", "cut", "punch", "shake"], "description": "Override default transition" },
+          "overrides": {
+            "type": "object",
+            "description": "Per-scene style token overrides",
+            "properties": {
+              "headlineFontSize":    { "type": "string" },
+              "subheadlineFontSize": { "type": "string" },
+              "statFontSize":        { "type": "string" },
+              "quoteFontSize":       { "type": "string" }
+            }
+          },
+
+          "bg":     { "type": "string", "description": "Full-bleed background color (hex)" },
+          "fg":     { "type": "string", "description": "Foreground/text color (hex)" },
+          "accent": { "type": "string", "description": "Keyword highlight color (hex)" },
+
+          "eyebrow":     { "type": "string" },
+          "headline":    { "type": "string" },
+          "captions": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Naturally-split caption chunks displayed sequentially during the scene. Also doubles as the scene's expected narration text (chunks joined with spaces) for scripts/align-captions.mjs."
+          },
+          "captionTiming": {
+            "type": "array",
+            "description": "Populate-computed, not hand-authored. Written by the alignment step from real Whisper word timestamps: one {text,start,end,words} entry per captions[] chunk, start/end in scene-local seconds. words[] carries per-token {text,start,end} for the karaoke highlight. If absent, populate.js falls back to evenly spacing captions[] across duration and synthesizes words[].",
+            "items": {
+              "type": "object",
+              "required": ["text", "start", "end"],
+              "properties": {
+                "text":  { "type": "string" },
+                "start": { "type": "number" },
+                "end":   { "type": "number" },
+                "words": {
+                  "type": "array",
+                  "description": "Per-word timing for the karaoke highlight; one entry per whitespace token, scene-local seconds.",
+                  "items": {
+                    "type": "object",
+                    "required": ["text", "start", "end"],
+                    "properties": {
+                      "text":  { "type": "string" },
+                      "start": { "type": "number" },
+                      "end":   { "type": "number" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+
+          "items": {
+            "type": "array",
+            "description": "Sticker chip labels (diagram). Each entry is either a plain string label, or { label, color } for a per-chip background color — do not mix in unsupported shapes like nested objects.",
+            "items": { "anyOf": [
+              { "type": "string" },
+              { "type": "object", "required": ["label"], "properties": { "label": { "type": "string" }, "color": { "type": "string", "pattern": "^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$" } } }
+            ] }
+          },
+          "stat":        { "type": "string", "description": "Large stat figure, e.g. '70%' or '± 0.02 °C' (stats)" },
+          "statLabel":   { "type": "string", "description": "Short label under the stat, e.g. 'of findings are documentation gaps' (stats)" },
+          "quote":       { "type": "string", "description": "Pull quote text (quote)" },
+          "attribution": { "type": "string", "description": "Attribution (quote)" },
+          "subheadline": { "type": "string", "description": "Secondary line under the headline, one short sentence (cta)" },
+
+          "title": {
+            "type": "string",
+            "description": "Short heading label for the frame's hero content — meaning differs by type: for equipment-register a register heading, e.g. 'Equipment Register'; for document-control a heading, e.g. 'Controlled Documents'; for competence-matrix a heading, e.g. 'Competence Matrix'; for traceability-chain a heading, e.g. 'Traceability to the SI'; for reagent-prep/statistics/uncertainty an optional card heading, e.g. 'Dilution Formula' or 'QC Statistics'. (equipment-register, document-control, competence-matrix, traceability-chain, reagent-prep, statistics, uncertainty)"
+          },
+
+          "formulas": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 3,
+            "description": "1-3 formulas shown as a stacked equation card (reagent-prep, statistics, uncertainty). Each entry is { name, latex }: 'name' is a short plain-text label above the equation (e.g. 'Mean', 'Dilution'); 'latex' is a KaTeX math string rendered in display mode (commands like frac, sqrt, sum, bar — see the GOLDEN EXAMPLES below for the exact JSON escaping to use for LaTeX backslashes).",
+            "items": {
+              "type": "object",
+              "required": ["name", "latex"],
+              "properties": {
+                "name":  { "type": "string", "description": "Short plain-text label above the equation, e.g. 'Standard Deviation (SD)'." },
+                "latex": { "type": "string", "description": "KaTeX math string for the equation, rendered in display mode." }
+              }
+            }
+          },
+          "legend": {
+            "type": "array",
+            "description": "Optional 'where:' variable key shown under the formula(s) (reagent-prep, statistics, uncertainty). Each entry is { sym, desc }: 'sym' is a short KaTeX snippet for the variable (e.g. an x with a subscript i, or an x with a bar over it), 'desc' is its plain-text meaning (e.g. 'individual measured values').",
+            "items": {
+              "type": "object",
+              "required": ["sym", "desc"],
+              "properties": {
+                "sym":  { "type": "string", "description": "Short KaTeX snippet for the variable, rendered inline." },
+                "desc": { "type": "string", "description": "Plain-text meaning of the variable." }
+              }
+            }
+          },
+
+          "parts": {
+            "type": "array",
+            "description": "Instruments in the equipment register (equipment-register). 1–6 entries, each { label, status, due? }.",
+            "items": {
+              "type": "object",
+              "required": ["label", "status"],
+              "properties": {
+                "label":  { "type": "string", "description": "Instrument name, e.g. 'Analytical Balance'." },
+                "status": { "type": "string", "enum": ["calibrated", "due", "overdue"], "description": "Calibration status. 'calibrated' = in date (green), 'due' = due soon (amber), 'overdue' = past due (red)." },
+                "due":    { "type": "string", "description": "Short due-date label, e.g. 'Due Mar 2027' or 'Overdue 12 days'. Optional." }
+              }
+            }
+          },
+
+          "instrument":  { "type": "string", "description": "Instrument name / serial being calibrated, e.g. 'Reference Thermometer, S/N 4471' (calibration-cert)" },
+          "certNo":      { "type": "string", "description": "Certificate number, e.g. 'CAL-2026-0311'. Optional. (calibration-cert)" },
+          "calDate":     { "type": "string", "description": "Calibration date as DISPLAY text, e.g. '14 Feb 2026' (calibration-cert)" },
+          "dueDate":     { "type": "string", "description": "Recalibration due date as DISPLAY text, e.g. '14 Feb 2027' (calibration-cert)" },
+          "uncertainty": { "type": "string", "description": "Expanded measurement uncertainty as DISPLAY text, e.g. '± 0.02 °C (k = 2)' (calibration-cert)" },
+          "traceableTo": { "type": "string", "description": "What the calibration is traceable to, e.g. 'National standard (NMI) / SI' (calibration-cert)" },
+
+          "tiers": {
+            "type": "array",
+            "description": "Document-hierarchy tiers, top (broadest) to bottom (most specific) (document-control). 2–5 entries, each { label, sub? }.",
+            "items": {
+              "type": "object",
+              "required": ["label"],
+              "properties": {
+                "label": { "type": "string", "description": "Tier name, e.g. 'Quality Manual', 'Procedures', 'Records & Forms'." },
+                "sub":   { "type": "string", "description": "Optional short descriptor, e.g. 'policy & scope'." }
+              }
+            }
+          },
+
+          "finding":          { "type": "string", "description": "For audit-trail: the nonconformity/observation found. For nonconformance: the nonconformity statement. Keep it one short sentence. (audit-trail, nonconformance)" },
+          "rootCause":        { "type": "string", "description": "Identified root cause of the finding (audit-trail)" },
+          "action":           { "type": "string", "description": "The corrective action taken (audit-trail)" },
+          "verification":     { "type": "string", "description": "How closure was verified/effective (audit-trail)" },
+
+          "columns": {
+            "type": "array",
+            "items": { "type": "string" },
+            "description": "Method/task column headers for the competence matrix, e.g. ['Titration','GC-MS','Reporting']. 2–4 entries. (competence-matrix)"
+          },
+          "rows": {
+            "type": "array",
+            "description": "Staff rows for the competence matrix (competence-matrix). 1–5 entries, each { name, marks }.",
+            "items": {
+              "type": "object",
+              "required": ["name", "marks"],
+              "properties": {
+                "name":  { "type": "string", "description": "Person name/initials, e.g. 'A. Okafor'." },
+                "marks": {
+                  "type": "array",
+                  "items": { "type": "string", "enum": ["yes", "no", "training"] },
+                  "description": "One mark per column, same order as columns[]. 'yes' = authorized, 'no' = not authorized, 'training' = in training."
+                }
+              }
+            }
+          },
+
+          "nodes": {
+            "type": "array",
+            "description": "Metrological traceability chain nodes, from the SI unit down to the measurement (traceability-chain). 3–5 entries, each { label, sub? }.",
+            "items": {
+              "type": "object",
+              "required": ["label"],
+              "properties": {
+                "label": { "type": "string", "description": "Node name, e.g. 'National Standard', 'Working Standard', 'Measurement'." },
+                "sub":   { "type": "string", "description": "Optional short descriptor, e.g. 'NMI' or 'the lab's best'." }
+              }
+            }
+          },
+
+          "severity":         { "type": "string", "enum": ["CRITICAL", "MAJOR", "MINOR"], "description": "Nonconformity severity. 'CRITICAL'/'MAJOR' render red, 'MINOR' amber. (nonconformance)" },
+          "clause":           { "type": "string", "description": "ISO/IEC 17025 clause reference the nonconformity is raised against, e.g. 'Clause 6.4.1'. Optional. (nonconformance)" },
+          "correctiveAction": { "type": "string", "description": "One short corrective-action statement, e.g. 'Quarantine results; recalibrate before reuse.' (nonconformance)" },
+
+          "imagePrompt": { "type": "string", "description": "REQUIRED for photo / photo-split / cover / cta. A vivid, specific description of the photograph to generate for this scene (subject, setting, lighting, style) — the system generates the image from it. Describe a realistic photo; do NOT include text/words in the image. For cover it is the HOOK image and for cta the CONCLUSION image, rendered full-bleed behind the headline. (photo, photo-split, cover, cta)" },
+          "image":       { "type": "string", "description": "System-generated — DO NOT author this. Filled by the image-generation step with the rendered picture (a data URI); defaults to a placeholder. (photo, photo-split, cover, cta)" },
+          "body":        { "type": "string", "description": "One short supporting sentence shown beside the image. Optional. (photo-split)" }
+        }
+      }
+    }
+  }
+}

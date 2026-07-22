@@ -14,9 +14,15 @@ class JobStatus(str, Enum):
 
 class PipelineStep(str, Enum):
     NARRATION = "narration"
+    # Pass 1: LLM groups the script's sentences into semantic scenes; code
+    # derives the caption chunks. Pass 2: LLM authors each scene's typed data.
+    SEGMENT = "segment"
     TTS = "tts"
     TRANSCRIPTION = "transcription"
-    SCENE_SPLIT = "scene_split"
+    AUTHORING = "authoring"
+    # Generate a real picture for any image frame (photo / photo-split) from the
+    # imagePrompt the authoring step wrote; embeds it as a data URI.
+    IMAGE_GEN = "image_gen"
     ALIGNMENT = "alignment"
     COMPOSE = "compose"
     LAYOUT_GATE = "layout_gate"
@@ -36,7 +42,7 @@ class Job(BaseModel):
     input_mode: str = "topic"
     query: str
     script: str | None = None
-    subject: str = "chemistry"
+    subject: str = "lab-management"
     orientation: str = "vertical"
     language: str = "en"
     status: JobStatus = JobStatus.PENDING

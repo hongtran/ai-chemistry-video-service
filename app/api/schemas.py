@@ -25,7 +25,7 @@ class CreateVideoRequest(BaseModel):
     # Generous ceiling; the router enforces the real per-orientation cap
     # (settings.max_script_length_short / _long).
     script: str | None = Field(default=None, max_length=9000)
-    subject: Literal["chemistry", "tech"] = "chemistry"
+    subject: Literal["lab-management", "tech"] = "lab-management"
     orientation: Literal["vertical", "horizontal"] = "vertical"
     # Kept in sync with app/languages.py SUPPORTED_LANGUAGES.
     language: Literal["en", "vi"] = "en"

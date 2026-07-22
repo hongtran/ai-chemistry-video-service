@@ -10,9 +10,10 @@ from app.api.schemas import CreateVideoRequest
 from app.config import Settings
 from app.domain.models import JobStatus
 from app.llm.client import GuardResult
-from app.pipeline.steps import scene_split
+from app.pipeline.steps import author, segment
 from app.pipeline.steps.narration import _language_clause
-from app.pipeline.steps.scene_split import _language_block, build_user_message
+from app.pipeline.steps.scene_split import _language_block
+from app.pipeline.steps.segment import SceneIndex
 from app.storage.jobs import InMemoryJobRepository
 from app.subjects import get_subject_config
 
@@ -74,10 +75,18 @@ class SceneSplitLanguageBlockTests(unittest.TestCase):
         self.assertIn("Vietnamese", block)
         self.assertIn("LANGUAGE:", block)
 
-    def test_user_message_carries_the_block_for_non_default_language(self) -> None:
-        section = scene_split.SectionState(index=0, total=1, text="hello", id_prefix="")
-        vi = build_user_message(section, "vertical", None, "hello", "vi")
-        en = build_user_message(section, "vertical", None, "hello", "en")
+    def test_segment_user_message_carries_the_block_for_non_default_language(self) -> None:
+        sentences = [{"i": 1, "text": "hello."}]
+        vi = segment.build_segment_user_message(sentences, "vertical", "vi")
+        en = segment.build_segment_user_message(sentences, "vertical", "en")
+        self.assertIn("LANGUAGE:", vi)
+        self.assertNotIn("LANGUAGE:", en)
+
+    def test_author_user_message_carries_the_block_for_non_default_language(self) -> None:
+        batch = [SceneIndex(scene_id="scene-1", idx_sentences=[1], captions=["hello."])]
+        by_index = {1: "hello."}
+        vi = author.build_author_user_message(batch, by_index, "hello.", "vertical", "vi")
+        en = author.build_author_user_message(batch, by_index, "hello.", "vertical", "en")
         self.assertIn("LANGUAGE:", vi)
         self.assertNotIn("LANGUAGE:", en)
 
@@ -98,37 +107,40 @@ class FakeClient:
         )
 
 
-_SCENES = [
-    {
-        "id": "hook",
-        "type": "cover",
-        "eyebrow": "CHEMISTRY",
-        "headline": "The pH Scale",
-        "captions": ["Have you ever", "wondered why."],
-    },
-    {
-        "id": "closing",
-        "type": "cta",
-        "eyebrow": "TAKEAWAY",
-        "headline": "Chemistry Is Everywhere",
-        "subheadline": "Every sip, every bite.",
-        "captions": ["So next time", "you will know."],
-    },
-]
-
-
-class SceneSplitLanguageWiringTests(unittest.IsolatedAsyncioTestCase):
+class SegmentLanguageWiringTests(unittest.IsolatedAsyncioTestCase):
     async def test_language_reaches_user_message_not_system_prefix(self) -> None:
         settings = Settings()
-        config = get_subject_config("chemistry", settings)
-        client = FakeClient([json.dumps({"config": {"description": "d"}, "scenes": _SCENES})])
+        config = get_subject_config("lab-management", settings)
+        sentences = segment.build_sentence_index("Hello there. Goodbye now.")
+        client = FakeClient([json.dumps({
+            "scenes": [{"idx_sentences": [1, 2]}],
+            "config": {"description": "d"},
+        })])
 
-        await scene_split.generate_scenes(
-            client, settings, config, "the script", "the transcript", language="vi"
-        )
+        await segment.segment_script(client, settings, config, sentences, language="vi")
 
         system, user = client.calls[0][0], client.calls[0][1]
         # Per-request language instruction must stay out of the cache-stable prefix.
+        self.assertNotIn("LANGUAGE:", system["content"])
+        self.assertIn("Vietnamese", user["content"])
+
+
+class AuthorLanguageWiringTests(unittest.IsolatedAsyncioTestCase):
+    async def test_language_reaches_user_message_not_system_prefix(self) -> None:
+        settings = Settings()
+        config = get_subject_config("lab-management", settings)
+        batch = [SceneIndex(scene_id="scene-1", idx_sentences=[1], captions=["Hello there."])]
+        client = FakeClient([json.dumps({"scenes": [
+            {"id": "scene-1", "type": "cover", "eyebrow": "E", "headline": "H",
+             "imagePrompt": "A lab bench, no text"}
+        ]})])
+
+        await author.author_batch(
+            client, settings, config, batch, {1: "Hello there."}, "Hello there.",
+            orientation="vertical", prior_types=[], language="vi",
+        )
+
+        system, user = client.calls[0][0], client.calls[0][1]
         self.assertNotIn("LANGUAGE:", system["content"])
         self.assertIn("Vietnamese", user["content"])
 

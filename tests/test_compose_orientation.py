@@ -64,7 +64,7 @@ class NarrationLengthClauseTests(unittest.TestCase):
         self.settings = Settings()
 
     def test_vertical_asks_for_seconds_horizontal_asks_for_long_form_minutes(self) -> None:
-        for subject in ("chemistry", "tech"):
+        for subject in ("lab-management", "tech"):
             config = get_subject_config(subject, self.settings)
 
             vertical = _length_clause(config, "vertical")

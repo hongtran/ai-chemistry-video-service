@@ -2,12 +2,11 @@
 transition. Expected failures surface as status=FAILED with
 error_message = "<step>: <reason>"; only genuine bugs escape to the worker.
 
-Retry policy (user decision): alignment and the layout gate share ONE outer
-loop of up to settings.outer_retry_limit rounds. Each round aligns, composes,
-and gates the candidate; a failure at either step feeds the specific complaint
-back to the section(s) that own the offending scenes and re-splits only those,
-reusing each section's existing conversation. Exhausting the rounds fails the
-job with the last complaint.
+Split-first flow: the script is segmented into scenes (Pass 1) BEFORE the audio
+exists; captions are derived in code so they equal the script exactly. TTS then
+speaks the script, Whisper gives word timing, and each scene's typed data is
+authored per-scene (Pass 2). Alignment is best-effort (never re-splits), so the
+only retry loop is the layout gate, which re-authors just the offending scenes.
 """
 import logging
 
@@ -17,8 +16,8 @@ from openai import AsyncOpenAI
 from app.config import Settings
 from app.domain.models import JobStatus, PipelineStep
 from app.observability import job_trace
-from app.pipeline.steps import compose, layout_gate, narration, render, scene_split, transcribe, tts
-from app.pipeline.steps.align import AlignmentError, align_scenes
+from app.pipeline.steps import author, compose, images, layout_gate, narration, render, scene_split, segment, transcribe, tts
+from app.pipeline.steps.align import align_scenes
 from app.pipeline.steps.layout_gate import LayoutGateError
 from app.storage.artifacts import ArtifactStore
 from app.storage.jobs import JobRepository
@@ -27,30 +26,11 @@ from app.subjects import get_subject_config
 logger = logging.getLogger(__name__)
 
 
-def _collect_scenes(sections: list[scene_split.SectionState]) -> list[dict]:
-    """The whole video's scenes, in narration order, from each section's
-    latest split."""
-    return [scene for section in sections for scene in (section.scenes or [])]
-
-
-def _alignment_feedback(err: AlignmentError) -> str:
-    return (
-        "PREVIOUS ATTEMPT FAILED WORD ALIGNMENT against the recorded audio:\n"
-        f"{err}\n"
-        "Re-split your part so the captions, concatenated in order, reproduce "
-        "the TRANSCRIPT word for word — restore any text listed as missing "
-        "above (that is the actual defect; the chunk named as not matching is "
-        "usually fine, it just arrives before the audio reaches it). Do not "
-        "paraphrase, summarise, or skip a sentence because it echoes a nearby "
-        "one. Return the corrected full JSON object."
-    )
-
-
-def _issues_by_section(issues: list[dict]) -> dict[int, list[dict]]:
-    grouped: dict[int, list[dict]] = {}
+def _offending_ids(issues: list[dict]) -> dict[str, list[dict]]:
+    """Group layout findings by the scene id they landed on."""
+    grouped: dict[str, list[dict]] = {}
     for issue in issues:
-        index = scene_split.section_index_from_scene_id(issue.get("sceneId", ""))
-        grouped.setdefault(index, []).append(issue)
+        grouped.setdefault(issue.get("sceneId", "?"), []).append(issue)
     return grouped
 
 
@@ -86,7 +66,7 @@ class RealVideoPipeline:
 
             if job.input_mode == "script":
                 # User-supplied narration: skip generation, use it verbatim.
-                step = PipelineStep.TTS
+                step = PipelineStep.SEGMENT
                 script = job.script
             else:
                 await self._step(job_id, PipelineStep.NARRATION)
@@ -95,6 +75,18 @@ class RealVideoPipeline:
                     job.orientation, job.language,
                 )
             self._artifacts.save_text(job_id, "script.txt", script)
+
+            step = await self._step(job_id, PipelineStep.SEGMENT)
+            sentences = segment.build_sentence_index(script)
+            self._artifacts.save_json(job_id, "sentences.json", sentences)
+            scenes_index, metadata = await segment.segment_script(
+                self._client, self._settings, subject_config, sentences,
+                orientation=job.orientation, language=job.language,
+            )
+            segment.assert_three_way_equality(scenes_index, sentences, script)
+            self._artifacts.save_json(
+                job_id, "scenes_index.json", [s.to_dict() for s in scenes_index]
+            )
 
             step = await self._step(job_id, PipelineStep.TTS)
             audio = await tts.synthesize(
@@ -110,44 +102,36 @@ class RealVideoPipeline:
                 job_id, "transcript.json", {"text": transcript_text, "words": words}
             )
 
-            step = await self._step(job_id, PipelineStep.SCENE_SPLIT)
-            sections = scene_split.build_sections(
-                subject_config, job.orientation, transcript_text
+            step = await self._step(job_id, PipelineStep.AUTHORING)
+            sentences_by_index = {int(s["i"]): s["text"] for s in sentences}
+            scenes = await author.author_scenes(
+                self._client, self._settings, subject_config, scenes_index,
+                sentences_by_index, script,
+                orientation=job.orientation, language=job.language,
             )
-            if len(sections) > 1:
-                logger.info(
-                    "job %s: long-form (%s) — splitting narration into %d sections",
-                    job_id, job.orientation, len(sections),
-                )
-            metadata = await self._split_sections(
-                subject_config, sections, job.orientation, script, transcript_text,
-                job.language,
-            )
-            scenes = _collect_scenes(sections)
             self._artifacts.save_json(job_id, "scenes.json", scenes)
 
+            # Generate the actual picture for any image frame (photo/photo-split)
+            # from the imagePrompt the authoring step wrote. Idempotent + best-
+            # effort (a failed image keeps its placeholder). No-op for subjects
+            # without image frames or when images_enabled is off.
+            step = await self._step(job_id, PipelineStep.IMAGE_GEN)
+            scenes = await images.resolve_images(
+                self._client, self._settings, subject_config, scenes,
+                orientation=job.orientation,
+            )
+            self._artifacts.save_json(job_id, "scenes.json", scenes)
+
+            # Alignment runs ONCE and is best-effort — captions are the script
+            # (never re-written), so re-authoring content below can't invalidate
+            # the timing computed here.
+            step = await self._step(job_id, PipelineStep.ALIGNMENT)
+            timed_scenes = align_scenes(scenes, words, duration)
+
             rounds = max(1, self._settings.outer_retry_limit)
+            data_path = None
             for attempt in range(1, rounds + 1):
                 last = attempt == rounds
-
-                step = await self._step(job_id, PipelineStep.ALIGNMENT)
-                try:
-                    timed_scenes = align_scenes(scenes, words, duration)
-                except AlignmentError as err:
-                    if last:
-                        raise AlignmentError(
-                            f"{err} (still failing after {rounds} rounds)"
-                        ) from err
-                    logger.warning(
-                        "job %s round %d/%d: alignment failed (%s) — re-splitting "
-                        "the owning section(s)", job_id, attempt, rounds, err,
-                    )
-                    step = await self._step(job_id, PipelineStep.SCENE_SPLIT)
-                    metadata, scenes = await self._retarget(
-                        job_id, subject_config, sections, err.scene_ids,
-                        _alignment_feedback(err), metadata,
-                    )
-                    continue
 
                 step = await self._step(job_id, PipelineStep.COMPOSE)
                 data = compose.build_data(
@@ -178,12 +162,13 @@ class RealVideoPipeline:
                         f"rounds: {detail}"
                     )
                 logger.warning(
-                    "job %s round %d/%d: %d layout error(s) — re-splitting the "
-                    "owning section(s)", job_id, attempt, rounds, len(issues),
+                    "job %s round %d/%d: %d layout error(s) — re-authoring the "
+                    "offending scene(s)", job_id, attempt, rounds, len(issues),
                 )
-                step = await self._step(job_id, PipelineStep.SCENE_SPLIT)
-                metadata, scenes = await self._retarget_layout(
-                    job_id, subject_config, sections, issues, metadata
+                step = await self._step(job_id, PipelineStep.AUTHORING)
+                timed_scenes = await self._reauthor_offending(
+                    job_id, subject_config, scenes_index, sentences_by_index,
+                    script, timed_scenes, issues, job.orientation, job.language,
                 )
 
             step = await self._step(job_id, PipelineStep.RENDER)
@@ -218,89 +203,59 @@ class RealVideoPipeline:
         await self._jobs.update(job_id, current_step=step)
         return step
 
-    async def _split_sections(
+    async def _reauthor_offending(
         self,
+        job_id: str,
         subject_config,
-        sections: list[scene_split.SectionState],
-        orientation: str,
+        scenes_index: list[segment.SceneIndex],
+        sentences_by_index: dict[int, str],
         script: str,
-        transcript_text: str,
-        language: str,
-    ) -> dict:
-        """Split every section in narration order. Returns the video-level
-        YouTube metadata (only section 0 is asked for it)."""
-        metadata: dict = {}
-        for section in sections:
-            _, section_metadata = await scene_split.split_section(
-                self._client,
-                self._settings,
-                subject_config,
-                section,
-                orientation=orientation,
-                script=script,
-                full_transcript=transcript_text,
-                language=language,
-            )
-            metadata = metadata or section_metadata
-        return metadata
-
-    async def _retarget(
-        self,
-        job_id: str,
-        subject_config,
-        sections: list[scene_split.SectionState],
-        scene_ids: list[str],
-        feedback: str,
-        metadata: dict,
-    ) -> tuple[dict, list[dict]]:
-        """Re-split the sections owning `scene_ids` with one shared complaint,
-        then rebuild the video's scene list."""
-        targets = scene_split.sections_for_scene_ids(sections, scene_ids)
-        retry_metadata = await self._resplit_sections(subject_config, targets, feedback)
-        # Keep earlier metadata if the retry didn't produce any — it describes
-        # the same video either way.
-        metadata = retry_metadata or metadata
-        scenes = _collect_scenes(sections)
-        self._artifacts.save_json(job_id, "scenes.json", scenes)
-        return metadata, scenes
-
-    async def _retarget_layout(
-        self,
-        job_id: str,
-        subject_config,
-        sections: list[scene_split.SectionState],
+        timed_scenes: list[dict],
         issues: list[dict],
-        metadata: dict,
-    ) -> tuple[dict, list[dict]]:
-        """Layout findings are per-section: each section hears only about the
-        scenes it actually wrote."""
-        by_index = _issues_by_section(issues)
-        for index, section_issues in by_index.items():
-            targets = [s for s in sections if s.index == index] or sections[:1]
-            retry_metadata = await self._resplit_sections(
-                subject_config, targets, layout_gate.layout_feedback(section_issues)
-            )
-            metadata = retry_metadata or metadata
-        scenes = _collect_scenes(sections)
-        self._artifacts.save_json(job_id, "scenes.json", scenes)
-        return metadata, scenes
+        orientation: str,
+        language: str,
+    ) -> list[dict]:
+        """Re-author every layout-flagged scene in ONE batched call (so the
+        model can pick distinct, roomier types across the flagged siblings),
+        preserving each scene's computed timing (captions are unchanged, so
+        timing stays valid), then splice the new content back in."""
+        by_id = {s.scene_id: s for s in scenes_index}
+        grouped = _offending_ids(issues)
+        result = [dict(s) for s in timed_scenes]
+        index_by_id = {s.get("id"): i for i, s in enumerate(result)}
 
-    async def _resplit_sections(
-        self,
-        subject_config,
-        targets: list[scene_split.SectionState],
-        feedback: str,
-    ) -> dict:
-        """Re-split only the sections a failure blamed, continuing each one's
-        existing conversation so the model keeps its context for that part."""
-        metadata: dict = {}
-        for section in targets:
-            _, section_metadata = await scene_split.split_section(
-                self._client,
-                self._settings,
-                subject_config,
-                section,
-                feedback=feedback,
-            )
-            metadata = metadata or section_metadata
-        return metadata
+        offending = [by_id[sid] for sid in grouped if sid in by_id]
+        if not offending:
+            return result
+
+        # Every scene's chosen type as the variety hint for the re-author.
+        all_types = [s.get("type", "") for s in result]
+        feedback = "\n\n".join(
+            f'For scene "{sid}": {layout_gate.layout_feedback(scene_issues)}'
+            for sid, scene_issues in grouped.items() if sid in by_id
+        )
+        reauthored = await author.reauthor_scenes(
+            self._client, self._settings, subject_config, offending,
+            sentences_by_index, script, all_types, feedback,
+            orientation=orientation, language=language,
+        )
+
+        for scene in reauthored:
+            pos = index_by_id.get(scene.get("id"))
+            if pos is None:
+                continue
+            old = result[pos]
+            # Keep the timing computed once by alignment.
+            for field in ("start", "duration", "captionTiming"):
+                if field in old:
+                    scene[field] = old[field]
+            result[pos] = scene
+
+        # Fill images for any image frame the re-author newly introduced
+        # (idempotent — scenes that already have a generated image are skipped).
+        result = await images.resolve_images(
+            self._client, self._settings, subject_config, result,
+            orientation=orientation,
+        )
+        self._artifacts.save_json(job_id, "scenes.json", result)
+        return result

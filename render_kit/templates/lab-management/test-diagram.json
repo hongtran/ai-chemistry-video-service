@@ -1,0 +1,11 @@
+{ "config": { "slug":"test-diagram","topic":"diagram","totalDuration":5 },
+  "scenes":[{ "id":"s1","type":"diagram","start":0,"duration":5,
+    "eyebrow":"THE PROCESS","headline":"A Calibration **Cycle**",
+    "bg":"#0B0E14","fg":"#FFFFFF","accent":"#FFD60A",
+    "items":[
+      { "label":"Schedule","color":"#3DA5FF" },
+      { "label":"Calibrate","color":"#34C759" },
+      { "label":"Record","color":"#FFD60A" },
+      { "label":"Review","color":"#FF6B4A" }
+    ],
+    "captions":["Every instrument follows","the same cycle."] }] }

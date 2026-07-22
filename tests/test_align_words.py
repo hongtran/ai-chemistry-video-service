@@ -1,6 +1,6 @@
 import unittest
 
-from app.pipeline.steps.align import AlignmentError, _coverage_report, align_scenes
+from app.pipeline.steps.align import _coverage_report, align_scenes
 
 
 def _words(pairs: list[tuple[str, float, float]]) -> list[dict]:
@@ -77,14 +77,23 @@ class AlignWordsTests(unittest.TestCase):
             self.assertIsInstance(w["start"], float)
             self.assertIsInstance(w["end"], float)
 
-    def test_divergence_raises_with_scene_ids(self) -> None:
+    def test_divergence_is_tolerated_not_raised(self) -> None:
+        # A caption chunk that can't anchor against the audio at all becomes a
+        # best-effort timing gap, not a hard failure — split-first pipelines
+        # expect some drift between the script's captions and Whisper's timing.
         words = _words([("apple", 0.0, 0.5), ("banana", 0.5, 1.0)])
         scenes = [{"id": "mismatch-scene", "type": "cover", "captions": ["totally different words here"]}]
 
-        with self.assertRaises(AlignmentError) as caught:
-            align_scenes(scenes, words, total_duration=1.0)
+        [scene] = align_scenes(scenes, words, total_duration=1.0)  # must not raise
 
-        self.assertEqual(caught.exception.scene_ids, ["mismatch-scene"])
+        self.assertIsInstance(scene["start"], float)
+        self.assertIsInstance(scene["duration"], float)
+        ct = scene["captionTiming"][0]
+        self.assertIsInstance(ct["start"], float)
+        self.assertIsInstance(ct["end"], float)
+        for w in ct["words"]:
+            self.assertIsInstance(w["start"], float)
+            self.assertIsInstance(w["end"], float)
 
 
 def _spoken(text: str) -> list[dict]:
@@ -156,9 +165,10 @@ class CoverageReportTests(unittest.TestCase):
         )
         self.assertEqual(report, "")
 
-    def test_boundary_drop_blames_the_previous_scene_too(self) -> None:
-        # The dropped span must exceed the aligner's chunk lookahead for the
-        # next chunk to fail to anchor — the real failure dropped 20 words.
+    def test_boundary_drop_does_not_raise_and_still_times_both_scenes(self) -> None:
+        # The dropped span exceeds the aligner's chunk lookahead, so the next
+        # chunk can't anchor — best-effort alignment must still produce numeric
+        # timing for every scene instead of raising.
         spoken = _spoken(
             "Diffusion models are powerful. This approach handles uncertainty and "
             "variation in language much more gracefully which is a crucial aspect "
@@ -169,12 +179,16 @@ class CoverageReportTests(unittest.TestCase):
             {"id": "b", "type": "cta", "captions": ["Moreover they open", "new doors today."]},
         ]
 
-        with self.assertRaises(AlignmentError) as caught:
-            align_scenes(scenes, spoken, total_duration=12.0)
+        a, b = align_scenes(scenes, spoken, total_duration=12.0)  # must not raise
 
-        # Dropped text sits on the a/b boundary — either section could own it.
-        self.assertEqual(caught.exception.scene_ids, ["a", "b"])
-        self.assertIn("This approach handles uncertainty", str(caught.exception))
+        for scene in (a, b):
+            self.assertIsInstance(scene["start"], float)
+            self.assertIsInstance(scene["duration"], float)
+            for chunk in scene["captionTiming"]:
+                for w in chunk["words"]:
+                    self.assertIsInstance(w["start"], float)
+                    self.assertIsInstance(w["end"], float)
+        self.assertLessEqual(a["start"], b["start"])
 
 
 if __name__ == "__main__":

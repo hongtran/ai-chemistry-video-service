@@ -1,0 +1,10 @@
+{ "config": { "slug":"test-document-control","topic":"document-control","totalDuration":6 },
+  "scenes":[{ "id":"s1","type":"document-control","start":0,"duration":6,
+    "eyebrow":"CLAUSE 8.3 — DOCUMENTS","headline":"Document Hierarchy","title":"Controlled Documents",
+    "tiers":[
+      { "label":"Quality Manual","sub":"policy & scope" },
+      { "label":"Procedures","sub":"how the lab operates" },
+      { "label":"Work Instructions","sub":"step-by-step methods" },
+      { "label":"Records & Forms","sub":"the evidence" }
+    ],
+    "captions":["Documents form a pyramid,","from policy to records."] }] }

@@ -53,7 +53,7 @@ def _request(
 
 
 class SubjectSupportTests(unittest.IsolatedAsyncioTestCase):
-    async def test_create_defaults_to_chemistry_and_stores_subject(self) -> None:
+    async def test_create_defaults_to_lab_management_and_stores_subject(self) -> None:
         settings = Settings()
         jobs = InMemoryJobRepository()
         queue = RecordingQueue()
@@ -65,13 +65,15 @@ class SubjectSupportTests(unittest.IsolatedAsyncioTestCase):
         )
 
         self.assertEqual(response.status, JobStatus.PENDING)
-        self.assertEqual(response.subject, "chemistry")
+        self.assertEqual(response.subject, "lab-management")
         self.assertEqual(response.orientation, "vertical")
-        self.assertEqual(guard.calls, [("How does the pH scale work?", "chemistry")])
+        self.assertEqual(
+            guard.calls, [("How does the pH scale work?", "lab-management")]
+        )
         self.assertEqual(queue.enqueued, [response.id])
         job = await jobs.get(response.id)
         self.assertIsNotNone(job)
-        self.assertEqual(job.subject, "chemistry")
+        self.assertEqual(job.subject, "lab-management")
         self.assertEqual(job.orientation, "vertical")
 
     async def test_guard_rejection_does_not_enqueue(self) -> None:
@@ -90,8 +92,8 @@ class SubjectSupportTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(queue.enqueued, [])
         self.assertEqual(await jobs.list(), [])
 
-    def test_chemistry_and_tech_subjects_are_accepted_others_are_not(self) -> None:
-        for subject in ("chemistry", "tech"):
+    def test_lab_management_and_tech_subjects_are_accepted_others_are_not(self) -> None:
+        for subject in ("lab-management", "tech"):
             request = CreateVideoRequest(query="What is RAG?", subject=subject)
             self.assertEqual(request.subject, subject)
         with self.assertRaises(ValidationError):
@@ -108,22 +110,22 @@ class SubjectSupportTests(unittest.IsolatedAsyncioTestCase):
 
     def test_subject_config_drives_schema_and_compose_fallback(self) -> None:
         settings = Settings()
-        subject_config = get_subject_config("chemistry", settings)
+        subject_config = get_subject_config("lab-management", settings)
 
         schema = scene_split.load_scene_schema(subject_config)
         data = compose.build_data("!!!", "12345678-xxxx", subject_config, [], 1.23)
         expected_schema_path = (
-            settings.hyperframes_dir / "templates" / "chemistry" / "schema.json"
+            settings.hyperframes_dir / "templates" / "lab-management" / "schema.json"
         )
 
-        self.assertEqual(subject_config.renderer_template, "chemistry")
+        self.assertEqual(subject_config.renderer_template, "lab-management")
         self.assertEqual(subject_config.scene_schema_path, expected_schema_path)
         self.assertIsInstance(subject_config.narration_style, str)
         self.assertIsInstance(subject_config.scene_split_prompt, str)
-        self.assertIn("chemistry videos", subject_config.narration_style)
+        self.assertIn("ISO/IEC 17025", subject_config.narration_style)
         self.assertIn("GOLDEN EXAMPLES", subject_config.scene_examples)
         self.assertIn("scenes", schema["properties"])
-        self.assertEqual(data["config"]["slug"], "chemistry-video-12345678")
+        self.assertEqual(data["config"]["slug"], "lab-management-video-12345678")
         self.assertEqual(data["config"]["orientation"], "vertical")
         self.assertEqual(data["config"]["width"], 1080)
         self.assertEqual(data["config"]["height"], 1920)

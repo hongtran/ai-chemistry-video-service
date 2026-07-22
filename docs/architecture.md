@@ -1,8 +1,9 @@
 # Architecture Note
 
 FastAPI backend: subject-scoped educational query → rendered explainer video.
-Chemistry is the only enabled subject today, but prompts, schema selection, and
-render template selection are routed through a subject registry.
+Laboratory Management (ISO/IEC 17025) is the primary enabled subject today, but
+prompts, schema selection, and render template selection are routed through a
+subject registry (a `tech` subject is also wired in).
 
 ## Job lifecycle
 

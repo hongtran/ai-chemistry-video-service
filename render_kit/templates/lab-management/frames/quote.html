@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+  @import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=Inter:wght@400;500&display=swap");
+  #root {
+    position: absolute;
+    inset: 0;
+    width: {{width}}px;
+    height: {{height}}px;
+    background: {{bg}};
+    overflow: hidden;
+  }
+  .geo-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid {{accent}};
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .geo-ring::before {
+    content: '';
+    position: absolute;
+    inset: 12%;
+    border-radius: 50%;
+    border: 1px dashed {{accent}};
+  }
+  #ring-bg {
+    width: 680px;
+    height: 680px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+  }
+  #scene {
+    position: absolute;
+    inset: 250px 90px 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 44px;
+  }
+  #quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 140px;
+    font-weight: 400;
+    color: {{fg}};
+    opacity: 0.35;
+    line-height: 1;
+    height: 130px;
+    user-select: none;
+    flex: 0 0 auto;
+  }
+  #quote-mark::before {
+    content: '"';
+  }
+  #quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: {{quoteFontSize}};
+    font-weight: 400;
+    font-style: italic;
+    color: {{fg}};
+    line-height: 1.4;
+    max-width: 860px;
+  }
+  #quote-text .hl { padding: 0 .1em; border-radius: 6px; background: {{accent}}; color: {{bg}}; font-style: normal; }
+  #attribution {
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: {{fg}};
+    opacity: 0.55;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  #caption-zone { position:absolute; bottom:230px; left:0; right:0; padding:0 90px; display:flex; align-items:center; justify-content:center; }
+  #caption { position:relative; width:100%; height:2.4em; }
+  .hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+
+  /* Karaoke caption chunk (built by hfBuildCaptions; one .cw span per word) */
+  .cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:900; text-align:center; line-height:1.25; font-size:var(--cap-size,66px); opacity:0; }
+  .cap-chunk .cw { display:inline-block; white-space:pre; }
+
+#main-clip.vertical   { --cap-size:66px; }
+#main-clip.horizontal { --cap-size:44px; }
+#main-clip.horizontal #caption-zone { bottom:60px; padding:0 160px; }
+#main-clip.horizontal #caption { max-width:1360px; margin:0 auto; }
+
+#main-clip.horizontal #scene      { inset:120px 260px 120px; gap:36px; }
+#main-clip.horizontal #ring-bg    { width:560px; height:560px; }
+#main-clip.horizontal #quote-text { max-width:1200px; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div class="geo-ring" id="ring-bg"></div>
+    <div id="scene">
+      <div id="quote-mark" aria-hidden="true"></div>
+      <div id="quote-text">{{quote}}</div>
+      <div id="attribution">{{attribution}}</div>
+    </div>
+    <div id="caption-zone"><div id="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+  window.__timelines = window.__timelines || {};
+  function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+  function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+  function hfSplitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g,function(_m,inner){ return inner.split(/\s+/).map(function(w){ return '**'+w+'**'; }).join(' '); }); }
+  function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.className='cap-chunk'; var ws=Array.isArray(c.words)?c.words:[]; d.innerHTML= ws.length ? ws.map(function(w){ return '<span class="cw">'+hfHighlight(w.text)+' </span>'; }).join('') : hfHighlight(hfSplitMarks(c.text)); host.appendChild(d); return d; }); }
+  function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); }
+    var ws=Array.isArray(t.words)?t.words:[]; var spans=el.querySelectorAll('.cw'); ws.forEach(function(w,wi){ var span=spans[wi]; if(!span||span.querySelector('.hl'))return; tl.to(span,{color:'{{capHighlight}}',duration:0.12,ease:'power2.out'},w.start); tl.to(span,{color:'{{fg}}',duration:0.15},Math.max(w.start+0.12,w.end)); }); }); }
+  var quoteEl = document.getElementById('quote-text');
+  quoteEl.innerHTML = hfHighlight(quoteEl.textContent);
+
+  const tl = gsap.timeline({ paused: true });
+
+  tl.fromTo('#ring-bg',
+    { opacity: 0, scale: 0.9 },
+    { opacity: 0.5, scale: 1, duration: 0.8, ease: 'power2.out' },
+    0
+  );
+  tl.fromTo('#quote-mark',
+    { opacity: 0, y: -10 },
+    { opacity: 0.35, y: 0, duration: 0.5, ease: 'power2.out' },
+    0.3
+  );
+  tl.fromTo('#quote-text',
+    { y: 24, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' },
+    0.6
+  );
+  tl.fromTo('#attribution',
+    { opacity: 0 },
+    { opacity: 0.55, duration: 0.5, ease: 'power2.out' },
+    1.2
+  );
+
+  var captionTiming = {{captionTiming}};
+  var chunks = hfBuildCaptions(captionTiming);
+  hfAnimateCaptions(tl, chunks, captionTiming);
+
+  window.__timelines['{{id}}'] = tl;
+</script>
+</template>
+</body>
+</html>

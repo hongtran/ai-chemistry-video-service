@@ -15,6 +15,8 @@ router = APIRouter(prefix="/api/v1", tags=["videos"])
 # Only artifacts the pipeline produces are downloadable — no path traversal.
 ALLOWED_ARTIFACTS = {
     "script.txt",
+    "sentences.json",
+    "scenes_index.json",
     "narration.mp3",
     "transcript.json",
     "scenes.json",

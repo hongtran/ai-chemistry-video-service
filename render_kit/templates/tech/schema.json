@@ -36,7 +36,8 @@
                      "pipeline", "comparison", "roadmap", "stack-layers",
                      "vector-space", "neural-net",
                      "task-breakdown", "thought-chain", "tool-use",
-                     "memory", "reflection-loop", "mcp-hub"],
+                     "memory", "reflection-loop", "mcp-hub",
+                     "photo", "photo-split"],
             "typeUsage": {
               "cover": "DEFAULT for the opening scene / topic intro hook. A safe general choice.",
               "stats": "use when the scene centers on ONE striking number, percentage, or figure.",
@@ -58,7 +59,9 @@
               "tool-use": "use ONLY when the narration is about an agent calling external tools (web search, calculator, database, APIs). Agent hub with tool spokes and request/response pulses.",
               "memory": "use ONLY when the narration contrasts or explains agent memory — short-term conversation context vs long-term preferences/rules. Two stores fill up, then items are recalled.",
               "reflection-loop": "use ONLY when the narration is about self-reflection / the agent checking its own work, catching an error and retrying. Cycle ring: first lap fails at the check, second lap passes.",
-              "mcp-hub": "use ONLY when the narration is about Model Context Protocol or standardized integrations — one plug connecting the agent to many external apps. Agent → MCP hub → app chips."
+              "mcp-hub": "use ONLY when the narration is about Model Context Protocol or standardized integrations — one plug connecting the agent to many external apps. Agent → MCP hub → app chips.",
+              "photo": "use when the scene is best shown with a REALISTIC PHOTOGRAPH filling the screen (a real workspace, hardware, a person coding) rather than a diagram. Write a vivid 'imagePrompt'; the system generates the picture. Prefer the schematic tech types when the content is a diagram/flow.",
+              "photo-split": "like 'photo' but pairs the generated photograph with a short block of text (headline + body) beside it — use when you want a realistic image AND a sentence of explanation on screen together."
             }
           },
           "start":    { "type": "number", "description": "Scene start in seconds (hand-authored until a caption-alignment pipeline is wired in)." },
@@ -260,7 +263,11 @@
             "type": "array",
             "description": "2-5 external apps the hub connects to: {glyph, label} — glyph a single emoji, label 1-2 words ≤10 chars, e.g. {glyph:'💬', label:'Slack'}. (mcp-hub)",
             "items": { "type": "object", "required": ["label"], "properties": { "glyph": { "type": "string" }, "label": { "type": "string" } } }
-          }
+          },
+
+          "imagePrompt": { "type": "string", "description": "REQUIRED for photo / photo-split. A vivid, specific description of the photograph to generate for this scene (subject, setting, lighting, style) — the system generates the image from it. Describe a realistic photo; do NOT include text/words in the image. (photo, photo-split)" },
+          "image":       { "type": "string", "description": "System-generated — DO NOT author this. Filled by the image-generation step with the rendered picture (a data URI); defaults to a placeholder. (photo, photo-split)" },
+          "body":        { "type": "string", "description": "One short supporting sentence shown beside the image. Optional. (photo-split)" }
         }
       }
     }

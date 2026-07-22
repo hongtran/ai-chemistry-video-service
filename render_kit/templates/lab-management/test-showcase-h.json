@@ -1,0 +1,454 @@
+{
+  "config": {
+    "slug": "test-showcase-h",
+    "topic": "Laboratory Management showcase (16:9)",
+    "totalDuration": 85,
+    "orientation": "horizontal",
+    "description": "A tour of every ISO/IEC 17025 lab-management frame type.",
+    "hashtags": [
+      "iso17025",
+      "laboratory",
+      "quality"
+    ],
+    "tags": [
+      "iso 17025",
+      "lab accreditation",
+      "calibration",
+      "quality management"
+    ]
+  },
+  "scenes": [
+    {
+      "id": "s-cover",
+      "type": "cover",
+      "bg": "#0B0E14",
+      "fg": "#FFFFFF",
+      "accent": "#FFD60A",
+      "eyebrow": "ISO/IEC 17025",
+      "headline": "Calibration & Traceability",
+      "imagePrompt": "A realistic wide photograph of a modern calibration laboratory, a technician adjusting a precision reference instrument under clean bright lighting, cinematic, no text",
+      "captions": [
+        "What does it take",
+        "for a lab result",
+        "to be trusted?"
+      ],
+      "start": 0,
+      "duration": 5
+    },
+    {
+      "id": "s-stats",
+      "type": "stats",
+      "bg": "#3DA5FF",
+      "fg": "#0B0E14",
+      "accent": "#0B0E14",
+      "eyebrow": "WHY IT MATTERS",
+      "headline": "Most Findings Are Avoidable",
+      "stat": "70%",
+      "statLabel": "of findings are documentation gaps",
+      "captions": [
+        "Most audit findings",
+        "are documentation gaps."
+      ],
+      "start": 5,
+      "duration": 5
+    },
+    {
+      "id": "s-quote",
+      "type": "quote",
+      "bg": "#EDE8E0",
+      "fg": "#1A1A1A",
+      "accent": "#B8A98C",
+      "eyebrow": "THE PRINCIPLE",
+      "headline": "Say What You Do",
+      "quote": "Say what you do, do what you say, and be able to prove it.",
+      "attribution": "Quality management maxim",
+      "captions": [
+        "A quality system rests",
+        "on one simple idea."
+      ],
+      "start": 10,
+      "duration": 5
+    },
+    {
+      "id": "s-diagram",
+      "type": "diagram",
+      "bg": "#0B0E14",
+      "fg": "#FFFFFF",
+      "accent": "#FFD60A",
+      "eyebrow": "THE PROCESS",
+      "headline": "A Calibration Cycle",
+      "items": [
+        {
+          "label": "Schedule",
+          "color": "#3DA5FF"
+        },
+        {
+          "label": "Calibrate",
+          "color": "#34C759"
+        },
+        {
+          "label": "Record",
+          "color": "#FFD60A"
+        },
+        {
+          "label": "Review",
+          "color": "#FF6B4A"
+        }
+      ],
+      "captions": [
+        "Every instrument follows",
+        "the same cycle."
+      ],
+      "start": 15,
+      "duration": 5
+    },
+    {
+      "id": "s-equipment-register",
+      "type": "equipment-register",
+      "eyebrow": "CLAUSE 6.4 \u2014 EQUIPMENT",
+      "headline": "Equipment",
+      "title": "Equipment Register",
+      "parts": [
+        {
+          "label": "Analytical Balance",
+          "status": "calibrated",
+          "due": "Due Mar 2027"
+        },
+        {
+          "label": "pH Meter",
+          "status": "due",
+          "due": "Due this month"
+        },
+        {
+          "label": "Reference Thermometer",
+          "status": "overdue",
+          "due": "Overdue 12 days"
+        }
+      ],
+      "captions": [
+        "Every instrument carries",
+        "a calibration status."
+      ],
+      "start": 20,
+      "duration": 5
+    },
+    {
+      "id": "s-calibration-cert",
+      "type": "calibration-cert",
+      "bg": "#EDE8E0",
+      "fg": "#1A1A1A",
+      "accent": "#2E7D5B",
+      "eyebrow": "CLAUSE 6.5 \u2014 TRACEABILITY",
+      "headline": "Calibration Certificate",
+      "instrument": "Reference Thermometer, S/N 4471",
+      "certNo": "CAL-2026-0311",
+      "calDate": "14 Feb 2026",
+      "dueDate": "14 Feb 2027",
+      "uncertainty": "\u00b1 0.02 \u00b0C (k = 2)",
+      "traceableTo": "National standard (NMI) / SI",
+      "captions": [
+        "A certificate ties your result",
+        "back to the SI unit."
+      ],
+      "start": 25,
+      "duration": 5
+    },
+    {
+      "id": "s-uncertainty",
+      "type": "uncertainty",
+      "accent": "#FF9F0A",
+      "eyebrow": "CLAUSE 6.5 \u2014 UNCERTAINTY",
+      "headline": "Expanded Uncertainty",
+      "title": "Measurement Uncertainty",
+      "formulas": [
+        {
+          "name": "Standard Uncertainty of the Mean",
+          "latex": "u(\\bar{x})=\\dfrac{SD}{\\sqrt{n}}"
+        },
+        {
+          "name": "Expanded Uncertainty",
+          "latex": "U=k\\cdot u_c"
+        }
+      ],
+      "legend": [
+        {
+          "sym": "u_c",
+          "desc": "combined standard uncertainty"
+        },
+        {
+          "sym": "k",
+          "desc": "coverage factor (k = 2 for ~95% confidence)"
+        }
+      ],
+      "captions": [
+        "Every result needs",
+        "a stated uncertainty."
+      ],
+      "start": 30,
+      "duration": 5
+    },
+    {
+      "id": "s-reagent-prep",
+      "type": "reagent-prep",
+      "accent": "#34C759",
+      "eyebrow": "SOLUTION PREPARATION",
+      "headline": "The Dilution Formula",
+      "title": "Making a Dilution",
+      "formulas": [
+        {
+          "name": "Dilution",
+          "latex": "C_1V_1=C_2V_2"
+        },
+        {
+          "name": "Molarity",
+          "latex": "M=\\dfrac{n}{V}"
+        }
+      ],
+      "legend": [
+        {
+          "sym": "C_1,V_1",
+          "desc": "concentration and volume of the stock solution"
+        },
+        {
+          "sym": "C_2,V_2",
+          "desc": "concentration and volume you want to prepare"
+        }
+      ],
+      "captions": [
+        "Every dilution follows",
+        "one simple rule."
+      ],
+      "start": 35,
+      "duration": 5
+    },
+    {
+      "id": "s-statistics",
+      "type": "statistics",
+      "accent": "#4FC3F7",
+      "eyebrow": "CLAUSE 7.7 \u2014 QUALITY CONTROL",
+      "headline": "Statistics & Error",
+      "title": "QC Statistics",
+      "formulas": [
+        {
+          "name": "Mean",
+          "latex": "\\bar{x}=\\dfrac{\\sum_{i=1}^{n} x_i}{n}"
+        },
+        {
+          "name": "Std Deviation (SD)",
+          "latex": "SD=\\sqrt{\\dfrac{\\sum_{i=1}^{n}(x_i-\\bar{x})^2}{n-1}}"
+        },
+        {
+          "name": "Coefficient of Variation (CV)",
+          "latex": "CV(\\%)=\\left(\\dfrac{SD}{\\bar{x}}\\right)\\times 100\\%"
+        }
+      ],
+      "legend": [
+        {
+          "sym": "x_i",
+          "desc": "individual measured values"
+        },
+        {
+          "sym": "n",
+          "desc": "number of measurements"
+        }
+      ],
+      "captions": [
+        "Standard deviation tells you",
+        "how reproducible a result is."
+      ],
+      "start": 40,
+      "duration": 5
+    },
+    {
+      "id": "s-document-control",
+      "type": "document-control",
+      "accent": "#3DA5FF",
+      "eyebrow": "CLAUSE 8.3 \u2014 DOCUMENTS",
+      "headline": "Document Hierarchy",
+      "title": "Controlled Documents",
+      "tiers": [
+        {
+          "label": "Quality Manual",
+          "sub": "policy & scope"
+        },
+        {
+          "label": "Procedures",
+          "sub": "how the lab operates"
+        },
+        {
+          "label": "Work Instructions",
+          "sub": "step-by-step methods"
+        },
+        {
+          "label": "Records & Forms",
+          "sub": "the evidence"
+        }
+      ],
+      "captions": [
+        "Documents form a pyramid,",
+        "from policy to records."
+      ],
+      "start": 45,
+      "duration": 5
+    },
+    {
+      "id": "s-traceability-chain",
+      "type": "traceability-chain",
+      "accent": "#3DA5FF",
+      "eyebrow": "METROLOGICAL TRACEABILITY",
+      "headline": "An Unbroken Chain",
+      "title": "Traceability to the SI",
+      "nodes": [
+        {
+          "label": "SI Definition",
+          "sub": "the kelvin"
+        },
+        {
+          "label": "National Standard",
+          "sub": "NMI"
+        },
+        {
+          "label": "Reference Standard",
+          "sub": "the lab's best"
+        },
+        {
+          "label": "Working Standard",
+          "sub": "daily use"
+        },
+        {
+          "label": "Measurement",
+          "sub": "your result"
+        }
+      ],
+      "captions": [
+        "Each measurement links back",
+        "to the SI unit itself."
+      ],
+      "start": 50,
+      "duration": 5
+    },
+    {
+      "id": "s-competence-matrix",
+      "type": "competence-matrix",
+      "accent": "#34C759",
+      "eyebrow": "CLAUSE 6.2 \u2014 PERSONNEL",
+      "headline": "Who Is Authorized",
+      "title": "Competence Matrix",
+      "columns": [
+        "Titration",
+        "GC-MS",
+        "Reporting"
+      ],
+      "rows": [
+        {
+          "name": "A. Okafor",
+          "marks": [
+            "yes",
+            "yes",
+            "yes"
+          ]
+        },
+        {
+          "name": "L. Meyer",
+          "marks": [
+            "yes",
+            "training",
+            "yes"
+          ]
+        },
+        {
+          "name": "R. Sato",
+          "marks": [
+            "yes",
+            "no",
+            "training"
+          ]
+        }
+      ],
+      "captions": [
+        "A matrix shows who is authorized",
+        "for each method."
+      ],
+      "start": 55,
+      "duration": 5
+    },
+    {
+      "id": "s-audit-trail",
+      "type": "audit-trail",
+      "accent": "#FF6B4A",
+      "eyebrow": "CLAUSE 8.7 \u2014 CORRECTIVE ACTION",
+      "headline": "Closing a Nonconformity",
+      "finding": "Balance used past its due date",
+      "rootCause": "No automated recall reminder",
+      "action": "Add calibration alerts to LIMS",
+      "verification": "Next audit confirms zero overdue",
+      "captions": [
+        "Every finding follows a path",
+        "to verified closure."
+      ],
+      "start": 60,
+      "duration": 5
+    },
+    {
+      "id": "s-nonconformance",
+      "type": "nonconformance",
+      "accent": "#FF3B30",
+      "eyebrow": "CLAUSE 7.10 \u2014 NONCONFORMING WORK",
+      "headline": "A Major Finding",
+      "severity": "MAJOR",
+      "clause": "Clause 6.4.1",
+      "finding": "Instrument used beyond its calibration due date.",
+      "correctiveAction": "Quarantine results; recalibrate before reuse.",
+      "captions": [
+        "A major nonconformity",
+        "means results are in doubt."
+      ],
+      "start": 65,
+      "duration": 5
+    },
+    {
+      "id": "s-photo",
+      "type": "photo",
+      "eyebrow": "IN THE LAB",
+      "headline": "The Accredited Laboratory",
+      "imagePrompt": "A realistic wide photograph of a modern testing laboratory with analytical instruments and a technician in a lab coat, clean bright environment, no text",
+      "captions": [
+        "Step inside",
+        "an accredited lab."
+      ],
+      "start": 70,
+      "duration": 5
+    },
+    {
+      "id": "s-photo-split",
+      "type": "photo-split",
+      "eyebrow": "GOOD PRACTICE",
+      "headline": "Label Everything",
+      "body": "A clear calibration sticker on every instrument makes status obvious at a glance.",
+      "imagePrompt": "A realistic close-up photograph of a laboratory instrument with a small calibration status sticker, shallow depth of field, no readable text",
+      "captions": [
+        "A simple sticker",
+        "prevents a mistake."
+      ],
+      "start": 75,
+      "duration": 5
+    },
+    {
+      "id": "s-cta",
+      "type": "cta",
+      "bg": "#0B0E14",
+      "fg": "#FFFFFF",
+      "accent": "#FFD60A",
+      "eyebrow": "THE TAKEAWAY",
+      "headline": "Competence, Proven",
+      "subheadline": "ISO/IEC 17025 turns good practice into evidence anyone can trust.",
+      "imagePrompt": "A realistic photograph of a quality manager reviewing an accreditation certificate on a wall in a modern lab, warm hopeful lighting, cinematic, no text",
+      "captions": [
+        "Do the work well,",
+        "and prove it."
+      ],
+      "start": 80,
+      "duration": 5
+    }
+  ]
+}

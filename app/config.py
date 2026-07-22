@@ -30,6 +30,27 @@ class Settings(BaseSettings):
     tts_voice: str = "alloy"  # fallback voice for any language without a mapping
     transcribe_model: str = "whisper-1"
 
+    # Image generation for photo / photo-split frames (see pipeline/steps/images.py).
+    # The IMAGE_GEN step calls this model with each scene's imagePrompt and embeds
+    # the result as a data URI. images_enabled=false skips generation entirely
+    # (frames keep their placeholder), so the pipeline runs image-API-free.
+    image_model: str = "gpt-image-2"
+    images_enabled: bool = True
+    image_quality: str = "medium"  # gpt-image-1: low | medium | high
+    image_size_vertical: str = "1024x1536"   # portrait, for 9:16 videos
+    image_size_horizontal: str = "1536x1024"  # landscape, for 16:9 videos
+    # Cost/latency guard: at most this many images generated per video; extra
+    # image scenes keep their placeholder.
+    max_images_per_video: int = 6
+
+    # Vietnamese narration uses ElevenLabs instead of OpenAI TTS — noticeably
+    # better Vietnamese prosody than gpt-4o-mini-tts. Every other language
+    # keeps using OpenAI TTS (see tts_model above). Required only when a job
+    # requests language="vi".
+    elevenlabs_api_key: str = ""
+    elevenlabs_voice_id: str = "A5w1fw5x0uXded1LDvZp"
+    elevenlabs_model_id: str = "eleven_v3"
+
     # Default narration language (ISO 639-1); requests may override it.
     default_language: str = "en"
     # Per-language TTS voice. OpenAI's gpt-4o-mini-tts voices are all
@@ -47,10 +68,18 @@ class Settings(BaseSettings):
     # Per-call TTS budget, under OpenAI TTS's hard 4096-char input limit.
     # Longer scripts are chunked and ffmpeg-joined (see steps/tts.py).
     tts_max_chars: int = 4000
-    # Content-validation attempts per scene-split section before giving up.
+    # Content-validation attempts per per-scene authoring call before giving up.
     max_split_attempts: int = 4
-    # Rounds of (align -> compose -> layout gate); each failure re-splits only
-    # the offending section(s) and tries again.
+    # Long-form (horizontal) scripts are segmented one sentence-window at a time
+    # in Pass 1 so no single LLM call has to group a whole 100+ sentence script.
+    # A vertical short (well under this) is segmented in a single call.
+    segment_sentence_window: int = 40
+    # Scenes authored together per Pass 2 call. Authoring scenes as a group lets
+    # the model vary frame types (isolated per-scene calls repeated types); most
+    # videos fit one batch, so the seam only appears on very long runs.
+    author_batch_size: int = 12
+    # Rounds of (compose -> layout gate); each failure re-authors only the
+    # offending scene(s) and tries again.
     outer_retry_limit: int = 3
     layout_gate_timeout_seconds: int = 300
 

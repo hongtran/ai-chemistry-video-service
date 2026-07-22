@@ -11,39 +11,32 @@ Tone: clear, energetic, general developer audience, not a textbook. Technical fa
 
 Return ONLY the narration script text, nothing else."""
 
-SCENE_SPLIT_PROMPT = """You are splitting an ALREADY-RECORDED tech narration into typed scene data for a JSON-driven video template called HyperFrames (dark developer aesthetic). The audio is final — you are assigning visuals and caption chunk breaks to existing words, not writing new narration.
+SEGMENT_PROMPT = """This is a tech-education video (dark developer aesthetic): software engineering, programming, AI/ML, agents, RAG, developer tooling. Group the sentences into a contiguous narrative arc: hook → core concept → supporting detail(s) → a comparison or concrete result → closing takeaway/CTA — roughly 6 to 9 scenes for a short. Cut a scene boundary wherever the narration moves to a new concept, example, or beat; keep sentences that build one idea together in the same scene."""
+
+SCENE_SPLIT_PROMPT = """You are authoring the typed visual content for a batch of scenes in a JSON-driven video template called HyperFrames (dark developer aesthetic). The narration has already been recorded and split into scenes; for each scene you are given its own sentences (the words spoken during it) and its finalized on-screen captions. Your job is to choose a frame "type" per scene and fill that type's content fields so the visual matches what's being said.
 
 You will be given:
-1. The TRANSCRIPT of the recorded narration — the words actually spoken, in order. This is the SOURCE OF TRUTH for captions.
-2. The narration script — reference only, for understanding meaning and structure. Its wording may differ from what was spoken (e.g. "fourteen" in the script may appear as "14" in the transcript).
+1. The FULL SCRIPT — context, so you understand each scene's place in the larger narrative.
+2. Per scene: its "id", its OWN SENTENCES (derive that scene's content fields from these), and its CAPTIONS (already finalized, given verbatim; you do not write or change them, they are shown only so your visuals stay in sync).
 3. A JSON Schema describing one scene object, including a "typeUsage" guide for choosing each scene type.
 
 Return ONLY a single JSON object, no markdown fences, shaped exactly like:
-{"scenes": [ { "id": "...", "type": "...", "eyebrow": "...", "headline": "...", "captions": ["...", "..."], ... type-specific fields ... } ] }
+{"scenes": [ { "id": "<the given id>", "type": "...", "eyebrow": "...", "headline": "...", ... type-specific fields ... } ] }
+Emit one object per scene, in the SAME order as given, each echoing its given "id". Do NOT include "captions" — supplied by the system unchanged. Do NOT include "start", "duration", "audio", "captionTiming", or "sfx" — they're computed separately from the real recording.
 
-Critical rule: the "captions" arrays, concatenated in order across ALL scenes and split back into words, must reproduce the TRANSCRIPT text EXACTLY — same words, same order, nothing added, nothing removed, nothing reworded. You may only: (a) choose where to break it into 2-5 word caption chunks, (b) choose scene boundaries between chunks, (c) keep the transcript's punctuation and capitalization, and (d) wrap individual words in ** for emphasis (e.g. "**RAG**"). Do not paraphrase or substitute words — if the transcript says "retrieval augmented generation", your captions must say "retrieval augmented generation", not "RAG", even if that's the usual abbreviation.
-
-The most common mistake on longer narrations: silently dropping a whole clause or sentence, especially one that sounds parallel/repetitive to a nearby one. Before returning your answer, re-read the transcript sentence by sentence and confirm every single sentence appears somewhere in your captions, in order, with nothing skipped.
-
-Other rules:
-- 6 to 9 scenes, contiguous narrative arc: hook → core concept → supporting detail(s) → a comparison or concrete result → closing takeaway/CTA.
-- Every scene "id" is a short kebab-case slug, unique within the response.
-- Choose each scene "type" using the schema's typeUsage guide. Vary frame types across scenes — don't repeat the same type back-to-back unless the content genuinely calls for it. Prefer a concept-specific type (pipeline, tool-use, memory, vector-space, thought-chain, ...) over a generic one (bullet-list) whenever the narration matches its usage guidance.
-- Fields that hold on-screen labels (node/tool/app/step labels, code lines, terminal commands) are DISPLAY text, not narration — they may abbreviate and use symbols freely; the verbatim rule applies ONLY to "captions".
-- Visuals and captions must be SYNCHRONIZED: every scene's visual content (headline, items, steps, and other type-specific fields) must be derived from the narration words in that scene's OWN "captions", so the visual is on screen while the words describing it are spoken. Place scene boundaries accordingly — if a sentence introduces or enumerates what a scene displays, that sentence belongs in THAT scene's captions, never in the previous or next scene's.
-- The input includes a "REQUIRED CONTENT FIELDS PER TYPE" list: a scene missing ANY of its type's required fields renders as a broken frame. Fill every required field with a real value; if the narration doesn't give you enough to fill them, pick a more general type (bullet-list/concept-card/cta) instead. Also give every scene a "headline" or "title" where the type has one — it is the frame's visible title.
-- Do NOT include "start", "duration", "audio", "captionTiming", or "sfx" — they're computed separately from the real recording.
+Rules:
+- Choose each scene "type" using the schema's typeUsage guide, matching that scene's own sentences. Prefer a concept-specific type (pipeline, tool-use, memory, vector-space, thought-chain, ...) over a generic one (bullet-list) whenever the content matches its usage guidance.
+- For photo / photo-split, write a vivid "imagePrompt" describing the photograph to generate; NEVER author the "image" field itself — the system fills it. Use these when a realistic photograph fits better than a diagram, but don't overuse them.
+- VARY frame types across scenes — do NOT repeat the same type back-to-back unless the content genuinely calls for it. You can see every scene in this batch, so choose types that read as a varied sequence, not a run of identical frames.
+- Fields that hold on-screen labels (node/tool/app/step labels, code lines, terminal commands) are DISPLAY text — they may abbreviate, summarize, and use symbols freely; they do not need to quote the sentences verbatim.
+- The input includes a "REQUIRED CONTENT FIELDS PER TYPE" list: a scene missing ANY of its type's required fields renders as a broken frame. Fill every required field with a real value; if a scene's sentences don't give you enough to fill them, pick a more general type (bullet-list/concept-card/cta) instead. Also give each scene a "headline" or "title" where the type has one — it is the frame's visible title.
 - Colors are hex strings; omit bg/fg/accent to accept the template's per-type defaults unless the scene really needs an override.
-- Keep on-screen text short and punchy; captions carry the narration.
+- Keep on-screen text short and punchy.
 
 The input includes GOLDEN EXAMPLES: one well-formed scene per frame type with every
-param filled. Author every scene at that level of completeness — same field coverage,
-short 2-5 word caption chunks. The examples' captions are illustrative; YOUR captions
-must copy this job's transcript verbatim.
-
-(The system later computes and appends "start", "duration", and one captionTiming
-entry per caption chunk, e.g. {"text": "Welcome to the", "start": 0.0, "end": 0.98},
-from the real audio — you never output those fields.)
+param filled. Author every scene at that level of completeness — same field coverage.
+The examples' "captions" are illustrative only; ignore them, the real captions are
+supplied separately and returned unchanged.
 
 Return ONLY the JSON object, no commentary."""
 
@@ -267,6 +260,23 @@ SCENE_EXAMPLES = """{
         { "glyph": "🗓️", "label": "Calendar" }
       ],
       "captions": ["No custom code", "per **integration**."]
+    },
+    {
+      "id": "example-photo",
+      "type": "photo",
+      "eyebrow": "~/workspace",
+      "headline": "Where the **code** lives",
+      "imagePrompt": "A realistic photograph of a developer's desk at night with a laptop showing code, a mechanical keyboard, and monitor glow, no text",
+      "captions": ["Every product", "starts at a **desk**."]
+    },
+    {
+      "id": "example-photo-split",
+      "type": "photo-split",
+      "eyebrow": "INFRASTRUCTURE",
+      "headline": "Where **models** run",
+      "body": "Racks of GPUs train and serve the models you call through an API.",
+      "imagePrompt": "A realistic photograph of a data center aisle with rows of server racks and blue LED lighting, no text",
+      "captions": ["Your prompt reaches", "a room **like this**."]
     }
   ]
 }"""
@@ -293,6 +303,8 @@ REQUIRED_CONTENT_FIELDS: dict[str, list[str]] = {
     "memory": ["shortItems", "longItems"],
     "reflection-loop": ["steps"],
     "mcp-hub": ["apps"],
+    "photo": ["imagePrompt"],
+    "photo-split": ["imagePrompt"],
 }
 
 
@@ -314,9 +326,11 @@ def get_config(settings: Settings) -> SubjectConfig:
             "or are not educational topics at all are not tech."
         ),
         narration_style=NARRATION_STYLE,
+        segment_prompt=SEGMENT_PROMPT,
         scene_split_prompt=SCENE_SPLIT_PROMPT,
         scene_examples=SCENE_EXAMPLES,
         scene_schema_path=schema_path(settings),
         renderer_template=RENDERER_TEMPLATE,
         required_content_fields=REQUIRED_CONTENT_FIELDS,
+        image_frame_types=frozenset({"photo", "photo-split"}),
     )

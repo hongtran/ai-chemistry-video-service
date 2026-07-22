@@ -1,0 +1,7 @@
+{ "config": { "slug":"test-quote","topic":"quote","totalDuration":5 },
+  "scenes":[{ "id":"s1","type":"quote","start":0,"duration":5,
+    "bg":"#EDE8E0","fg":"#1A1A1A","accent":"#B8A98C",
+    "eyebrow":"THE PRINCIPLE","headline":"Say What You Do",
+    "quote":"Say what you do, do what you say, and be able to prove it.",
+    "attribution":"Quality management maxim",
+    "captions":["A quality system rests","on one simple idea."] }] }

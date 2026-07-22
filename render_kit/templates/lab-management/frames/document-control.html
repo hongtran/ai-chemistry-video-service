@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;800;900&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; }
+#eyebrow { position:absolute; top:120px; left:0; right:0; text-align:center; font-family:'Inter',sans-serif; font-size:34px; font-weight:800; letter-spacing:6px; text-transform:uppercase; opacity:.85; }
+#title { position:absolute; top:220px; left:0; right:0; text-align:center; padding:0 80px; font-family:'Anton',sans-serif; font-size:92px; line-height:1.15; text-transform:uppercase; }
+#hero { position:absolute; top:470px; left:0; right:0; bottom:400px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; }
+.tier { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; padding:24px 40px; border-radius:16px; background:{{accent}}; color:#0B0E14; }
+.tier .lbl { font-family:'Inter',sans-serif; font-weight:900; font-size:44px; line-height:1.05; text-align:center; }
+.tier .sub { font-family:'Inter',sans-serif; font-weight:700; font-size:26px; opacity:.75; text-align:center; }
+#caption-zone { position:absolute; bottom:230px; left:0; right:0; padding:0 90px; display:flex; align-items:center; justify-content:center; }
+#caption { position:relative; width:100%; height:2.4em; }
+.hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+
+/* Karaoke caption chunk (built by hfBuildCaptions; one .cw span per word) */
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:900; text-align:center; line-height:1.25; font-size:var(--cap-size,66px); opacity:0; }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+
+#main-clip.vertical   { --cap-size:66px; }
+#main-clip.horizontal { --cap-size:44px; }
+#main-clip.horizontal #caption-zone { bottom:60px; padding:0 160px; }
+#main-clip.horizontal #caption { max-width:1360px; margin:0 auto; }
+
+#main-clip.horizontal #eyebrow { top:70px; }
+#main-clip.horizontal #title   { top:150px; font-size:80px; }
+#main-clip.horizontal #hero    { top:320px; bottom:200px; gap:14px; }
+#main-clip.horizontal .tier    { padding:16px 40px; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div id="eyebrow">{{eyebrow}}</div>
+    <div id="title">{{title}}</div>
+    <div id="hero"></div>
+    <div id="caption-zone"><div id="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+['eyebrow','title'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hfHighlight(t); });
+function hfSplitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g,function(_m,inner){ return inner.split(/\s+/).map(function(w){ return '**'+w+'**'; }).join(' '); }); }
+function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.className='cap-chunk'; var ws=Array.isArray(c.words)?c.words:[]; d.innerHTML= ws.length ? ws.map(function(w){ return '<span class="cw">'+hfHighlight(w.text)+' </span>'; }).join('') : hfHighlight(hfSplitMarks(c.text)); host.appendChild(d); return d; }); }
+function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); }
+  var ws=Array.isArray(t.words)?t.words:[]; var spans=el.querySelectorAll('.cw'); ws.forEach(function(w,wi){ var span=spans[wi]; if(!span||span.querySelector('.hl'))return; tl.to(span,{color:'{{capHighlight}}',duration:0.12,ease:'power2.out'},w.start); tl.to(span,{color:'{{fg}}',duration:0.15},Math.max(w.start+0.12,w.end)); }); }); }
+
+// Document hierarchy: a pyramid — top tier is narrowest (policy), each tier
+// below is wider, down to records at the base. Opacity fades top→bottom too.
+var tiers = {{tiers}}; tiers = Array.isArray(tiers) ? tiers : [];
+tiers = tiers.slice(0, 5);
+var hero = document.getElementById('hero');
+var minW = 460, maxW = 940;
+var els = tiers.map(function(t, i){
+  var frac = tiers.length <= 1 ? 1 : i / (tiers.length - 1);
+  var w = Math.round(minW + (maxW - minW) * frac);
+  var label = t && t.label != null ? t.label : '';
+  var sub = t && t.sub ? t.sub : '';
+  var d = document.createElement('div'); d.className = 'tier';
+  d.style.width = w + 'px';
+  d.style.opacity = String(1 - 0.10 * (tiers.length - 1 - i));
+  d.innerHTML = '<div class="lbl">'+hfHighlight(String(label))+'</div>' + (sub ? '<div class="sub">'+hfEsc(String(sub))+'</div>' : '');
+  hero.appendChild(d);
+  return d;
+});
+if (els.length === 0) hero.style.display='none';
+
+gsap.set(els, { opacity:0, y:-24, scale:0.9, transformOrigin:'center' });
+gsap.set('#eyebrow', { opacity:0, y:-12 });
+gsap.set('#title', { opacity:0, y:18 });
+
+var tl = gsap.timeline({ paused:true });
+tl.to('#eyebrow', { opacity:1, y:0, duration:0.3, ease:'power2.out' }, 0.1);
+tl.to('#title', { opacity:1, y:0, duration:0.4, ease:'power3.out' }, 0.2);
+els.forEach(function(el, i){
+  var target = Number(el.style.opacity) || 1;
+  tl.to(el, { opacity:target, y:0, scale:1, duration:0.4, ease:'back.out(1.5)' }, 0.4 + i*0.16);
+});
+
+var captionTiming = {{captionTiming}};
+var chunks = hfBuildCaptions(captionTiming);
+hfAnimateCaptions(tl, chunks, captionTiming);
+
+window.__timelines['{{id}}'] = tl;
+</script>
+</template>
+</body>
+</html>

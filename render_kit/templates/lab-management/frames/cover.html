@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head><meta charset="UTF-8" /></head>
+<body>
+<template>
+<style>
+/* SB-1 */
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;700;800;900&display=swap");
+#root { position:absolute; inset:0; width:{{width}}px; height:{{height}}px; background:{{bg}}; color:{{fg}}; overflow:hidden; }
+/* Full-bleed hook image (generated from imagePrompt); hidden on the solid-bg
+   fallback when no real picture has been generated yet. */
+#photo { position:absolute; inset:0; background-image:url("{{image}}"); background-size:cover; background-position:center; will-change:transform; }
+#scrim { position:absolute; left:0; right:0; bottom:0; height:1000px; background:linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 38%, rgba(0,0,0,0) 100%); }
+#titleblock { position:absolute; left:0; right:0; bottom:430px; padding:0 80px; text-align:center; }
+#eyebrow { font-family:'Inter',sans-serif; font-size:34px; font-weight:800; letter-spacing:6px; text-transform:uppercase; opacity:.9; color:{{accent}}; }
+#headline { margin-top:34px; font-family:'Anton',sans-serif; font-weight:400; font-size:140px; line-height:1.15; text-transform:uppercase; text-shadow:0 3px 28px rgba(0,0,0,0.55); }
+#caption-zone { position:absolute; bottom:230px; left:0; right:0; padding:0 90px; display:flex; align-items:center; justify-content:center; }
+#caption { position:relative; width:100%; height:2.4em; }
+.hl { padding:0 .14em; border-radius:10px; background:{{accent}}; color:{{bg}}; }
+
+/* Karaoke caption chunk (built by hfBuildCaptions; one .cw span per word) */
+.cap-chunk { position:absolute; width:100%; left:0; top:50%; transform:translateY(-50%); font-family:'Inter',sans-serif; font-weight:900; text-align:center; line-height:1.25; font-size:var(--cap-size,66px); opacity:0; text-shadow:0 2px 16px rgba(0,0,0,0.6); }
+.cap-chunk .cw { display:inline-block; white-space:pre; }
+
+#main-clip.vertical   { --cap-size:66px; }
+#main-clip.horizontal { --cap-size:44px; }
+#main-clip.horizontal #caption-zone { bottom:60px; padding:0 160px; }
+#main-clip.horizontal #caption { max-width:1360px; margin:0 auto; }
+
+#main-clip.horizontal #scrim     { height:640px; }
+#main-clip.horizontal #titleblock{ bottom:160px; padding:0 160px; }
+#main-clip.horizontal #headline  { font-size:130px; }
+</style>
+
+<div id="root" data-composition-id="{{id}}" data-width="{{width}}" data-height="{{height}}" data-duration="{{duration}}" data-start="0">
+  <section class="clip {{orientation}}" id="main-clip" data-start="0" data-duration="{{duration}}" data-track-index="1">
+    <div id="photo"></div>
+    <div id="scrim"></div>
+    <div id="titleblock">
+      <div id="eyebrow">{{eyebrow}}</div>
+      <div id="headline">{{headline}}</div>
+    </div>
+    <div id="caption-zone"><div id="caption"></div></div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script>
+window.__timelines = window.__timelines || {};
+// SB-2
+function hfEsc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function hfHighlight(t){ return hfEsc(t).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1<\/span>'); }
+['eyebrow','headline'].forEach(function(id){ var el=document.getElementById(id); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hfHighlight(t); });
+function hfSplitMarks(t){ return String(t).replace(/\*\*(.+?)\*\*/g,function(_m,inner){ return inner.split(/\s+/).map(function(w){ return '**'+w+'**'; }).join(' '); }); }
+function hfBuildCaptions(cv){ var arr=Array.isArray(cv)?cv:[]; var host=document.getElementById('caption'); return arr.map(function(c){ var d=document.createElement('div'); d.className='cap-chunk'; var ws=Array.isArray(c.words)?c.words:[]; d.innerHTML= ws.length ? ws.map(function(w){ return '<span class="cw">'+hfHighlight(w.text)+' </span>'; }).join('') : hfHighlight(hfSplitMarks(c.text)); host.appendChild(d); return d; }); }
+function hfAnimateCaptions(tl,ch,timings){ ch.forEach(function(el,i){ var t=timings[i]; if(!t)return; tl.to(el,{opacity:1,duration:i===0?0.2:0.18},t.start); if(i<ch.length-1){ var nextStart=timings[i+1]?timings[i+1].start:t.end; tl.to(el,{opacity:0,duration:0.12},Math.max(t.start,nextStart-0.12)); }
+  // Karaoke: only the word being spoken holds capHighlight; every other word
+  // keeps the caption color. Emphasis pills (.hl) opt out.
+  var ws=Array.isArray(t.words)?t.words:[]; var spans=el.querySelectorAll('.cw'); ws.forEach(function(w,wi){ var span=spans[wi]; if(!span||span.querySelector('.hl'))return; tl.to(span,{color:'{{capHighlight}}',duration:0.12,ease:'power2.out'},w.start); tl.to(span,{color:'#FFFFFF',duration:0.15},Math.max(w.start+0.12,w.end)); }); }); }
+
+// Show the photo + scrim only for a REAL generated image (png/jpeg/webp data
+// URI or an http URL). The placeholder is an svg data URI → fall back to the
+// solid {{bg}} so the cover still reads as a clean text card.
+var img = '{{image}}';
+var hasImg = /^data:image\/(png|jpe?g|webp)/i.test(img) || /^https?:/i.test(img);
+var photoEl = document.getElementById('photo');
+var scrimEl = document.getElementById('scrim');
+if (!hasImg) { photoEl.style.display = 'none'; scrimEl.style.display = 'none'; }
+
+var dur = parseFloat('{{duration}}') || 4;
+gsap.set('#photo', { scale:1.0, transformOrigin:'50% 50%' });
+gsap.set('#scrim', { opacity:0 });
+gsap.set('#eyebrow',{opacity:0,y:-12});
+gsap.set('#headline',{opacity:0,scale:1.25});
+
+var tl = gsap.timeline({ paused:true });
+if (hasImg) {
+  tl.to('#photo', { scale:1.09, duration:dur, ease:'none' }, 0);   // slow Ken-Burns push
+  tl.to('#scrim', { opacity:1, duration:0.5 }, 0.1);
+}
+tl.to('#eyebrow', { opacity:1, y:0, duration:0.3, ease:'power2.out' }, 0.15);
+tl.to('#headline',{ opacity:1, scale:1, duration:0.35, ease:'back.out(1.6)' }, 0.25);   // slam-in <3s
+
+var captionTiming = {{captionTiming}};
+var chunks = hfBuildCaptions(captionTiming);
+hfAnimateCaptions(tl, chunks, captionTiming);
+
+window.__timelines['{{id}}'] = tl;
+</script>
+</template>
+</body>
+</html>
