@@ -7,6 +7,7 @@ and must not wait behind renders. Each submit spawns one tracked task.
 import asyncio
 import logging
 from pathlib import Path
+from app.config import Settings
 
 import httpx
 
@@ -147,7 +148,8 @@ class UploadRunner:
                 fields["error_message"] = f"uploaded, but playlist add failed: {exc}"
         await self._uploads.update(upload_id, **fields)
         logger.info("upload %s completed: %s", upload_id, fields["video_url"])
-        await self._maybe_clear_job(upload.job_id)
+        if Settings.environment == "prod":
+            await self._maybe_clear_job(upload.job_id)
 
     async def _maybe_clear_job(self, job_id: str) -> None:
         """Drop the source job + artifacts now that the video is on YouTube.
