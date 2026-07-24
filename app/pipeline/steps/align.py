@@ -18,6 +18,8 @@ import difflib
 import logging
 import re
 
+from app.languages import DEFAULT_LANGUAGE
+
 logger = logging.getLogger(__name__)
 
 # How far ahead (in transcript words) we search for the start of a chunk /
@@ -41,40 +43,134 @@ _ONES = [
 ]
 _TENS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"]
 
+# Vietnamese digit names for 0-9, used to build spoken numbers. These carry
+# diacritics; _fold() strips them to the same ascii skeleton the transcript
+# tokens get (see _expand_token), so they compare against a Whisper transcript.
+_ONES_VI = [
+    "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín",
+]
+
+# Word inserted before the fractional part of a decimal, per language.
+_POINT = {"en": "point", "vi": "phẩy"}
+# Digit table used for individual fractional digits ("3.14" → three one four).
+_ONES_DIGIT = {"en": _ONES, "vi": _ONES_VI}
+# Spoken form of a trailing "%".
+_PERCENT = {"en": "percent", "vi": "phần trăm"}
+# Languages that write the decimal separator as a comma and thousands as a dot
+# (the opposite of English). Only these get comma→decimal-point rewriting.
+_COMMA_DECIMAL = {"vi"}
+
 _EMPHASIS_RE = re.compile(r"\*\*(.+?)\*\*")
 
 
-def _num_words(n: int) -> list[str]:
+def _num_words_en(n: int) -> list[str]:
     if n < 20:
         return [_ONES[n]]
     if n < 100:
         return [_TENS[n // 10]] + ([_ONES[n % 10]] if n % 10 else [])
     if n < 1000:
         words = [_ONES[n // 100], "hundred"]
-        return words + (_num_words(n % 100) if n % 100 else [])
+        return words + (_num_words_en(n % 100) if n % 100 else [])
     if n < 1_000_000:
-        words = _num_words(n // 1000) + ["thousand"]
-        return words + (_num_words(n % 1000) if n % 1000 else [])
+        words = _num_words_en(n // 1000) + ["thousand"]
+        return words + (_num_words_en(n % 1000) if n % 1000 else [])
     return [str(n)]
 
 
-def _expand_token(token: str) -> list[str]:
+def _num_words_vi(n: int) -> list[str]:
+    """Spoken Vietnamese for n. Applies the common speech variants (mười vs
+    mươi for the tens place, mốt/lăm/tư for trailing 1/5/4) so the words match
+    how Whisper transcribes the TTS. Grammar need not be perfect — alignment
+    folds and only needs a decent overlap to anchor."""
+    if n < 10:
+        return [_ONES_VI[n]]
+    if n < 20:  # 10-19: "mười" + unit, 5 → "lăm"
+        u = n % 10
+        if u == 0:
+            return ["mười"]
+        return ["mười", "lăm" if u == 5 else _ONES_VI[u]]
+    if n < 100:  # tens: <tens> "mươi" [+ unit: 1→mốt, 4→tư, 5→lăm]
+        t, u = divmod(n, 10)
+        out = [_ONES_VI[t], "mươi"]
+        if u == 1:
+            out.append("mốt")
+        elif u == 4:
+            out.append("tư")
+        elif u == 5:
+            out.append("lăm")
+        elif u:
+            out.append(_ONES_VI[u])
+        return out
+    if n < 1000:  # hundreds: <h> "trăm" [+ "linh" unit | + rest]
+        h, r = divmod(n, 100)
+        out = [_ONES_VI[h], "trăm"]
+        if r == 0:
+            return out
+        if r < 10:
+            return out + ["linh", _ONES_VI[r]]
+        return out + _num_words_vi(r)
+    if n < 1_000_000:  # thousands: <t...> "nghìn" [+ rest]
+        th, r = divmod(n, 1000)
+        return _num_words_vi(th) + ["nghìn"] + (_num_words_vi(r) if r else [])
+    return [str(n)]
+
+
+_NUM_WORDS = {"en": _num_words_en, "vi": _num_words_vi}
+
+
+def _num_words(n: int, language: str = DEFAULT_LANGUAGE) -> list[str]:
+    """Spoken form of n in `language` (falls back to English for unknowns)."""
+    return _NUM_WORDS.get(language, _num_words_en)(n)
+
+
+def _fold(word: str) -> list[str]:
+    """Reduce a spoken-number word to the same ascii skeleton the transcript
+    tokens get (diacritics dropped, non-ascii removed), so language number
+    words compare against a diacritic-stripped Whisper transcript. A word may
+    fold to zero or several runs; empties are dropped by the caller."""
+    cleaned = re.sub(r"[^a-z0-9.]", "", word.lower())
+    return re.findall(r"[a-z]+|\d+", cleaned)
+
+
+def _expand_token(token: str, language: str = DEFAULT_LANGUAGE) -> list[str]:
     """Normalize one token into comparable words. Digits become their spoken
-    form so Whisper's "14" matches a caption's "fourteen" (and vice versa);
-    mixed tokens split ("h2o" → h two o), hyphens split ("twenty-five")."""
+    form in `language` so Whisper's "14" matches a caption's "fourteen" (and,
+    for vi, "một" matches a caption's "1"); mixed tokens split ("h2o" → h two
+    o), hyphens split ("twenty-five"); a trailing "%" becomes its spoken word.
+    Spoken number words are run through _fold so they share the transcript's
+    ascii skeleton."""
+    token = token.lower()
+    if language in _COMMA_DECIMAL:
+        # vi writes decimals with a comma ("99,995" = 99.995) and thousands with
+        # a dot — the opposite of English. Rewrite a comma between digits to the
+        # "." the decimal branch below expects. Scribe reads the fraction
+        # digit-by-digit ("chín mươi chín phẩy chín..."), which is exactly how
+        # that branch expands it, so the two line up.
+        token = re.sub(r"(?<=\d),(?=\d)", ".", token)
     out: list[str] = []
-    for part in re.split(r"[-–—/]", token.lower()):
+    for part in re.split(r"[-–—/]", token):
         cleaned = re.sub(r"[^a-z0-9.]", "", part)
         for run in re.findall(r"[a-z]+|\d+\.\d+|\d+", cleaned):
             if run[0].isdigit():
                 if "." in run:
                     intp, frac = run.split(".", 1)
-                    out += _num_words(int(intp)) + ["point"]
-                    out += [_ONES[int(d)] for d in frac]
+                    for w in _num_words(int(intp), language):
+                        out += _fold(w)
+                    out += _fold(_POINT.get(language, "point"))
+                    ones = _ONES_DIGIT.get(language, _ONES)
+                    for d in frac:
+                        out += _fold(ones[int(d)])
                 else:
-                    out += _num_words(int(run))
+                    for w in _num_words(int(run), language):
+                        out += _fold(w)
             else:
                 out.append(run)
+        if "%" in part:
+            # "100%" is spoken "một trăm phần trăm" / "one hundred percent" —
+            # the number, then the unit word(s). Fold per word so a multi-word
+            # unit ("phần trăm") stays two tokens matching the transcript.
+            for w in _PERCENT.get(language, "percent").split():
+                out += _fold(w)
     return out
 
 
@@ -88,7 +184,9 @@ def _split_marks(text: str) -> str:
     )
 
 
-def _flatten_for_diff(tokens: list[str]) -> tuple[list[str], list[int]]:
+def _flatten_for_diff(
+    tokens: list[str], language: str = DEFAULT_LANGUAGE
+) -> tuple[list[str], list[int]]:
     """Expand tokens to comparable sub-words, remembering which token each came
     from. Diffing must happen at sub-word granularity, not token granularity:
     Whisper emits "fine" and "tuning" as two words where a caption writes one
@@ -97,7 +195,7 @@ def _flatten_for_diff(tokens: list[str]) -> tuple[list[str], list[int]]:
     keys: list[str] = []
     owners: list[int] = []
     for i, token in enumerate(tokens):
-        for sub in _expand_token(token):
+        for sub in _expand_token(token, language):
             keys.append(sub)
             owners.append(i)
     return keys, owners
@@ -111,7 +209,9 @@ def _raw_span(tokens: list[str], owners: list[int], i1: int, i2: int) -> str:
     return " ".join(tokens[i] for i in ordered)
 
 
-def _coverage_report(scenes: list[dict], words: list[dict]) -> str:
+def _coverage_report(
+    scenes: list[dict], words: list[dict], language: str = DEFAULT_LANGUAGE
+) -> str:
     """Name what the captions dropped or invented versus the recorded audio.
 
     The chunk that fails to anchor is usually NOT the mistake — when a sentence
@@ -127,8 +227,8 @@ def _coverage_report(scenes: list[dict], words: list[dict]) -> str:
         for chunk in (scene.get("captions") or [])
         for token in chunk.split()
     ]
-    spoken_key, spoken_owner = _flatten_for_diff(spoken_tokens)
-    caption_key, caption_owner = _flatten_for_diff(caption_tokens)
+    spoken_key, spoken_owner = _flatten_for_diff(spoken_tokens, language)
+    caption_key, caption_owner = _flatten_for_diff(caption_tokens, language)
     if not spoken_key or not caption_key:
         return ""
 
@@ -161,12 +261,14 @@ def _coverage_report(scenes: list[dict], words: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def _flatten_words(words: list[dict]) -> list[dict]:
+def _flatten_words(
+    words: list[dict], language: str = DEFAULT_LANGUAGE
+) -> list[dict]:
     """Expand transcript words into normalized sub-words; each sub-word keeps
     its source word's timing and index (wi) for error context."""
     flat: list[dict] = []
     for wi, w in enumerate(words):
-        for sub in _expand_token(w["text"]):
+        for sub in _expand_token(w["text"], language):
             flat.append({"text": sub, "start": w["start"], "end": w["end"], "wi": wi})
     return flat
 
@@ -179,18 +281,29 @@ def _match_chunk(
     anchor. `positions` has one entry per `expected` subword: the matched
     flat-transcript index, or None if that subword wasn't found within its
     lookahead window. `words` entries are already normalized (see
-    _flatten_words)."""
+    _flatten_words).
+
+    Anchoring tries `expected[0]` first, but falls back to the earliest later
+    subword that appears within the window when the leading one doesn't (a
+    normalized number like "một"/"one" that Whisper heard differently, or a
+    dropped filler word). The skipped leading subwords get None positions and
+    the ratio check below still rejects an anchor that skips too much."""
     anchor = None
-    for i in range(pos, min(pos + _CHUNK_LOOKAHEAD, len(words))):
-        if words[i]["text"] == expected[0]:
-            anchor = i
+    e_idx = 0
+    for k, exp in enumerate(expected):
+        for i in range(pos, min(pos + _CHUNK_LOOKAHEAD, len(words))):
+            if words[i]["text"] == exp:
+                anchor = i
+                e_idx = k
+                break
+        if anchor is not None:
             break
     if anchor is None:
         return None
 
-    positions: list[int | None] = [anchor]
+    positions: list[int | None] = [None] * e_idx + [anchor]
     cursor = anchor + 1
-    for exp in expected[1:]:
+    for exp in expected[e_idx + 1:]:
         found = None
         for i in range(cursor, min(cursor + _WORD_LOOKAHEAD, len(words))):
             if words[i]["text"] == exp:
@@ -306,13 +419,18 @@ def _proportional_fill(aligned: list[dict], total_duration: float) -> list[dict]
 
 
 def align_scenes(
-    scenes: list[dict], words: list[dict], total_duration: float
+    scenes: list[dict],
+    words: list[dict],
+    total_duration: float,
+    language: str = DEFAULT_LANGUAGE,
 ) -> list[dict]:
     """Returns deep-copied scenes with start/duration/captionTiming (incl.
     per-word timing for karaoke) filled in. Best-effort: unanchored chunks are
-    interpolated, never raised on."""
+    interpolated, never raised on. `language` selects how caption digits are
+    expanded to spoken words so they match a Whisper transcript of that
+    language (e.g. vi: "1" → "một")."""
     aligned = copy.deepcopy(scenes)
-    flat = _flatten_words(words) if words else []
+    flat = _flatten_words(words, language) if words else []
     if not flat:
         logger.warning("alignment: no usable transcript words — proportional fill")
         return _proportional_fill(aligned, total_duration)
@@ -326,7 +444,7 @@ def align_scenes(
         for chunk in captions:
             marked = _split_marks(chunk)
             tokens = marked.split()
-            expected_per_token = [_expand_token(t) for t in tokens]
+            expected_per_token = [_expand_token(t, language) for t in tokens]
             expected = [w for sub in expected_per_token for w in sub]
             if not expected:
                 continue
@@ -355,7 +473,7 @@ def align_scenes(
             spans.append([chunk, start, end, chunk_tokens])
         scene_spans.append(spans)
 
-    report = _coverage_report(aligned, words)
+    report = _coverage_report(aligned, words, language)
     if report:
         logger.warning("alignment coverage (best-effort timing applied):\n%s", report)
 

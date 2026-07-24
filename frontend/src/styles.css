@@ -78,6 +78,24 @@ body {
   font-size: 1.05rem;
 }
 
+.thumbnail-preview {
+  margin: 0 0 1rem;
+}
+
+.thumbnail-preview img {
+  display: block;
+  width: 320px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.thumbnail-preview figcaption {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+}
+
 .muted {
   color: var(--muted);
   font-size: 0.9rem;
@@ -151,6 +169,26 @@ textarea {
   bottom: -1.1rem;
   font-size: 0.75rem;
   color: var(--muted);
+}
+
+.char-counter.warning {
+  color: var(--warning);
+  font-weight: 600;
+}
+
+.char-counter.danger {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.warning-text {
+  color: var(--warning);
+  font-size: 0.9rem;
+  margin: -0.4rem 0 0.9rem;
+}
+
+textarea[aria-invalid='true'] {
+  border-color: var(--danger);
 }
 
 button,

@@ -179,10 +179,15 @@ window.__timelines = window.__timelines || {};
   });
   caps.forEach(function(el, i){
     var t = CT[i]; if(!t) return;
-    tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
     if(i < caps.length - 1){
       var nextStart = CT[i+1] ? CT[i+1].start : t.end;
-      tl.to(el, { opacity:0, duration:0.12 }, Math.max(t.start, nextStart - 0.12));
+      var gap = Math.max(0.02, nextStart - t.start);
+      var fadeOutDur = Math.min(0.12, gap);
+      var fadeInDur = Math.min(i===0?0.2:0.18, Math.max(0.01, gap - fadeOutDur));
+      tl.to(el, { opacity:1, duration:fadeInDur }, t.start);
+      tl.to(el, { opacity:0, duration:fadeOutDur }, nextStart - fadeOutDur);
+    } else {
+      tl.to(el, { opacity:1, duration:i===0?0.2:0.18 }, t.start);
     }
     // Karaoke: only the word being spoken holds the highlight color; every
     // other word keeps the normal caption color. Emphasis pills (.hl) opt out.

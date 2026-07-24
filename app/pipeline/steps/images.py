@@ -16,6 +16,7 @@ Design notes:
   image scenes keep the placeholder.
 - **Disable-able** — `images_enabled=false` skips generation entirely.
 """
+import asyncio
 import logging
 
 import openai
@@ -107,7 +108,11 @@ async def resolve_images(
 ) -> list[dict]:
     """Fill `image` for every image scene still on the placeholder. Mutates and
     returns `scenes`. No-op when the subject has no image frame types or
-    `images_enabled` is false."""
+    `images_enabled` is false.
+
+    Image scenes are generated concurrently, bounded by
+    `settings.image_concurrency`, so a video's images finish in roughly
+    total/concurrency time instead of one after another."""
     image_types = subject_config.image_frame_types
     if not image_types or not settings.images_enabled:
         return scenes
@@ -117,28 +122,47 @@ async def resolve_images(
         return scenes
 
     size = _size_for(settings, orientation)
-    generated = 0
-    for scene in targets:
-        if generated >= settings.max_images_per_video:
-            logger.warning(
-                "image cap (%d) reached — scene %r keeps the placeholder",
-                settings.max_images_per_video, scene.get("id"),
-            )
-            scene.setdefault("image", PLACEHOLDER_IMAGE)
-            continue
-        prompt = str(scene["imagePrompt"]).strip()
-        try:
-            scene["image"] = await _generate_one(client, settings, prompt, size)
-            generated += 1
-        except (openai.AuthenticationError, openai.PermissionDeniedError):
-            raise  # permanent — let the orchestrator surface a clear message
-        except Exception as exc:  # noqa: BLE001 — one bad image must not fail the job
-            logger.warning(
-                "image generation failed for scene %r (%s) — keeping placeholder: %s",
-                scene.get("id"), scene.get("type"), exc,
-            )
-            scene.setdefault("image", PLACEHOLDER_IMAGE)
 
+    # Apply the cost/latency cap up front: the first N image scenes are generated,
+    # any beyond the cap keep the placeholder. (Deciding this before dispatch keeps
+    # the cap deterministic regardless of which requests finish first.)
+    to_generate = targets[: settings.max_images_per_video]
+    for scene in targets[settings.max_images_per_video :]:
+        logger.warning(
+            "image cap (%d) reached — scene %r keeps the placeholder",
+            settings.max_images_per_video, scene.get("id"),
+        )
+        scene.setdefault("image", PLACEHOLDER_IMAGE)
+
+    sem = asyncio.Semaphore(max(1, settings.image_concurrency))
+
+    async def _resolve_scene(scene: dict) -> None:
+        prompt = str(scene["imagePrompt"]).strip()
+        async with sem:
+            try:
+                scene["image"] = await _generate_one(client, settings, prompt, size)
+            except (openai.AuthenticationError, openai.PermissionDeniedError):
+                raise  # permanent — let the orchestrator surface a clear message
+            except Exception as exc:  # noqa: BLE001 — one bad image must not fail the job
+                logger.warning(
+                    "image generation failed for scene %r (%s) — keeping placeholder: %s",
+                    scene.get("id"), scene.get("type"), exc,
+                )
+                scene.setdefault("image", PLACEHOLDER_IMAGE)
+
+    results = await asyncio.gather(
+        *(_resolve_scene(s) for s in to_generate), return_exceptions=True
+    )
+
+    # Re-raise the first permanent (auth/permission) error, if any — every other
+    # exception was already swallowed inside `_resolve_scene`.
+    for res in results:
+        if isinstance(res, BaseException):
+            raise res
+
+    generated = sum(
+        1 for s in to_generate if s.get("image") and s["image"] != PLACEHOLDER_IMAGE
+    )
     if generated:
         logger.info("generated %d image(s) for %d image scene(s)", generated, len(targets))
     return scenes

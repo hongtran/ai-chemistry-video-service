@@ -6,9 +6,9 @@ never by re-prompting the model:
 
 - `coerce_partition` turns the model's (possibly messy) grouping into a clean
   contiguous partition of [1..N] — it trusts only each scene's start sentence.
-- `derive_captions` chunks each scene's exact sentence text into 2–5 word
-  caption strings, so `join(captions) == join(sentences) == script` holds by
-  construction.
+- `derive_captions` chunks each scene's exact sentence text into caption
+  strings sized for the video's orientation (short vs. long-form), so
+  `join(captions) == join(sentences) == script` holds by construction.
 
 The model additionally writes the video-level YouTube metadata (it sees the
 whole script here, before TTS). Long scripts are grouped one sentence-window at
@@ -29,10 +29,20 @@ from app.subjects import SubjectConfig
 
 logger = logging.getLogger(__name__)
 
-# Caption chunk shape (schema says 2-6 words, ≤55 chars each).
+# Caption chunk shape (schema says 2-6 words, ≤55 chars each) — short/vertical.
 _CAPTION_MIN_WORDS = 2
 _CAPTION_MAX_WORDS = 5
 _CAPTION_MAX_CHARS = 55
+
+# Long/horizontal caption chunk shape: fewer, denser scenes read better as
+# slightly longer 3-7 word captions (wider char cap so 7 longer words don't
+# hit it before the word-count target).
+_CAPTION_MIN_WORDS_LONG = 3
+_CAPTION_MAX_WORDS_LONG = 7
+_CAPTION_MAX_CHARS_LONG = 75
+
+# Punctuation a chunk prefers to end on, once it already has min_words.
+_CAPTION_BREAK_CHARS = (":", ",", ";")
 
 _METADATA_BLOCK = (
     'ALSO include a top-level "config" object alongside "scenes", carrying the '
@@ -79,26 +89,80 @@ def _normalize(text: str) -> str:
     return " ".join(str(text).split())
 
 
-def derive_captions(sentence_texts: list[str]) -> list[str]:
-    """Chunk the scene's joined sentence text into 2–5 word caption strings
-    (≤55 chars). No word is added, dropped, or reworded, so the chunks joined
-    reproduce the sentences exactly."""
-    words = _normalize(" ".join(sentence_texts)).split()
+def _caption_bounds(orientation: str) -> tuple[int, int, int]:
+    """(min_words, max_words, max_chars) for a caption chunk: short/vertical
+    keeps the schema's 2-5/55 shape; long/horizontal widens to 3-7/75 so a
+    long-form video's fewer, denser captions don't chop too fine."""
+    if orientation == "horizontal":
+        return _CAPTION_MIN_WORDS_LONG, _CAPTION_MAX_WORDS_LONG, _CAPTION_MAX_CHARS_LONG
+    return _CAPTION_MIN_WORDS, _CAPTION_MAX_WORDS, _CAPTION_MAX_CHARS
+
+
+def _greedy_chunk(
+    words: list[str], min_words: int, max_words: int, max_chars: int,
+) -> list[str]:
+    """Greedily pack a word list into min_words-max_words / <=max_chars chunks,
+    preferring to end a chunk right after punctuation once it already has
+    min_words. Purely mechanical: adds/drops/rewords nothing, so the chunks
+    joined reproduce the input word sequence exactly. Bounds are passed in by
+    the caller (short vs. long-form) rather than looked up here, so this stays
+    a pure, directly-testable function like `coerce_partition`. Best-effort by
+    design: the trailing remainder is merged back into the previous chunk
+    whenever that keeps it within max_words/max_chars; if there simply aren't
+    enough words left to reach min_words and no such merge is possible, the
+    short remainder is left as-is rather than treated as a hard failure — this
+    is the deterministic fallback for the semantic chunker and the body of
+    `derive_captions`."""
     chunks: list[str] = []
     current: list[str] = []
     for word in words:
         tentative = current + [word]
-        too_long = len(" ".join(tentative)) > _CAPTION_MAX_CHARS
-        if current and (
-            len(current) >= _CAPTION_MAX_WORDS
-            or (too_long and len(current) >= _CAPTION_MIN_WORDS)
-        ):
+        too_long = len(" ".join(tentative)) > max_chars
+        at_max = len(current) >= max_words
+        char_forced = too_long and len(current) >= min_words
+        if current and (at_max or char_forced):
             chunks.append(" ".join(current))
             current = [word]
-        else:
-            current = tentative
+            continue
+        current = tentative
+        if len(current) >= min_words and current[-1].endswith(_CAPTION_BREAK_CHARS):
+            chunks.append(" ".join(current))
+            current = []
     if current:
         chunks.append(" ".join(current))
+
+    # Trailing-remainder fix: the final chunk can come up short only because
+    # the words ran out, never mid-stream (every break above already requires
+    # len(current) >= min_words). Merge it back if that keeps the combined
+    # chunk in bounds; otherwise leave the short remainder — there is no way
+    # to manufacture words that don't exist.
+    if len(chunks) >= 2 and len(chunks[-1].split()) < min_words:
+        merged = chunks[-2] + " " + chunks[-1]
+        chunks[-2:] = [merged]
+    return chunks
+
+
+def derive_captions(
+    sentence_texts: list[str], orientation: str = "vertical",
+) -> list[str]:
+    """Chunk each sentence of the scene independently into caption strings
+    sized for the video's orientation — 2-5 words / ≤55 chars for
+    short/vertical, 3-7 words / ≤75 chars for long/horizontal — then
+    concatenate the per-sentence chunks. A caption never straddles a sentence
+    boundary: a short sentence gets its own (possibly under-minimum) caption
+    rather than borrowing words from its neighbor. Re-splits on sentence
+    boundaries itself (via `split_sentences`) so this holds regardless of
+    whether the caller passes separate sentences or one already-joined scene
+    string — `derive_captions_semantic`'s fallback does the latter. No word is
+    added, dropped, or reworded, so the chunks joined reproduce the sentences
+    exactly."""
+    min_words, max_words, max_chars = _caption_bounds(orientation)
+    chunks: list[str] = []
+    for sentence in sentence_texts:
+        # sentence = _normalize(sentence)
+        words = sentence.split()
+        if words:
+            chunks.extend(_greedy_chunk(words, min_words, max_words, max_chars))
     return chunks
 
 
@@ -136,6 +200,121 @@ def _even_starts(n_sentences: int, per: int = 3) -> list[list[int]]:
 def _sentence_texts(sentences: list[dict], indices: list[int]) -> list[str]:
     by_i = {int(s["i"]): s["text"] for s in sentences}
     return [by_i[i] for i in indices if i in by_i]
+
+
+# --- Semantic caption chunking (LLM chunks the scene paragraph; code validates) -
+
+_CAPTION_SYSTEM_PROMPT = (
+    "You split a video scene's narration into on-screen caption chunks for "
+    "karaoke-style subtitles. You are given one or more SCENES; each scene is a "
+    "paragraph of narration. For each scene, return an ordered list of caption "
+    "strings that, read in order, reproduce the scene's text EXACTLY.\n"
+    "Rules:\n"
+    "1. Reproduce the words verbatim and in order — do NOT add, drop, reorder, "
+    "reword, translate, or change accents/diacritics or punctuation. The chunks "
+    "joined with single spaces must equal the scene's own words.\n"
+    "2. Each chunk is 2–5 words and at most ~55 characters.\n"
+    "3. Break only at meaningful phrase boundaries. NEVER end a chunk on a "
+    "leading conjunction, preposition, or article that introduces the next "
+    'phrase (e.g. Vietnamese "và", "cùng", "của", "nhưng", "để"; English "and", '
+    '"with", "the", "to") — keep such a word at the START of the next chunk.\n'
+    "Return ONLY a JSON object shaped exactly like:\n"
+    '{"scenes": [ {"captions": ["Các biện pháp QC", "Thực nghiệm hóa học"]}, '
+    '{"captions": ["..."]} ]}\n'
+    "with exactly one entry per input scene, in the same order."
+)
+
+
+def _build_caption_user_message(scene_texts: list[str]) -> str:
+    """One user message carrying each scene's paragraph. Per-request data only."""
+    blocks = [f"Scene {i}:\n{t}" for i, t in enumerate(scene_texts, start=1)]
+    return "SCENES:\n\n" + "\n\n".join(blocks)
+
+
+def _enforce_caps(words: list[str]) -> list[str]:
+    """A caption within caps passes through unchanged; an over-long one degrades
+    to the greedy rule (the only place the mechanical chunker still applies).
+    Word-preserving, so it never breaks validation."""
+    if (
+        len(words) <= _CAPTION_MAX_WORDS
+        and len(" ".join(words)) <= _CAPTION_MAX_CHARS
+    ):
+        return [" ".join(words)]
+    return _greedy_chunk(words, _CAPTION_MIN_WORDS, _CAPTION_MAX_WORDS, _CAPTION_MAX_CHARS)
+
+
+def _validate_scene_captions(captions: object, scene_text: str) -> list[str] | None:
+    """Accept the model's caption strings only if they reproduce the scene's
+    exact word sequence (whitespace-normalized). This is the integrity guard: a
+    reworded/dropped word or a changed diacritic fails here and the caller falls
+    back to the greedy chunker. Valid captions get a word-preserving cap-repair
+    so the ≤5-word / ≤55-char invariant always holds."""
+    if not isinstance(captions, list) or not all(isinstance(c, str) for c in captions):
+        return None
+    if _normalize(" ".join(captions)).split() != _normalize(scene_text).split():
+        return None
+    out: list[str] = []
+    for caption in captions:
+        out.extend(_enforce_caps(_normalize(caption).split()))
+    return out
+
+
+async def derive_captions_semantic(
+    client: AsyncOpenAI,
+    settings: Settings,
+    scene_sentences: list[list[str]],
+    orientation: str = "vertical",
+) -> list[list[str]]:
+    """Chunk each scene's paragraph into caption strings at semantic boundaries
+    via the LLM — ONE call for ALL scenes. `scene_sentences` is one list of
+    sentence texts per scene (segment_script passes _sentence_texts' real
+    output, not a pre-joined blob), so the greedy fallback below always gets
+    genuine per-sentence input. Each scene's captions are validated against
+    that scene's own words; any scene that fails validation (or is
+    missing/garbled) falls back to the greedy chunker (bounds sized for
+    `orientation`), so join(captions) always reproduces the scene text. Makes
+    no LLM call in stub/disabled mode."""
+    if not settings.semantic_captions_enabled:
+        return [derive_captions(sents, orientation=orientation) for sents in scene_sentences]
+    if not scene_sentences:
+        return []
+
+    scene_texts = [_normalize(" ".join(sents)) for sents in scene_sentences]
+    messages = [
+        {"role": "system", "content": _CAPTION_SYSTEM_PROMPT},
+        {"role": "user", "content": _build_caption_user_message(scene_texts)},
+    ]
+
+    async def _call() -> str:
+        completion = await client.chat.completions.create(
+            model=settings.llm_model,
+            messages=messages,
+            response_format={"type": "json_object"},
+            temperature=settings.llm_temperature,
+        )
+        return completion.choices[0].message.content or ""
+
+    raw = await with_retries(_call, max_attempts=settings.max_retries)
+
+    try:
+        payload = json.loads(raw)
+        scenes = payload["scenes"] if isinstance(payload, dict) else None
+    except (json.JSONDecodeError, KeyError, TypeError):
+        scenes = None
+    if not isinstance(scenes, list):
+        logger.warning("captions: response unusable JSON — greedy fallback")
+        return [derive_captions(sents, orientation=orientation) for sents in scene_sentences]
+
+    results: list[list[str]] = []
+    for idx, (text, sents) in enumerate(zip(scene_texts, scene_sentences)):
+        entry = scenes[idx] if idx < len(scenes) else None
+        raw_captions = entry.get("captions") if isinstance(entry, dict) else None
+        validated = _validate_scene_captions(raw_captions, text)
+        results.append(
+            validated if validated is not None
+            else derive_captions(sents, orientation=orientation)
+        )
+    return results
 
 
 def assert_three_way_equality(
@@ -271,9 +450,8 @@ async def segment_script(
     windows = window_sentences(sentences, settings.segment_sentence_window)
     total = len(windows)
 
-    scenes_index: list[SceneIndex] = []
     metadata: dict = {}
-    next_id = 1
+    scene_ranges: list[list[int]] = []
     for w_index, window in enumerate(windows):
         n = len(window)
         groups, window_metadata = await _segment_window(
@@ -307,16 +485,32 @@ async def segment_script(
             remapped = [[global_lo + s - 1] for s in range(1, n + 1, 3)]
 
         # coerce over the window's global index span
-        window_ranges = _coerce_window(remapped, global_lo, global_hi)
-        for indices in window_ranges:
-            scenes_index.append(
-                SceneIndex(
-                    scene_id=f"scene-{next_id}",
-                    idx_sentences=indices,
-                    captions=derive_captions(_sentence_texts(sentences, indices)),
-                )
-            )
-            next_id += 1
+        scene_ranges.extend(_coerce_window(remapped, global_lo, global_hi))
+
+    # Semantic caption chunking: ONE LLM call chunks every scene's paragraph at
+    # semantic boundaries; code validates each scene against its own words and
+    # falls back to the greedy chunker per failing scene (see
+    # derive_captions_semantic), so three-way equality always holds. Each
+    # scene keeps its real per-sentence list (not pre-joined) so the greedy
+    # fallback never has to re-derive sentence boundaries from a flattened
+    # blob.
+    scene_sentences = [
+        _sentence_texts(sentences, indices) for indices in scene_ranges
+    ]
+    captions_per_scene = await derive_captions_semantic(
+        client, settings, scene_sentences, orientation=orientation,
+    )
+
+    scenes_index = [
+        SceneIndex(
+            scene_id=f"scene-{next_id}",
+            idx_sentences=indices,
+            captions=captions,
+        )
+        for next_id, (indices, captions) in enumerate(
+            zip(scene_ranges, captions_per_scene), start=1
+        )
+    ]
 
     return scenes_index, metadata
 

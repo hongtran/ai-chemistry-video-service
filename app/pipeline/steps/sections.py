@@ -6,11 +6,40 @@ single Pass 1 LLM call has to group a whole 100+ sentence script at once.
 """
 import re
 
-_SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?])\s+")
+_SENTENCE_BOUNDARY = re.compile(r"(?<=[.!?])\s+|\n+")
+
+# A raw split segment under this many words isn't a sentence on its own — a
+# bare numbering marker ("1.") or a short interjection ("Hi!") reads as one
+# sentence together with its neighbor.
+_MIN_SENTENCE_WORDS = 2
 
 
 def split_sentences(text: str) -> list[str]:
-    return [s for s in _SENTENCE_BOUNDARY.split(str(text)) if s]
+    return _merge_short_sentences(
+        [s for s in _SENTENCE_BOUNDARY.split(str(text)) if s]
+    )
+
+
+def _merge_short_sentences(sentences: list[str]) -> list[str]:
+    """Fold any segment under _MIN_SENTENCE_WORDS words into a neighbor:
+    forward into the next segment when one exists (a lead-in like "Hi!" or
+    "1." attaches to what follows), else backward for a short trailing
+    fragment with nothing left to merge into. Word-preserving — this only
+    changes where the sentence boundaries fall, never the text itself."""
+    merged: list[str] = []
+    i = 0
+    n = len(sentences)
+    while i < n:
+        current = sentences[i]
+        while len(current.split()) < _MIN_SENTENCE_WORDS and i + 1 < n:
+            i += 1
+            current = f"{current} {sentences[i]}"
+        merged.append(current)
+        i += 1
+    if len(merged) >= 2 and len(merged[-1].split()) < _MIN_SENTENCE_WORDS:
+        merged[-2] = f"{merged[-2]} {merged[-1]}"
+        merged.pop()
+    return merged
 
 
 def split_for_tts(text: str, max_chars: int) -> list[str]:

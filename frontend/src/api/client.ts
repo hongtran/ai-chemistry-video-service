@@ -129,6 +129,21 @@ export async function downloadVideo(jobId: string, filename: string): Promise<vo
   URL.revokeObjectURL(url)
 }
 
+/** The generated 1280x720 thumbnail as an object URL, or null if the job has
+ * none (thumbnail generation is best-effort). Fetched as a blob because the
+ * artifacts route requires the admin Bearer header (an <img src> can't send it).
+ * Caller must URL.revokeObjectURL when done. */
+export async function fetchThumbnailUrl(jobId: string): Promise<string | null> {
+  const res = await fetch(`${BASE}/api/v1/videos/${jobId}/artifacts/thumbnail.jpg`, {
+    headers: authHeaders(false),
+  })
+  if (!res.ok) {
+    handleAdminSessionExpiry(res)
+    return null
+  }
+  return URL.createObjectURL(await res.blob())
+}
+
 export function startYouTubeUpload(
   jobId: string,
   body: CreateYouTubeUploadRequest,

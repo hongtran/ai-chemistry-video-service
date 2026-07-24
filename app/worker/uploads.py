@@ -44,9 +44,15 @@ class UploadRunner:
         )
         self._tasks: set[asyncio.Task[None]] = set()
 
-    def submit(self, upload_id: str, access_token: str, video_path: Path) -> None:
+    def submit(
+        self,
+        upload_id: str,
+        access_token: str,
+        video_path: Path,
+        thumbnail_path: Path | None = None,
+    ) -> None:
         task = asyncio.create_task(
-            self._run(upload_id, access_token, video_path),
+            self._run(upload_id, access_token, video_path, thumbnail_path),
             name=f"yt-upload-{upload_id}",
         )
         self._tasks.add(task)
@@ -62,7 +68,13 @@ class UploadRunner:
         await asyncio.gather(*self._tasks, return_exceptions=True)
         self._tasks.clear()
 
-    async def _run(self, upload_id: str, access_token: str, video_path: Path) -> None:
+    async def _run(
+        self,
+        upload_id: str,
+        access_token: str,
+        video_path: Path,
+        thumbnail_path: Path | None = None,
+    ) -> None:
         upload = await self._uploads.get(upload_id)
         if upload is None:
             logger.error("upload %s vanished before start", upload_id)
@@ -110,6 +122,17 @@ class UploadRunner:
             "video_id": video_id,
             "video_url": f"https://www.youtube.com/watch?v={video_id}",
         }
+        if thumbnail_path is not None and thumbnail_path.exists():
+            # Best-effort, like the playlist add below: a thumbnail failure (a
+            # 403 on unverified channels is common) must not undo the upload.
+            try:
+                await self._uploader.set_thumbnail(
+                    video_id, thumbnail_path, access_token
+                )
+                fields["thumbnail_set"] = True
+            except Exception as exc:  # noqa: BLE001
+                logger.warning("upload %s: thumbnail set failed: %s", upload_id, exc)
+                fields["thumbnail_set"] = False
         if upload.playlist_id:
             # Best-effort, like the reference script: a playlist failure does
             # not undo a successful upload.

@@ -10,7 +10,13 @@ from app.api.router import router
 from app.api.youtube_router import router as youtube_router
 from app.auth import AdminAuth, require_admin
 from app.config import Settings
-from app.llm.client import LLMSubjectGuard, StubSubjectGuard, build_openai_client
+from app.llm.client import (
+    LLMScriptNormalizer,
+    LLMSubjectGuard,
+    StubScriptNormalizer,
+    StubSubjectGuard,
+    build_openai_client,
+)
 from app.observability import flush_langfuse, init_langfuse
 from app.pipeline.base import VideoPipeline
 from app.pipeline.orchestrator import RealVideoPipeline
@@ -47,6 +53,7 @@ async def lifespan(app: FastAPI):
     if settings.use_stub_pipeline:
         client = None
         guard = StubSubjectGuard()
+        normalizer = StubScriptNormalizer()
         logger.info("Subject guard: stub (accepts any non-empty query)")
     else:
         if not settings.openai_api_key:
@@ -55,6 +62,7 @@ async def lifespan(app: FastAPI):
             )
         client = build_openai_client(settings)
         guard = LLMSubjectGuard(client, settings)
+        normalizer = LLMScriptNormalizer(client, settings)
 
     pipeline = _build_pipeline(settings, jobs, artifacts, client)
     queue = AsyncioJobQueue(pipeline, jobs, concurrency=settings.worker_concurrency)
@@ -99,6 +107,7 @@ async def lifespan(app: FastAPI):
     app.state.artifacts = artifacts
     app.state.queue = queue
     app.state.guard = guard
+    app.state.normalizer = normalizer
     app.state.uploads = uploads
     app.state.upload_runner = upload_runner
     app.state.oauth = oauth

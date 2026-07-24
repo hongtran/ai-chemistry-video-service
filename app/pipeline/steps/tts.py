@@ -11,12 +11,10 @@ language keeps using OpenAI TTS.
 """
 import asyncio
 import logging
-import random
 import shutil
 import tempfile
 from pathlib import Path
 
-import httpx
 from elevenlabs.client import AsyncElevenLabs
 from elevenlabs.core.api_error import ApiError
 from openai import AsyncOpenAI
@@ -24,6 +22,7 @@ from openai import AsyncOpenAI
 from app.config import Settings
 from app.languages import DEFAULT_LANGUAGE
 from app.llm.client import with_retries
+from app.llm.elevenlabs import with_elevenlabs_retries
 from app.observability import track_generation
 from app.pipeline.steps.sections import split_for_tts
 
@@ -62,40 +61,6 @@ async def _synthesize_chunk(
     return await with_retries(_call, max_attempts=settings.max_retries)
 
 
-async def _with_elevenlabs_retries(
-    call, *, max_attempts: int, base_delay: float = 1.0
-) -> bytes:
-    """Same backoff policy as with_retries (app.llm.client), but for the
-    elevenlabs SDK's exception type — ElevenLabs isn't an OpenAI call so it
-    can't reuse that helper's OpenAI-specific exception tuple. Only retries
-    rate limits (429) and server errors (5xx); 4xx errors like 402 Payment
-    Required are permanent until a human fixes the account, so they raise
-    immediately."""
-    last_exc: Exception | None = None
-    for attempt in range(1, max_attempts + 1):
-        try:
-            return await call()
-        except ApiError as exc:
-            retryable = exc.status_code == 429 or (
-                exc.status_code is not None and exc.status_code >= 500
-            )
-            if not retryable:
-                raise
-            last_exc = exc
-        except (httpx.TimeoutException, httpx.TransportError) as exc:
-            last_exc = exc
-
-        if attempt == max_attempts:
-            break
-        delay = base_delay * (2 ** (attempt - 1)) + random.uniform(0, 0.5)
-        logger.warning(
-            "ElevenLabs TTS call failed (attempt %d/%d): %s — retrying in %.1fs",
-            attempt, max_attempts, last_exc, delay,
-        )
-        await asyncio.sleep(delay)
-    raise last_exc  # type: ignore[misc]
-
-
 async def _synthesize_chunk_elevenlabs(settings: Settings, text: str) -> bytes:
     if not settings.elevenlabs_api_key:
         raise TTSError("ELEVENLABS_API_KEY is required for language=vi TTS")
@@ -123,7 +88,9 @@ async def _synthesize_chunk_elevenlabs(settings: Settings, text: str) -> bytes:
             return audio
 
     try:
-        return await _with_elevenlabs_retries(_call, max_attempts=settings.max_retries)
+        return await with_elevenlabs_retries(
+            _call, max_attempts=settings.max_retries, label="ElevenLabs TTS"
+        )
     except ApiError as exc:
         if exc.status_code == 402:
             raise TTSError(
@@ -191,7 +158,7 @@ async def synthesize(
     if not chunks:
         raise TTSError("nothing to synthesize: script is empty")
 
-    if language == ELEVENLABS_LANGUAGE:
+    if language == ELEVENLABS_LANGUAGE and settings.environment == "prod":
         async def _synth(text: str) -> bytes:
             return await _synthesize_chunk_elevenlabs(settings, text)
     else:
