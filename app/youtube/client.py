@@ -15,6 +15,7 @@ import httpx
 logger = logging.getLogger(__name__)
 
 UPLOAD_ENDPOINT = "https://www.googleapis.com/upload/youtube/v3/videos"
+THUMBNAIL_ENDPOINT = "https://www.googleapis.com/upload/youtube/v3/thumbnails/set"
 PLAYLIST_ITEMS_ENDPOINT = "https://www.googleapis.com/youtube/v3/playlistItems"
 
 _CHUNK_RETRIES = 3
@@ -87,6 +88,24 @@ class YouTubeUploader:
         return await self._send_chunks(
             upload_url, video_path, total, access_token, on_progress
         )
+
+    async def set_thumbnail(
+        self, video_id: str, image_path: Path, access_token: str
+    ) -> None:
+        """Attach a custom thumbnail to an uploaded video (thumbnails.set).
+        Requires a verified channel — unverified channels get a 403, which the
+        caller treats as best-effort (the upload still succeeds)."""
+        resp = await self._client.post(
+            THUMBNAIL_ENDPOINT,
+            params={"videoId": video_id, "uploadType": "media"},
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Content-Type": "image/jpeg",
+            },
+            content=image_path.read_bytes(),
+        )
+        if resp.status_code != 200:
+            _raise_api_error(resp)
 
     async def add_to_playlist(
         self, video_id: str, playlist_id: str, access_token: str

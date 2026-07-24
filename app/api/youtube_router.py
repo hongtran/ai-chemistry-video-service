@@ -164,7 +164,17 @@ async def upload_to_youtube(
         playlist_id=body.playlist_id,
     )
     await uploads.create(upload)
-    runner.submit(upload.id, body.access_token, artifacts.path_for(job_id, "video.mp4"))
+    thumbnail_path = (
+        artifacts.path_for(job_id, "thumbnail.jpg")
+        if artifacts.exists(job_id, "thumbnail.jpg")
+        else None
+    )
+    runner.submit(
+        upload.id,
+        body.access_token,
+        artifacts.path_for(job_id, "video.mp4"),
+        thumbnail_path,
+    )
     return CreateYouTubeUploadResponse(
         upload_id=upload.id, job_id=job_id, status=upload.status
     )

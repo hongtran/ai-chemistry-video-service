@@ -120,6 +120,7 @@ class YouTubeUploadDetail(BaseModel):
     video_id: str | None
     video_url: str | None
     playlist_added: bool | None
+    thumbnail_set: bool | None
     error_code: str | None
     error_message: str | None
     created_at: datetime

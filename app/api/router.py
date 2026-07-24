@@ -1,14 +1,25 @@
+import logging
+
 from fastapi import APIRouter, HTTPException, Query, Request, Response, status
 from fastapi.responses import FileResponse
 
 from app.api.schemas import CreateVideoRequest, CreateVideoResponse, JobDetail, JobSummary
 from app.cleanup import purge_job
 from app.domain.models import Job, JobStatus
-from app.llm.client import GuardMisconfiguredError, GuardUnavailableError, SubjectGuard
+from app.llm.client import (
+    GuardMisconfiguredError,
+    GuardUnavailableError,
+    NormalizerMisconfiguredError,
+    NormalizerUnavailableError,
+    ScriptNormalizer,
+    SubjectGuard,
+)
 from app.storage.artifacts import ArtifactStore
 from app.storage.jobs import JobRepository
 from app.subjects import get_subject_config
 from app.worker.queue import JobQueue
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1", tags=["videos"])
 
@@ -23,12 +34,15 @@ ALLOWED_ARTIFACTS = {
     "data.json",
     "meta.json",
     "video.mp4",
+    "thumbnail.jpg",
 }
 
 
-def _deps(request: Request) -> tuple[JobRepository, ArtifactStore, JobQueue, SubjectGuard]:
+def _deps(
+    request: Request,
+) -> tuple[JobRepository, ArtifactStore, JobQueue, SubjectGuard, ScriptNormalizer]:
     s = request.app.state
-    return s.jobs, s.artifacts, s.queue, s.guard
+    return s.jobs, s.artifacts, s.queue, s.guard, s.normalizer
 
 
 def _title_from_script(script: str, limit: int = 80) -> str:
@@ -42,14 +56,16 @@ def _title_from_script(script: str, limit: int = 80) -> str:
     "/videos", response_model=CreateVideoResponse, status_code=status.HTTP_202_ACCEPTED
 )
 async def request_video(body: CreateVideoRequest, request: Request) -> CreateVideoResponse:
-    jobs, _, queue, guard = _deps(request)
+    jobs, _, queue, guard, normalizer = _deps(request)
     settings = request.app.state.settings
     subject_config = get_subject_config(body.subject, settings)
 
     if body.input_mode == "script":
-        # User supplies the narration verbatim: enforce the per-orientation cap and
-        # skip the subject-relevance guard (trusted content). `query` carries a
-        # short derived title for display/compose.
+        # User supplies the narration: enforce the per-orientation cap (on the raw
+        # input, before normalization) and skip the subject-relevance guard (trusted
+        # content). A single LLM call then cleans formatting (headings, markdown,
+        # bullets) into plain spoken prose and derives a title; on failure we fall
+        # back to the raw script + a heuristic title so the user is never blocked.
         script = (body.script or "").strip()
         max_len = (
             settings.max_script_length_short
@@ -62,9 +78,16 @@ async def request_video(body: CreateVideoRequest, request: Request) -> CreateVid
             raise HTTPException(
                 status_code=400, detail=f"Script too long (max {max_len} characters)."
             )
+        title = _title_from_script(script)
+        try:
+            result = await normalizer.normalize(script, body.subject, body.language)
+            script = result.narration.strip() or script
+            title = result.title.strip() or title
+        except (NormalizerUnavailableError, NormalizerMisconfiguredError) as exc:
+            logger.warning("script normalization failed, using raw script: %s", exc)
         job = Job(
             input_mode="script",
-            query=_title_from_script(script),
+            query=title,
             script=script,
             subject=body.subject,
             orientation=body.orientation,
@@ -126,7 +149,7 @@ async def list_videos(
     request: Request,
     status_filter: str | None = Query(default=None, alias="status"),
 ) -> list[JobSummary]:
-    jobs, _, _, _ = _deps(request)
+    jobs, _, _, _, _ = _deps(request)
 
     parsed_status: JobStatus | None = None
     if status_filter is not None:
@@ -143,7 +166,7 @@ async def list_videos(
 
 @router.get("/videos/{job_id}", response_model=JobDetail)
 async def get_video_job(job_id: str, request: Request) -> JobDetail:
-    jobs, artifacts, _, _ = _deps(request)
+    jobs, artifacts, _, _, _ = _deps(request)
     job = await jobs.get(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found.")
@@ -155,7 +178,7 @@ async def delete_video_job(job_id: str, request: Request) -> Response:
     """Delete a job and its on-disk artifacts. Allowed in any state; a job
     still processing simply has its record dropped and the pipeline's later
     updates become no-ops. YouTube upload records are left intact."""
-    jobs, artifacts, _, _ = _deps(request)
+    jobs, artifacts, _, _, _ = _deps(request)
     if not await purge_job(job_id, jobs, artifacts):
         raise HTTPException(status_code=404, detail="Job not found.")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -163,7 +186,7 @@ async def delete_video_job(job_id: str, request: Request) -> Response:
 
 @router.get("/videos/{job_id}/video")
 async def download_video(job_id: str, request: Request) -> FileResponse:
-    jobs, artifacts, _, _ = _deps(request)
+    jobs, artifacts, _, _, _ = _deps(request)
     job = await jobs.get(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found.")
@@ -186,7 +209,7 @@ async def download_video(job_id: str, request: Request) -> FileResponse:
 
 @router.get("/videos/{job_id}/artifacts/{name}")
 async def download_artifact(job_id: str, name: str, request: Request) -> FileResponse:
-    jobs, artifacts, _, _ = _deps(request)
+    jobs, artifacts, _, _, _ = _deps(request)
     if name not in ALLOWED_ARTIFACTS:
         allowed = ", ".join(sorted(ALLOWED_ARTIFACTS))
         raise HTTPException(status_code=400, detail=f"Unknown artifact. Allowed: {allowed}.")

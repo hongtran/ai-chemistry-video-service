@@ -25,7 +25,11 @@ class DeleteHarness(unittest.IsolatedAsyncioTestCase):
         return SimpleNamespace(
             app=SimpleNamespace(
                 state=SimpleNamespace(
-                    jobs=self.jobs, artifacts=self.artifacts, queue=None, guard=None
+                    jobs=self.jobs,
+                    artifacts=self.artifacts,
+                    queue=None,
+                    guard=None,
+                    normalizer=None,
                 )
             )
         )

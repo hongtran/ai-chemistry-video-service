@@ -83,6 +83,76 @@ class DeriveCaptionsTests(unittest.TestCase):
             self.assertGreaterEqual(len(c.split()), 1)
 
 
+class DeriveCaptionsLongFormTests(unittest.TestCase):
+    def test_long_form_chunks_are_three_to_seven_words(self) -> None:
+        sentence = "Thunder clouds gather, fast tonight over the hills."
+        chunks = segment.derive_captions([sentence], orientation="horizontal")
+        for c in chunks:
+            self.assertGreaterEqual(len(c.split()), 3)
+            self.assertLessEqual(len(c.split()), 7)
+        self.assertEqual(" ".join(chunks).split(), sentence.split())
+
+    def test_punctuation_preferred_break_lands_after_comma(self) -> None:
+        sentence = "Thunder clouds gather, fast tonight over the hills."
+        chunks = segment.derive_captions([sentence], orientation="horizontal")
+        self.assertEqual(chunks[0], "Thunder clouds gather,")
+
+    def test_trailing_remainder_is_merged_back_into_bounds(self) -> None:
+        # Under the OLD algorithm this would split into a 3-word chunk and an
+        # under-minimum 2-word trailing chunk; the fix must merge them.
+        sentence = "Thunder clouds gather, fast tonight"
+        chunks = segment.derive_captions([sentence], orientation="horizontal")
+        for c in chunks:
+            self.assertGreaterEqual(len(c.split()), 3)
+            self.assertLessEqual(len(c.split()), 7)
+        self.assertEqual(" ".join(chunks).split(), sentence.split())
+
+    def test_unavoidable_short_remainder_does_not_crash(self) -> None:
+        # Too few total words to ever reach min_words=3 for long-form.
+        chunks = segment.derive_captions(["Two words"], orientation="horizontal")
+        self.assertEqual(chunks, ["Two words"])
+
+    def test_default_orientation_still_two_to_five_words(self) -> None:
+        sentence = "Thunder clouds gather, fast tonight over the hills."
+        chunks = segment.derive_captions([sentence])  # no orientation arg
+        for c in chunks:
+            self.assertLessEqual(len(c.split()), 5)
+
+
+class DeriveCaptionsSentenceBoundaryTests(unittest.TestCase):
+    """A caption must never straddle a sentence boundary — a short sentence
+    gets its own (possibly under-minimum) caption instead of borrowing words
+    from its neighbor. Covers both call shapes: genuinely separate sentence
+    strings, and one already-joined scene string (what
+    derive_captions_semantic's fallback actually passes in production).
+
+    Uses >=2-word short sentences ("No way.") rather than 1-word ones: a
+    1-word sentence like "Hi." now gets folded into the NEXT sentence by
+    split_sentences itself (see test_sections.py) before derive_captions ever
+    sees a boundary there — by design, so it's no longer a useful example of
+    this specific invariant."""
+
+    def test_short_sentence_does_not_borrow_from_the_next_sentence(self) -> None:
+        chunks = segment.derive_captions(
+            ["No way.", "This is a much longer follow-up sentence here."]
+        )
+        self.assertEqual(chunks[0], "No way.")
+
+    def test_short_sentence_does_not_borrow_when_pre_joined_into_one_string(self) -> None:
+        # This is the shape derive_captions_semantic's fallback actually calls
+        # derive_captions with: one already-flattened multi-sentence string.
+        text = "No way. This is a much longer follow-up sentence here."
+        chunks = segment.derive_captions([text])
+        self.assertEqual(chunks[0], "No way.")
+        self.assertEqual(" ".join(chunks).split(), text.split())
+
+    def test_long_form_short_sentence_does_not_borrow_either(self) -> None:
+        text = "Not at all. That answer covers far more than three words on its own."
+        chunks = segment.derive_captions([text], orientation="horizontal")
+        self.assertEqual(chunks[0], "Not at all.")
+        self.assertEqual(" ".join(chunks).split(), text.split())
+
+
 class AssertThreeWayEqualityTests(unittest.TestCase):
     def test_matching_captions_sentences_script_pass(self) -> None:
         sentences = [{"i": 1, "text": "Hello world."}, {"i": 2, "text": "Bye now."}]
@@ -102,9 +172,11 @@ class AssertThreeWayEqualityTests(unittest.TestCase):
 
 class BuildSentenceIndexTests(unittest.TestCase):
     def test_numbers_every_sentence_from_one(self) -> None:
-        sentences = segment.build_sentence_index("One. Two! Three?")
+        # Each sentence is >=2 words so split_sentences' short-segment merge
+        # (see test_sections.py) doesn't fold any of these together.
+        sentences = segment.build_sentence_index("One thing. Two things! Three things?")
         self.assertEqual([s["i"] for s in sentences], [1, 2, 3])
-        self.assertEqual(sentences[0]["text"], "One.")
+        self.assertEqual(sentences[0]["text"], "One thing.")
 
 
 class SegmentScriptTests(unittest.IsolatedAsyncioTestCase):
@@ -112,7 +184,7 @@ class SegmentScriptTests(unittest.IsolatedAsyncioTestCase):
         self.config = get_subject_config("tech", Settings())
 
     async def test_whole_script_single_window(self) -> None:
-        settings = Settings(segment_sentence_window=40)
+        settings = Settings(segment_sentence_window=40, semantic_captions_enabled=False)
         sentences = segment.build_sentence_index(
             "One thing happens. Then another thing happens. Finally it ends."
         )
@@ -137,7 +209,7 @@ class SegmentScriptTests(unittest.IsolatedAsyncioTestCase):
         )
 
     async def test_long_form_windows_concatenate_in_global_order(self) -> None:
-        settings = Settings(segment_sentence_window=3)
+        settings = Settings(segment_sentence_window=3, semantic_captions_enabled=False)
         text = " ".join(f"Sentence number {i}." for i in range(1, 6))  # 5 sentences
         sentences = segment.build_sentence_index(text)
         self.assertEqual(len(sentences), 5)
@@ -165,7 +237,7 @@ class SegmentScriptTests(unittest.IsolatedAsyncioTestCase):
         segment.assert_three_way_equality(scenes_index, sentences, text)
 
     async def test_system_prompt_is_cache_stable_across_windows(self) -> None:
-        settings = Settings(segment_sentence_window=2)
+        settings = Settings(segment_sentence_window=2, semantic_captions_enabled=False)
         text = " ".join(f"Sentence {i}." for i in range(1, 5))
         sentences = segment.build_sentence_index(text)
         responses = [
@@ -179,7 +251,7 @@ class SegmentScriptTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(set(systems)), 1)
 
     async def test_malformed_json_falls_back_without_raising(self) -> None:
-        settings = Settings(segment_sentence_window=40)
+        settings = Settings(segment_sentence_window=40, semantic_captions_enabled=False)
         sentences = segment.build_sentence_index("Hello there. Goodbye now.")
         client = FakeClient(["not json"])
 
@@ -190,6 +262,188 @@ class SegmentScriptTests(unittest.IsolatedAsyncioTestCase):
         flat = [i for s in scenes_index for i in s.idx_sentences]
         self.assertEqual(flat, [1, 2])
         self.assertEqual(metadata, {})
+
+
+class DeriveCaptionsSemanticTests(unittest.IsolatedAsyncioTestCase):
+    """The LLM chunks each scene's paragraph and returns caption strings; code
+    validates each scene reproduces its own words, else falls back to greedy."""
+
+    def _assert_scene_valid(self, captions: list[str], scene_text: str) -> None:
+        # word integrity: captions joined reproduce the scene's exact words
+        self.assertEqual(" ".join(captions).split(), scene_text.split())
+        for c in captions:
+            self.assertLessEqual(len(c.split()), 5)
+            self.assertLessEqual(len(c), 55)
+
+    async def test_semantic_break_moves_leading_conjunction(self) -> None:
+        settings = Settings()
+        text = "Thực nghiệm hóa học Cùng các chuyên gia"
+        # Model keeps "Cùng" at the START of the next caption, not dangling.
+        payload = json.dumps({
+            "scenes": [{"captions": ["Thực nghiệm hóa học", "Cùng các chuyên gia"]}]
+        })
+        client = FakeClient([payload])
+
+        result = await segment.derive_captions_semantic(client, settings, [[text]])
+
+        self.assertEqual(result[0], ["Thực nghiệm hóa học", "Cùng các chuyên gia"])
+        self._assert_scene_valid(result[0], text)
+
+    async def test_one_call_for_all_scenes(self) -> None:
+        settings = Settings()
+        scenes = [["alpha beta gamma"], ["delta epsilon"], ["zeta eta theta"]]
+        payload = json.dumps({
+            "scenes": [
+                {"captions": ["alpha beta gamma"]},
+                {"captions": ["delta epsilon"]},
+                {"captions": ["zeta eta theta"]},
+            ]
+        })
+        client = FakeClient([payload])
+
+        result = await segment.derive_captions_semantic(client, settings, scenes)
+
+        self.assertEqual(len(client.calls), 1)  # single call for all three scenes
+        self.assertEqual(result, [["alpha beta gamma"], ["delta epsilon"], ["zeta eta theta"]])
+
+    async def test_reworded_scene_falls_back_to_greedy(self) -> None:
+        settings = Settings()
+        text = "The cat sat on the mat"
+        # Model dropped "the" — validation must reject and fall back.
+        payload = json.dumps({"scenes": [{"captions": ["The cat sat", "on mat"]}]})
+        client = FakeClient([payload])
+
+        result = await segment.derive_captions_semantic(client, settings, [[text]])
+
+        self.assertEqual(result[0], segment.derive_captions([text]))
+
+    async def test_oversize_caption_is_cap_repaired(self) -> None:
+        settings = Settings()
+        text = " ".join(f"word{i}" for i in range(1, 13))  # 12 words
+        # Model returns all 12 words as one caption (violates the ≤5-word cap).
+        payload = json.dumps({"scenes": [{"captions": [text]}]})
+        client = FakeClient([payload])
+
+        result = await segment.derive_captions_semantic(client, settings, [[text]])
+
+        self.assertGreater(len(result[0]), 1)  # re-split, not one 12-word caption
+        self._assert_scene_valid(result[0], text)
+
+    async def test_bad_json_falls_back_to_greedy(self) -> None:
+        settings = Settings()
+        text = "This is a fairly long test sentence with many words"
+        client = FakeClient(["not json"])
+
+        result = await segment.derive_captions_semantic(client, settings, [[text]])
+
+        self.assertEqual(result[0], segment.derive_captions([text]))
+
+    async def test_missing_scene_entry_falls_back_per_scene(self) -> None:
+        settings = Settings()
+        t1, t2 = "alpha beta gamma", "delta epsilon zeta"
+        # Only one scene returned for two inputs → second scene uses greedy.
+        payload = json.dumps({"scenes": [{"captions": ["alpha beta gamma"]}]})
+        client = FakeClient([payload])
+
+        result = await segment.derive_captions_semantic(client, settings, [[t1], [t2]])
+
+        self.assertEqual(result[0], ["alpha beta gamma"])
+        self.assertEqual(result[1], segment.derive_captions([t2]))
+
+    async def test_stub_mode_makes_no_llm_call(self) -> None:
+        settings = Settings(use_stub_pipeline=True)
+        text = "one two three four five six"
+        client = FakeClient([])  # empty queue: a call would IndexError
+
+        result = await segment.derive_captions_semantic(client, settings, [[text]])
+
+        self.assertEqual(client.calls, [])
+        self.assertEqual(result[0], segment.derive_captions([text]))
+
+    async def test_disabled_toggle_makes_no_llm_call(self) -> None:
+        settings = Settings(semantic_captions_enabled=False)
+        text = "one two three four five six"
+        client = FakeClient([])
+
+        result = await segment.derive_captions_semantic(client, settings, [[text]])
+
+        self.assertEqual(client.calls, [])
+        self.assertEqual(result[0], segment.derive_captions([text]))
+
+    async def test_disabled_toggle_uses_long_form_bounds_when_horizontal(self) -> None:
+        settings = Settings(semantic_captions_enabled=False)
+        text = "Thunder clouds gather, fast tonight over the windy hills tonight"
+        client = FakeClient([])
+
+        result = await segment.derive_captions_semantic(
+            client, settings, [[text]], orientation="horizontal",
+        )
+
+        self.assertEqual(client.calls, [])
+        self.assertEqual(result[0], segment.derive_captions([text], orientation="horizontal"))
+        for c in result[0]:
+            self.assertLessEqual(len(c.split()), 7)
+
+
+class SegmentScriptSemanticTests(unittest.IsolatedAsyncioTestCase):
+    def setUp(self) -> None:
+        self.config = get_subject_config("tech", Settings())
+
+    async def test_single_window_makes_segment_then_caption_call(self) -> None:
+        settings = Settings(segment_sentence_window=40)  # semantic on by default
+        script = "One thing happens. Then another thing happens now."
+        sentences = segment.build_sentence_index(script)
+        segment_payload = json.dumps({
+            "scenes": [{"idx_sentences": [1]}, {"idx_sentences": [2]}],
+            "config": {"description": "d"},
+        })
+        # Both scenes chunked in ONE caption call.
+        caption_payload = json.dumps({
+            "scenes": [
+                {"captions": ["One thing happens."]},
+                {"captions": ["Then another", "thing happens now."]},
+            ]
+        })
+        client = FakeClient([segment_payload, caption_payload])
+
+        scenes_index, _ = await segment.segment_script(
+            client, settings, self.config, sentences, orientation="vertical",
+        )
+
+        self.assertEqual(len(client.calls), 2)  # segment, then one caption call
+        # Second call is the caption call: scene paragraphs in its user message.
+        self.assertIn("SCENES:", client.calls[1][1]["content"])
+        self.assertIn("One thing happens.", client.calls[1][1]["content"])
+        segment.assert_three_way_equality(scenes_index, sentences, script)
+
+    async def test_caption_failure_still_preserves_equality(self) -> None:
+        settings = Settings(segment_sentence_window=40)
+        script = "One thing happens. Then another thing happens now."
+        sentences = segment.build_sentence_index(script)
+        segment_payload = json.dumps({"scenes": [{"idx_sentences": [1]}]})
+        client = FakeClient([segment_payload, "not json"])  # caption call fails
+
+        scenes_index, _ = await segment.segment_script(
+            client, settings, self.config, sentences,
+        )
+
+        # Greedy fallback still reproduces the script word-for-word.
+        segment.assert_three_way_equality(scenes_index, sentences, script)
+
+    async def test_horizontal_orientation_reaches_greedy_captions(self) -> None:
+        settings = Settings(segment_sentence_window=40, semantic_captions_enabled=False)
+        script = "Thunder clouds gather, fast tonight over the windy hills tonight."
+        sentences = segment.build_sentence_index(script)
+        segment_payload = json.dumps({"scenes": [{"idx_sentences": [1]}]})
+        client = FakeClient([segment_payload])
+
+        scenes_index, _ = await segment.segment_script(
+            client, settings, self.config, sentences, orientation="horizontal",
+        )
+
+        for caption in scenes_index[0].captions:
+            self.assertLessEqual(len(caption.split()), 7)
+        segment.assert_three_way_equality(scenes_index, sentences, script)
 
 
 if __name__ == "__main__":

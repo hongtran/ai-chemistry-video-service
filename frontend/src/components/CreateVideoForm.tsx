@@ -37,8 +37,11 @@ export default function CreateVideoForm() {
   const [error, setError] = useState<string | null>(null)
 
   const scriptCap = MAX_SCRIPT_LENGTH[orientation]
+  const activeCap = inputMode === 'topic' ? MAX_QUERY_LENGTH : scriptCap
   const active = inputMode === 'topic' ? query : script
-  const canSubmit = active.trim().length > 0 && !submitting
+  const isOverLimit = active.length > activeCap
+  const isNearLimit = !isOverLimit && active.length >= activeCap * 0.9
+  const canSubmit = active.trim().length > 0 && !isOverLimit && !submitting
 
   // Long→Short shrinks the script cap; trim so the counter and submit stay valid.
   const changeOrientation = (next: Orientation) => {
@@ -142,12 +145,12 @@ export default function CreateVideoForm() {
           <span className="field-label">Topic</span>
           <textarea
             value={query}
-            maxLength={MAX_QUERY_LENGTH}
             rows={3}
             placeholder={`e.g. How to "FIX" your AI from hallucination`}
             onChange={(e) => setQuery(e.target.value)}
+            aria-invalid={isOverLimit}
           />
-          <span className="char-counter">
+          <span className={`char-counter ${isOverLimit ? 'danger' : isNearLimit ? 'warning' : ''}`}>
             {query.length}/{MAX_QUERY_LENGTH}
           </span>
         </label>
@@ -156,15 +159,22 @@ export default function CreateVideoForm() {
           <span className="field-label">Script</span>
           <textarea
             value={script}
-            maxLength={scriptCap}
             rows={10}
-            placeholder="Paste your narration — this text is spoken verbatim (no AI rewrite)."
+            placeholder="Paste your narration — headings, bullets and markdown are cleaned up automatically."
             onChange={(e) => setScript(e.target.value)}
+            aria-invalid={isOverLimit}
           />
-          <span className="char-counter">
+          <span className={`char-counter ${isOverLimit ? 'danger' : isNearLimit ? 'warning' : ''}`}>
             {script.length}/{scriptCap}
           </span>
         </label>
+      )}
+
+      {isOverLimit && (
+        <p className="warning-text">
+          {active.length - activeCap} characters over the limit — shorten your{' '}
+          {inputMode === 'topic' ? 'topic' : 'script'} to enable Generate video.
+        </p>
       )}
 
       {error && <p className="error-text">{error}</p>}

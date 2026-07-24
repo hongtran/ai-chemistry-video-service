@@ -40,7 +40,12 @@ def _request(settings, jobs, queue, guard) -> SimpleNamespace:
     return SimpleNamespace(
         app=SimpleNamespace(
             state=SimpleNamespace(
-                settings=settings, jobs=jobs, artifacts=None, queue=queue, guard=guard
+                settings=settings,
+                jobs=jobs,
+                artifacts=None,
+                queue=queue,
+                guard=guard,
+                normalizer=None,
             )
         )
     )

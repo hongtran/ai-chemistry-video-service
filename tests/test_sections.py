@@ -10,12 +10,35 @@ def _sentences(n: int, words_each: int = 10, tag: str = "w") -> str:
 class SplitSentencesTests(unittest.TestCase):
     def test_splits_on_terminal_punctuation(self) -> None:
         self.assertEqual(
-            split_sentences("One. Two! Three? Four."),
-            ["One.", "Two!", "Three?", "Four."],
+            split_sentences("One sentence. Two sentence! Three sentence? Four sentence."),
+            ["One sentence.", "Two sentence!", "Three sentence?", "Four sentence."],
         )
 
     def test_empty_text_yields_no_sentences(self) -> None:
         self.assertEqual(split_sentences(""), [])
+
+    def test_single_word_segments_merge_pairwise(self) -> None:
+        # Each raw segment is 1 word — under the 2-word minimum, so they pair
+        # up front-to-back rather than standing alone.
+        self.assertEqual(
+            split_sentences("One. Two! Three? Four."),
+            ["One. Two!", "Three? Four."],
+        )
+
+    def test_short_lead_in_merges_forward_into_the_next_sentence(self) -> None:
+        self.assertEqual(split_sentences("Hi! how are you."), ["Hi! how are you."])
+
+    def test_numbering_marker_merges_forward_into_the_next_sentence(self) -> None:
+        self.assertEqual(split_sentences("1. mẫu trắng."), ["1. mẫu trắng."])
+
+    def test_short_trailing_fragment_merges_backward(self) -> None:
+        # Nothing follows "Yes!" to merge forward into, so it folds into the
+        # previous sentence instead.
+        self.assertEqual(split_sentences("This is great. Yes!"), ["This is great. Yes!"])
+
+    def test_merging_preserves_every_word(self) -> None:
+        text = "Hi! how are you. This is fine."
+        self.assertEqual(" ".join(split_sentences(text)).split(), text.split())
 
 
 class SplitForTTSTests(unittest.TestCase):

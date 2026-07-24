@@ -120,6 +120,130 @@ class StubSubjectGuard:
         return GuardResult(is_valid=True, reason="stub mode: guard disabled")
 
 
+class NormalizerUnavailableError(Exception):
+    """Script normalization could not get an answer from the LLM (after retries).
+    Transient — the caller may reasonably retry, or fall back to the raw script."""
+
+
+class NormalizerMisconfiguredError(Exception):
+    """Script normalization is misconfigured (bad/revoked API key, no permission).
+    Permanent until a human fixes it — retrying will not help."""
+
+
+class ScriptNormalization(BaseModel):
+    title: str
+    narration: str
+
+
+class ScriptNormalizer(Protocol):
+    async def normalize(
+        self, script: str, subject: str, language: str
+    ) -> ScriptNormalization: ...
+
+
+def _first_line_title(script: str, limit: int = 80) -> str:
+    """A short single-line title from the first non-empty line of a script.
+    Mirrors the API router's `_title_from_script` fallback."""
+    first_line = next((ln.strip() for ln in script.splitlines() if ln.strip()), "")
+    title = " ".join(first_line.split())
+    return f"{title[: limit - 1]}…" if len(title) > limit else title
+
+
+class LLMScriptNormalizer:
+    """Cleans a user-pasted script into plain spoken-prose narration (stripping
+    headings/markdown/bullets/emoji) following the subject's narration style, and
+    derives a short title — in one structured LLM call. Reformats only; it must not
+    paraphrase, summarize, add, or drop content."""
+
+    def __init__(self, client: AsyncOpenAI, settings: Settings) -> None:
+        self._client = client
+        self._settings = settings
+
+    def _language_clause(self, language: str) -> str:
+        from app.languages import DEFAULT_LANGUAGE, language_name
+
+        if language == DEFAULT_LANGUAGE:
+            return ""
+        name = language_name(language)
+        return (
+            f"\n\nLanguage: the narration is in {name}. Keep it in {name} — do not "
+            "translate it. Preserve the author's original wording."
+        )
+
+    async def normalize(
+        self, script: str, subject: str, language: str
+    ) -> ScriptNormalization:
+        from app.subjects import get_subject_config
+
+        subject_config = get_subject_config(subject, self._settings)
+        system_prompt = (
+            "You clean up a user-pasted narration script so it can be read aloud by "
+            "a text-to-speech voice and shown as verbatim captions. The user may have "
+            "included headings, markdown, bullet points, numbered lists, emoji, links, "
+            "or stage directions.\n\n"
+            "Your job is to REFORMAT, not rewrite. Strictly preserve the author's "
+            "wording, meaning, order, and every point they make. Do NOT paraphrase, "
+            "summarize, expand, add, or drop content. Only:\n"
+            "- remove headings, markdown syntax, bullet/list markers, emoji, links, "
+            "and stage directions;\n"
+            "- join the remaining text into continuous natural spoken prose;\n"
+            "- reword only genuinely un-speakable NON-NUMERIC tokens so a narrator "
+            "could read them (code identifiers like top_k -> 'top k', URLs, file "
+            "paths, raw snake_case/camelCase).\n\n"
+            "CRITICAL — numbers stay as digits. KEEP every number, decimal, range, "
+            "unit, percentage, and standard math/scientific symbol EXACTLY as written "
+            "(e.g. 99.995, ±0.005 g, 6.4, 25%, NaCl). Do NOT spell numbers out as "
+            "words and do NOT strip these symbols. This text is shown verbatim as the "
+            "on-screen caption, where digits read far more clearly than spelled-out "
+            "words; the downstream pipeline handles speaking them aloud. This rule "
+            "overrides any advice in the style guide below about saying numbers "
+            "naturally or avoiding symbols.\n\n"
+            "Also produce a short single-line title (plain text, no markdown, no "
+            "trailing punctuation) that names what the narration is about.\n\n"
+            "--- TARGET NARRATION STYLE (for tone/register only; do not use it to "
+            "change the content or to spell out numbers) ---\n"
+            f"{subject_config.narration_style}"
+            + self._language_clause(language)
+        )
+
+        async def _call() -> ScriptNormalization:
+            completion = await self._client.chat.completions.parse(
+                model=self._settings.llm_model,
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": script},
+                ],
+                temperature=0.0,
+                response_format=ScriptNormalization,
+            )
+            parsed = completion.choices[0].message.parsed
+            if parsed is None:
+                raise NormalizerUnavailableError("normalizer returned no parsable result")
+            return parsed
+
+        try:
+            return await with_retries(_call, max_attempts=self._settings.max_retries)
+        except NormalizerUnavailableError:
+            raise
+        except (openai.AuthenticationError, openai.PermissionDeniedError) as exc:
+            logger.critical("script normalizer misconfigured: %s", exc)
+            raise NormalizerMisconfiguredError(
+                "OpenAI credentials are invalid or lack permission"
+            ) from exc
+        except openai.APIError as exc:
+            raise NormalizerUnavailableError(str(exc)) from exc
+
+
+class StubScriptNormalizer:
+    """Returns the script unchanged with a first-line title. Used in
+    USE_STUB_PIPELINE mode so the demo needs no OpenAI credentials."""
+
+    async def normalize(
+        self, script: str, subject: str, language: str
+    ) -> ScriptNormalization:
+        return ScriptNormalization(title=_first_line_title(script), narration=script)
+
+
 def build_openai_client(settings: Settings) -> AsyncOpenAI:
     # With Langfuse configured, use its drop-in wrapper — interface-identical to
     # AsyncOpenAI, so every downstream call site is unchanged, but chat

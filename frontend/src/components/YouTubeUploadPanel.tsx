@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   ApiError,
+  fetchThumbnailUrl,
   getGoogleAuthUrl,
   getJobMeta,
   getUpload,
@@ -37,6 +38,27 @@ export default function YouTubeUploadPanel({ jobId }: { jobId: string }) {
         // meta.json missing/unreadable — leave fields empty; the backend still
         // falls back to meta.json server-side at upload time.
       })
+  }, [jobId])
+
+  // The generated thumbnail that will be attached to the upload. Best-effort:
+  // absent for jobs where thumbnail generation was skipped/failed, so we just
+  // hide the preview then. Object URL is revoked on unmount / job change.
+  const [thumbUrl, setThumbUrl] = useState<string | null>(null)
+  useEffect(() => {
+    let url: string | null = null
+    let cancelled = false
+    fetchThumbnailUrl(jobId).then((u) => {
+      if (cancelled) {
+        if (u) URL.revokeObjectURL(u)
+        return
+      }
+      url = u
+      setThumbUrl(u)
+    })
+    return () => {
+      cancelled = true
+      if (url) URL.revokeObjectURL(url)
+    }
   }, [jobId])
 
   const connect = async () => {
@@ -107,6 +129,13 @@ export default function YouTubeUploadPanel({ jobId }: { jobId: string }) {
   return (
     <section className="card">
       <h2>Upload to YouTube</h2>
+
+      {thumbUrl && (
+        <figure className="thumbnail-preview">
+          <img src={thumbUrl} alt="Generated YouTube thumbnail" width={320} height={180} />
+          <figcaption className="muted">Thumbnail — attached automatically on upload</figcaption>
+        </figure>
+      )}
 
       {!token && !uploadId && (
         <>

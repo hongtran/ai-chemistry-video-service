@@ -7,6 +7,7 @@ from unittest import mock
 
 from app.config import Settings
 from app.domain.models import Job, JobStatus, PipelineStep
+from app.languages import DEFAULT_LANGUAGE
 from app.pipeline import orchestrator as orch
 from app.pipeline.orchestrator import RealVideoPipeline
 from app.pipeline.steps import layout_gate
@@ -78,7 +79,7 @@ class OuterLoopTests(unittest.IsolatedAsyncioTestCase):
             self.reauthor_feedback.append(feedback)
             return [_scene(s.scene_id) for s in offending]
 
-        def fake_align(scenes, words, duration):
+        def fake_align(scenes, words, duration, language=DEFAULT_LANGUAGE):
             return [dict(timed)]
 
         async def fake_gate(settings, subject_config, data, data_path):

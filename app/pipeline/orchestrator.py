@@ -16,7 +16,7 @@ from openai import AsyncOpenAI
 from app.config import Settings
 from app.domain.models import JobStatus, PipelineStep
 from app.observability import job_trace
-from app.pipeline.steps import author, compose, images, layout_gate, narration, render, scene_split, segment, transcribe, tts
+from app.pipeline.steps import author, compose, images, layout_gate, narration, render, scene_split, segment, thumbnail, transcribe, tts
 from app.pipeline.steps.align import align_scenes
 from app.pipeline.steps.layout_gate import LayoutGateError
 from app.storage.artifacts import ArtifactStore
@@ -126,7 +126,7 @@ class RealVideoPipeline:
             # (never re-written), so re-authoring content below can't invalidate
             # the timing computed here.
             step = await self._step(job_id, PipelineStep.ALIGNMENT)
-            timed_scenes = align_scenes(scenes, words, duration)
+            timed_scenes = align_scenes(scenes, words, duration, job.language)
 
             rounds = max(1, self._settings.outer_retry_limit)
             data_path = None
@@ -176,6 +176,21 @@ class RealVideoPipeline:
             await render.render_video(
                 self._settings, subject_config, data_path, audio_path, out_path
             )
+
+            # Designed YouTube thumbnail from the cover scene. Best-effort (like
+            # images/alignment): a failure must not fail a rendered video.
+            if self._settings.thumbnail_enabled:
+                try:
+                    step = await self._step(job_id, PipelineStep.THUMBNAIL)
+                    await thumbnail.generate_thumbnail(
+                        self._client, self._settings, subject_config, job.query,
+                        timed_scenes,
+                        self._artifacts.path_for(job_id, "thumbnail.jpg"),
+                        out_path.parent,
+                        orientation=job.orientation,
+                    )
+                except Exception as exc:  # noqa: BLE001 — best-effort
+                    logger.warning("job %s: thumbnail generation failed: %s", job_id, exc)
 
             await self._jobs.update(
                 job_id, status=JobStatus.COMPLETED, video_path=str(out_path)

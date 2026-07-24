@@ -47,6 +47,7 @@ def _request(
                 artifacts=None,
                 queue=queue,
                 guard=guard,
+                normalizer=None,
             )
         )
     )

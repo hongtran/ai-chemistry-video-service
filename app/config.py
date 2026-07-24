@@ -9,6 +9,7 @@ class Settings(BaseSettings):
 
     openai_api_key: str = ""
     use_stub_pipeline: bool = False
+    environment: str = "dev"  # dev | staging | prod
 
     # Langfuse LLM cost/token tracking. Both keys empty => tracking disabled and
     # the service behaves exactly as before (see app/observability.py). Keys come
@@ -36,12 +37,16 @@ class Settings(BaseSettings):
     # (frames keep their placeholder), so the pipeline runs image-API-free.
     image_model: str = "gpt-image-2"
     images_enabled: bool = True
-    image_quality: str = "medium"  # gpt-image-1: low | medium | high
+    image_quality: str = "high"  # gpt-image-1: low | medium | high
     image_size_vertical: str = "1024x1536"   # portrait, for 9:16 videos
     image_size_horizontal: str = "1536x1024"  # landscape, for 16:9 videos
     # Cost/latency guard: at most this many images generated per video; extra
     # image scenes keep their placeholder.
-    max_images_per_video: int = 6
+    max_images_per_video: int = 10
+    # How many image API calls run concurrently within a single video. Image
+    # scenes are generated in parallel (bounded by this) instead of one-by-one,
+    # so a video's images finish in roughly total/concurrency time.
+    image_concurrency: int = 4
 
     # Vietnamese narration uses ElevenLabs instead of OpenAI TTS — noticeably
     # better Vietnamese prosody than gpt-4o-mini-tts. Every other language
@@ -50,6 +55,10 @@ class Settings(BaseSettings):
     elevenlabs_api_key: str = ""
     elevenlabs_voice_id: str = "A5w1fw5x0uXded1LDvZp"
     elevenlabs_model_id: str = "eleven_v3"
+    # Vietnamese transcription also uses ElevenLabs (Scribe) instead of Whisper
+    # in prod — Whisper's Vietnamese word timestamps drive alignment, and its
+    # accuracy on vi is poor enough to desync captions. See transcribe.py.
+    elevenlabs_transcribe_model_id: str = "scribe_v2"
 
     # Default narration language (ISO 639-1); requests may override it.
     default_language: str = "en"
@@ -78,10 +87,17 @@ class Settings(BaseSettings):
     # the model vary frame types (isolated per-scene calls repeated types); most
     # videos fit one batch, so the seam only appears on very long runs.
     author_batch_size: int = 12
+    # Caption chunking. When on, one LLM call chunks every scene's paragraph at
+    # semantic boundaries and returns caption strings; code validates each scene
+    # reproduces its own words (else falls back to the greedy chunker), so the
+    # verbatim / three-way-equality guarantee is unaffected. When off (or in stub
+    # mode), captions use the pure-code greedy chunker (derive_captions) — a clean
+    # revert path with identical output.
+    semantic_captions_enabled: bool = False
     # Rounds of (compose -> layout gate); each failure re-authors only the
     # offending scene(s) and tries again.
     outer_retry_limit: int = 3
-    layout_gate_timeout_seconds: int = 300
+    layout_gate_timeout_seconds: int = 600
 
     hyperframes_dir: Path = Path("./render_kit")
     artifacts_dir: Path = Path("./artifacts")
@@ -92,7 +108,19 @@ class Settings(BaseSettings):
     # build-video.sh also lints/validates/inspects first — so a 10-minute
     # long-form needs ~20+ minutes of wall clock. Sized for that worst case;
     # a vertical short finishes in a small fraction of it.
-    render_timeout_seconds: int = 1800
+    render_timeout_seconds: int = 3600
+
+    # Designed 1280x720 YouTube thumbnail, composed from the cover scene after
+    # render. Best-effort: a failure logs a warning and the job still completes.
+    thumbnail_enabled: bool = True
+    thumbnail_timeout_seconds: int = 120
+    # When no scene has a real image, make one images.generate call for a
+    # topic-derived thumbnail background (else a flat accent gradient). Only fires
+    # for image-less videos and is gated by images_enabled.
+    thumbnail_generate_background: bool = True
+    # Override for hyperframes' bundled chrome-headless-shell binary. Unset ->
+    # resolved once via `npx hyperframes browser path`.
+    chrome_headless_shell_path: Path | None = None
 
     max_query_length: int = 300
     # Script/narration input caps (script input mode), by video type: vertical is

@@ -31,6 +31,13 @@ _HYPERFRAMES = "hyperframes@0.7.18"
 
 _GATING_SEVERITIES = {"error"}
 
+# inspect occasionally emits truncated/garbled stdout (measured: ~8KB of a
+# ~49KB report, cut off mid-string) — a subprocess-level flake, not a content
+# problem, and a re-run parses fine. Retry a few times before treating an
+# unparseable report as a hard gate failure, so a transient flake can't fail
+# the whole video job.
+_INSPECT_ATTEMPTS = 3
+
 
 class LayoutGateError(Exception):
     """The gate could not run (populate/inspect blew up, or inspect emitted no
@@ -128,24 +135,39 @@ async def run_layout_gate(
         return []
 
     project_dir = root / "videos" / data["config"]["slug"]
-    code, stdout, stderr = await _run(
-        "npx", ["--yes", _HYPERFRAMES, "inspect", ".", "--json",
-                "--at", ",".join(str(t) for t in times)],
-        cwd=project_dir, timeout=settings.layout_gate_timeout_seconds,
-    )
-
-    # inspect exits non-zero when error-severity findings exist, but still
-    # prints its JSON. No JSON at all means the gate itself failed.
-    start = stdout.find("{")
-    if start == -1:
-        raise LayoutGateError(
-            f"hyperframes inspect exited {code} without JSON output: "
-            f"...{(stderr or stdout).strip()[-500:]}"
+    report = None
+    last_error = ""
+    for attempt in range(1, _INSPECT_ATTEMPTS + 1):
+        code, stdout, stderr = await _run(
+            "npx", ["--yes", _HYPERFRAMES, "inspect", ".", "--json",
+                    "--at", ",".join(str(t) for t in times)],
+            cwd=project_dir, timeout=settings.layout_gate_timeout_seconds,
         )
-    try:
-        report = json.loads(stdout[start:])
-    except json.JSONDecodeError as exc:
-        raise LayoutGateError(f"could not parse inspect JSON: {exc}") from exc
+
+        # inspect exits non-zero when error-severity findings exist, but still
+        # prints its JSON, so the exit code alone can't tell a flake from real
+        # findings — a parseable report is the only success signal.
+        start = stdout.find("{")
+        if start == -1:
+            last_error = (
+                f"hyperframes inspect exited {code} without JSON output: "
+                f"...{(stderr or stdout).strip()[-500:]}"
+            )
+        else:
+            try:
+                report = json.loads(stdout[start:])
+                break
+            except json.JSONDecodeError as exc:
+                last_error = f"could not parse inspect JSON: {exc}"
+
+        logger.warning(
+            "layout gate: inspect attempt %d/%d unusable (%s)%s",
+            attempt, _INSPECT_ATTEMPTS, last_error,
+            "; retrying" if attempt < _INSPECT_ATTEMPTS else "",
+        )
+
+    if report is None:
+        raise LayoutGateError(last_error)
 
     gating: list[dict] = []
     ignored = 0

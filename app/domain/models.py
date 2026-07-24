@@ -27,6 +27,9 @@ class PipelineStep(str, Enum):
     COMPOSE = "compose"
     LAYOUT_GATE = "layout_gate"
     RENDER = "render"
+    # Compose a designed 1280x720 YouTube thumbnail from the cover scene; runs
+    # last and is best-effort (a failure never fails the job).
+    THUMBNAIL = "thumbnail"
 
 
 def _now() -> datetime:
@@ -82,6 +85,8 @@ class YouTubeUpload(BaseModel):
     video_id: str | None = None
     video_url: str | None = None
     playlist_added: bool | None = None
+    # None = no thumbnail was attempted (none generated); True/False = set / failed.
+    thumbnail_set: bool | None = None
     # invalid_token | quota_exceeded | upload_failed | network_error
     error_code: str | None = None
     error_message: str | None = None

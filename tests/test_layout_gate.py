@@ -106,6 +106,17 @@ class RunLayoutGateTests(unittest.IsolatedAsyncioTestCase):
             return inspect_result
         return mock.patch.object(layout_gate, "_run", side_effect=fake_run)
 
+    def _patch_sequence(self, inspect_results):
+        """Like _patch but returns a different inspect result per call, so a
+        transient inspect flake followed by a clean run can be simulated."""
+        results = iter(inspect_results)
+
+        async def fake_run(program, args, cwd, timeout):
+            if program == "node":
+                return (0, "", "")
+            return next(results)
+        return mock.patch.object(layout_gate, "_run", side_effect=fake_run)
+
     def _report(self, issues: list[dict]) -> str:
         return json.dumps({"ok": True, "issues": issues})
 
@@ -161,6 +172,26 @@ class RunLayoutGateTests(unittest.IsolatedAsyncioTestCase):
     async def test_unparseable_json_raises_infra_error(self) -> None:
         with self.assertRaises(LayoutGateError):
             await self._gate((0, "{not valid json", ""))
+
+    async def test_truncated_inspect_output_recovers_on_retry(self) -> None:
+        # Observed in the wild: inspect's stdout was truncated mid-string
+        # (~8KB of a ~49KB report), so json.loads failed. A re-run parses fine.
+        # A transient inspect flake must not fail the whole job.
+        good = self._report([_issue("text_box_overflow", "error", 1.5)])
+        truncated = good[: len(good) // 2]  # cut off mid-JSON
+        with self._patch_sequence([(0, truncated, ""), (1, good, "")]):
+            issues = await run_layout_gate(
+                self.settings, self.config, _DATA, self.data_path
+            )
+        self.assertEqual(len(issues), 1)
+
+    async def test_persistent_inspect_failure_still_raises(self) -> None:
+        truncated = self._report([]) [:10]
+        with self._patch_sequence([(0, truncated, "")] * 10):
+            with self.assertRaises(LayoutGateError):
+                await run_layout_gate(
+                    self.settings, self.config, _DATA, self.data_path
+                )
 
     async def test_populate_failure_raises_infra_error(self) -> None:
         async def fake_run(program, args, cwd, timeout):

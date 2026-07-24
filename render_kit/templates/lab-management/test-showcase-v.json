@@ -95,9 +95,10 @@
           "color": "#FF6B4A"
         }
       ],
-      "captions": [
-        "Every instrument follows",
-        "the same cycle."
+      "captionTiming": [
+        { "text": "Every instrument follows", "start": 0.3, "end": 2.0 },
+        { "text": "the", "start": 2.0, "end": 2.06 },
+        { "text": "same cycle.", "start": 2.06, "end": 4.5 }
       ],
       "start": 15,
       "duration": 5
