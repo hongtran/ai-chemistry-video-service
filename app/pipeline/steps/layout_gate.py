@@ -21,6 +21,7 @@ import logging
 from pathlib import Path
 
 from app.config import Settings
+from app.pipeline.steps import subproc
 from app.subjects import SubjectConfig
 
 logger = logging.getLogger(__name__)
@@ -88,25 +89,12 @@ def layout_feedback(issues: list[dict]) -> str:
 
 
 async def _run(program: str, args: list[str], cwd: Path, timeout: int) -> tuple[int, str, str]:
-    proc = await asyncio.create_subprocess_exec(
-        program, *args,
-        cwd=str(cwd),
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
     try:
-        stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+        return await subproc.run(program, args, cwd=str(cwd), timeout=timeout)
     except asyncio.TimeoutError:
-        proc.kill()
-        await proc.communicate()
         raise LayoutGateError(
             f"{program} {' '.join(args[:2])} timed out after {timeout}s"
         ) from None
-    return (
-        proc.returncode,
-        stdout.decode("utf-8", "replace"),
-        stderr.decode("utf-8", "replace"),
-    )
 
 
 async def run_layout_gate(

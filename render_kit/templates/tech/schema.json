@@ -60,8 +60,22 @@
               "memory": "use ONLY when the narration contrasts or explains agent memory — short-term conversation context vs long-term preferences/rules. Two stores fill up, then items are recalled.",
               "reflection-loop": "use ONLY when the narration is about self-reflection / the agent checking its own work, catching an error and retrying. Cycle ring: first lap fails at the check, second lap passes.",
               "mcp-hub": "use ONLY when the narration is about Model Context Protocol or standardized integrations — one plug connecting the agent to many external apps. Agent → MCP hub → app chips.",
-              "photo": "use when the scene is best shown with a REALISTIC PHOTOGRAPH filling the screen (a real workspace, hardware, a person coding) rather than a diagram. Write a vivid 'imagePrompt'; the system generates the picture. Prefer the schematic tech types when the content is a diagram/flow.",
-              "photo-split": "like 'photo' but pairs the generated photograph with a short block of text (headline + body) beside it — use when you want a realistic image AND a sentence of explanation on screen together."
+              "photo": "use when the scene is best shown with a REALISTIC PHOTOGRAPH filling the screen (a real workspace, hardware, a person coding) rather than a diagram. Write a vivid 'imagePrompt'; the system generates the picture, which is ANIMATED (add an optional 'anim' to pick the camera move — slow zoom, pan, focus-pull, breathe — matching the scene's mood). Prefer the schematic tech types when the content is a diagram/flow.",
+              "photo-split": "like 'photo' but pairs the generated (animated) photograph with a short block of text (headline + body) beside it — use when you want a realistic image AND a sentence of explanation on screen together. Optional 'anim' picks the picture's motion."
+            }
+          },
+          "anim": {
+            "type": "object",
+            "description": "Optional motion spec for an IMAGE frame (photo, photo-split) — how the generated picture moves. Omit to accept a gentle ken-burns-in push. Choose values that fit the scene's mood.",
+            "properties": {
+              "preset": {
+                "type": "string",
+                "enum": ["ken-burns-in", "ken-burns-out", "pan-left", "pan-right", "pan-up", "pan-down", "push-diagonal", "focus-pull", "breathe"],
+                "description": "Camera move across the still. ken-burns-in/out = slow zoom in/out; pan-* = drift across the frame (good for establishing/landscape shots); push-diagonal = zoom + diagonal drift; focus-pull = starts blurred then snaps sharp (a reveal); breathe = very subtle living pulse."
+              },
+              "intensity": { "type": "string", "enum": ["subtle", "medium", "bold"], "description": "Motion amplitude. Default 'medium'." },
+              "focus": { "type": "string", "enum": ["center", "top", "bottom", "left", "right"], "description": "Where the move anchors (transform-origin / point of interest). Default 'center'." },
+              "overlay": { "type": "string", "enum": ["none", "sweep", "vignette", "grain", "glow"], "description": "Optional atmosphere layer on top of the image: sweep = a light glint crossing once; vignette = breathing dark edges; grain = subtle film grain; glow = accent edge glow. Default 'none'." }
             }
           },
           "start":    { "type": "number", "description": "Scene start in seconds (hand-authored until a caption-alignment pipeline is wired in)." },

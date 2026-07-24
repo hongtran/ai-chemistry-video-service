@@ -25,7 +25,7 @@ from pathlib import Path
 from openai import AsyncOpenAI
 
 from app.config import Settings
-from app.pipeline.steps import images
+from app.pipeline.steps import images, subproc
 from app.pipeline.steps.images import PLACEHOLDER_IMAGE
 from app.subjects import SubjectConfig
 
@@ -50,25 +50,12 @@ class ThumbnailError(Exception):
 
 
 async def _run(program: str, args: list[str], cwd: Path, timeout: int) -> tuple[int, str, str]:
-    proc = await asyncio.create_subprocess_exec(
-        program, *args,
-        cwd=str(cwd),
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
     try:
-        stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=timeout)
+        return await subproc.run(program, args, cwd=str(cwd), timeout=timeout)
     except asyncio.TimeoutError:
-        proc.kill()
-        await proc.communicate()
         raise ThumbnailError(
             f"{program} {' '.join(args[:2])} timed out after {timeout}s"
         ) from None
-    return (
-        proc.returncode,
-        stdout.decode("utf-8", "replace"),
-        stderr.decode("utf-8", "replace"),
-    )
 
 
 def _cover(scenes: list[dict]) -> dict:
