@@ -9,7 +9,7 @@
 #main-clip.vertical   { --pad:84px;  --cap-size:58px; --cap-bottom:200px; --cap-maxw:100%; --eyebrow-size:36px; --headline-size:104px; --title-bottom:360px; --scrim-h:900px; }
 #main-clip.horizontal { --pad:130px; --cap-size:44px; --cap-bottom:80px;  --cap-maxw:1180px; --eyebrow-size:32px; --headline-size:88px; --title-bottom:150px; --scrim-h:560px; }
 
-.photo { position:absolute; inset:0; background-image:url("{{image}}"); background-size:cover; background-position:center; will-change:transform; }
+.photo { position:absolute; inset:0; background-image:url("{{image}}"); background-size:cover; background-position:center; will-change:transform, filter; }
 .scrim { position:absolute; left:0; right:0; bottom:0; height:var(--scrim-h); background:linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 34%, rgba(0,0,0,0) 100%); }
 .frame-edge { position:absolute; inset:0; border:2px solid {{accent}}33; pointer-events:none; }
 .titleblock { position:absolute; z-index:3; left:var(--pad); right:var(--pad); bottom:var(--title-bottom); }
@@ -50,9 +50,42 @@ window.__timelines = window.__timelines || {};
 
   ['.eyebrow','.headline'].forEach(function(sel){ var el=$(sel); if(!el)return; var t=el.textContent.trim(); if(!t){el.style.display='none';return;} el.innerHTML=hl(t); });
 
+  var A = {{anim}} || {};
+  // Shared image-motion engine (see also photo-split). Animates the picture
+  // element `sel` from an authored `anim` spec; defaults to a gentle Ken-Burns
+  // push so scenes with no `anim` look the same as before. Measures the element
+  // so pans stay within overscan for both full-bleed and half-panel images.
+  function hfAnimatePhoto(tl, sel, anim, dur){
+    var el = document.querySelector(sel); if(!el) return;
+    var Q = (anim && typeof anim==='object' && !Array.isArray(anim)) ? anim : {};
+    var KI={subtle:0.6,medium:1.0,bold:1.5}, k=KI[Q.intensity]!=null?KI[Q.intensity]:1.0;
+    var ORG={center:'50% 50%',top:'50% 22%',bottom:'50% 78%',left:'22% 50%',right:'78% 50%'}, origin=ORG[Q.focus]||'50% 50%';
+    var w=el.clientWidth||parseFloat('{{width}}')||1080, h=el.clientHeight||parseFloat('{{height}}')||1920;
+    var PAN=1.16, dx=((PAN-1)/2)*w*0.82*Math.min(k,1.3), dy=((PAN-1)/2)*h*0.82*Math.min(k,1.3);
+    var P={
+      'ken-burns-in':function(){ gsap.set(el,{scale:1,x:0,y:0,transformOrigin:origin}); tl.to(el,{scale:1+0.10*k,duration:dur,ease:'none'},0); },
+      'ken-burns-out':function(){ gsap.set(el,{scale:1+0.12*k,x:0,y:0,transformOrigin:origin}); tl.to(el,{scale:1,duration:dur,ease:'none'},0); },
+      'pan-left':function(){ gsap.set(el,{scale:PAN,x:dx,y:0,transformOrigin:'50% 50%'}); tl.to(el,{x:-dx,duration:dur,ease:'sine.inOut'},0); },
+      'pan-right':function(){ gsap.set(el,{scale:PAN,x:-dx,y:0,transformOrigin:'50% 50%'}); tl.to(el,{x:dx,duration:dur,ease:'sine.inOut'},0); },
+      'pan-up':function(){ gsap.set(el,{scale:PAN,x:0,y:dy,transformOrigin:'50% 50%'}); tl.to(el,{y:-dy,duration:dur,ease:'sine.inOut'},0); },
+      'pan-down':function(){ gsap.set(el,{scale:PAN,x:0,y:-dy,transformOrigin:'50% 50%'}); tl.to(el,{y:dy,duration:dur,ease:'sine.inOut'},0); },
+      'push-diagonal':function(){ gsap.set(el,{scale:1,x:dx*0.4,y:dy*0.3,transformOrigin:origin}); tl.to(el,{scale:1+0.10*k,x:-dx*0.4,y:-dy*0.3,duration:dur,ease:'none'},0); },
+      'focus-pull':function(){ var hd=Math.min(1.4,dur*0.45); gsap.set(el,{scale:1.06,filter:'blur('+(14*k)+'px)',transformOrigin:origin}); tl.to(el,{scale:1.02,filter:'blur(0px)',duration:hd,ease:'power2.out'},0); tl.to(el,{scale:1.06,duration:Math.max(0.1,dur-hd),ease:'none'},hd); },
+      'breathe':function(){ gsap.set(el,{scale:1,x:0,y:0,transformOrigin:origin}); tl.to(el,{scale:1+0.045*k,duration:dur/2,ease:'sine.inOut',yoyo:true,repeat:1},0); }
+    };
+    (P[Q.preset]||P['ken-burns-in'])();
+    if(Q.overlay && Q.overlay!=='none'){
+      var fx=document.createElement('div'); fx.style.cssText='position:absolute;inset:0;pointer-events:none;opacity:0;';
+      if(el.parentNode) el.parentNode.insertBefore(fx, el.nextSibling);
+      if(Q.overlay==='sweep'){ fx.style.background='linear-gradient(115deg, rgba(255,255,255,0) 38%, rgba(255,255,255,0.28) 50%, rgba(255,255,255,0) 62%)'; fx.style.mixBlendMode='screen'; tl.set(fx,{opacity:1}); tl.fromTo(fx,{xPercent:-120},{xPercent:120,duration:Math.min(1.1,dur*0.5),ease:'power2.inOut'},dur*0.18); tl.to(fx,{opacity:0,duration:0.3},dur*0.18+Math.min(1.1,dur*0.5)); }
+      else if(Q.overlay==='vignette'){ fx.style.background='radial-gradient(120% 120% at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.55) 100%)'; tl.fromTo(fx,{opacity:0.35},{opacity:0.7,duration:dur/2,ease:'sine.inOut',yoyo:true,repeat:1},0); }
+      else if(Q.overlay==='grain'){ fx.style.backgroundImage='url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNjAiIGhlaWdodD0iMTYwIj48ZmlsdGVyIGlkPSJuIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iMC44IiBudW1PY3RhdmVzPSIyIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjE2MCIgaGVpZ2h0PSIxNjAiIGZpbHRlcj0idXJsKCNuKSIgb3BhY2l0eT0iMC42Ii8+PC9zdmc+")'; fx.style.backgroundSize='280px 280px'; fx.style.mixBlendMode='overlay'; tl.set(fx,{opacity:0.10}); tl.fromTo(fx,{backgroundPosition:'0px 0px'},{backgroundPosition:'160px 90px',duration:dur,ease:'none'},0); }
+      else if(Q.overlay==='glow'){ fx.style.boxShadow='inset 0 0 180px 40px {{accent}}55'; tl.fromTo(fx,{opacity:0},{opacity:0.9,duration:dur/2,ease:'sine.inOut',yoyo:true,repeat:1},0.2); }
+    }
+  }
+
   var tl = gsap.timeline({ paused:true });
-  // Slow Ken-Burns push across the scene.
-  tl.fromTo($('.photo'), { scale:1.0 }, { scale:1.09, duration:DUR, ease:'none', transformOrigin:'50% 50%' }, 0);
+  hfAnimatePhoto(tl, '.photo', A, DUR);   // preset motion library (anim)
   tl.fromTo($('.scrim'), { opacity:0 }, { opacity:1, duration:0.5 }, 0.1);
   tl.fromTo($('.titleblock'), { opacity:0, y:24 }, { opacity:1, y:0, duration:0.5, ease:'power3.out' }, 0.35);
 

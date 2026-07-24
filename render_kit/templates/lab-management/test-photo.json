@@ -2,4 +2,5 @@
   "scenes":[{ "id":"s1","type":"photo","start":0,"duration":5,
     "eyebrow":"IN THE LAB","headline":"The Accredited Laboratory",
     "imagePrompt":"A realistic wide photograph of a modern testing laboratory with analytical instruments and a technician in a lab coat reviewing a tablet, clean bright environment, no text",
+    "anim":{ "preset":"pan-left","intensity":"medium","overlay":"vignette" },
     "captions":["Step inside","an accredited lab."] }] }

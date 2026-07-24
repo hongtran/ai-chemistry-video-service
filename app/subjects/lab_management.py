@@ -33,6 +33,7 @@ Rules:
 - Choose each scene "type" using the schema's typeUsage guide, matching that scene's own sentences. Prefer a domain-specific type (equipment-register, calibration-cert, document-control, audit-trail, competence-matrix, traceability-chain, nonconformance, reagent-prep, statistics, uncertainty, ...) over a generic one (diagram/cover/cta) whenever the content matches its usage guidance.
 - reagent-prep / statistics / uncertainty share one "formula card" look: fill "formulas" (1-3 named LaTeX equations) and, when it helps, "legend" (short variable definitions). Only use one of these three when the narration is actually walking through the math, not just mentioning a number.
 - For photo / photo-split, write a vivid "imagePrompt" describing the photograph to generate; NEVER author the "image" field itself — the system fills it. Use these when a realistic photograph of a lab, instrument, or record fits better than a diagram, but don't overuse them.
+- Every image frame (photo, photo-split, cover, cta) ANIMATES its generated picture. You may add an optional "anim" object to choose the camera move: a "preset" (ken-burns-in/out, pan-left/right/up/down, push-diagonal, focus-pull, breathe) plus optional "intensity" (subtle/medium/bold), "focus" (center/top/bottom/left/right), and "overlay" (none/sweep/vignette/grain/glow) that match the scene's mood — e.g. a wide establishing shot → a pan; a slow reveal → focus-pull; a calm hero shot → ken-burns-in. Omit "anim" to accept a gentle default push.
 - The cover (opening) and cta (closing) scenes ALSO take an "imagePrompt": write a vivid, topic-relevant HOOK photograph for the cover and a CONCLUSION photograph for the cta. It renders full-bleed behind the headline, so describe a realistic, cinematic scene with no text; the system fills "image".
 - VARY frame types across scenes — do NOT repeat the same type back-to-back unless the content genuinely calls for it. You can see every scene in this batch, so choose types that read as a varied sequence, not a run of identical frames.
 - For the chosen type, fill in its content fields per the schema descriptions (e.g. "headline" and "eyebrow"; "parts" for equipment-register; "tiers" for document-control; "nodes" for traceability-chain). On-screen labels (equipment names, clause references, status chips) are DISPLAY text — keep them short; they do not need to quote the sentences verbatim.
@@ -60,6 +61,7 @@ SCENE_EXAMPLES = """{
       "eyebrow": "ISO/IEC 17025",
       "headline": "Calibration & Traceability",
       "imagePrompt": "A realistic wide photograph of a modern calibration laboratory, a technician in a lab coat adjusting a precision reference instrument under clean bright lighting, shallow depth of field, cinematic, no text",
+      "anim": { "preset": "ken-burns-in", "intensity": "medium", "overlay": "sweep" },
       "captions": ["What does it really take", "for a lab result", "to be trusted worldwide?"]
     },
     {
@@ -290,6 +292,7 @@ SCENE_EXAMPLES = """{
       "eyebrow": "IN THE LAB",
       "headline": "The Accredited Laboratory",
       "imagePrompt": "A realistic wide photograph of a modern testing laboratory with analytical instruments, a technician in a lab coat reviewing a tablet, clean bright environment, no text",
+      "anim": { "preset": "pan-left", "intensity": "medium", "overlay": "vignette" },
       "captions": ["Step inside", "an accredited testing lab."]
     },
     {
@@ -299,6 +302,7 @@ SCENE_EXAMPLES = """{
       "headline": "Label Everything",
       "body": "A clear calibration sticker on every instrument makes status obvious at a glance.",
       "imagePrompt": "A realistic close-up photograph of a laboratory instrument with a small calibration status sticker showing a due date, shallow depth of field, no readable text",
+      "anim": { "preset": "focus-pull", "intensity": "medium", "focus": "center" },
       "captions": ["A simple sticker", "prevents a costly mistake."]
     }
   ]

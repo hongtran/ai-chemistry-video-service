@@ -27,6 +27,7 @@ Emit one object per scene, in the SAME order as given, each echoing its given "i
 Rules:
 - Choose each scene "type" using the schema's typeUsage guide, matching that scene's own sentences. Prefer a concept-specific type (pipeline, tool-use, memory, vector-space, thought-chain, ...) over a generic one (bullet-list) whenever the content matches its usage guidance.
 - For photo / photo-split, write a vivid "imagePrompt" describing the photograph to generate; NEVER author the "image" field itself — the system fills it. Use these when a realistic photograph fits better than a diagram, but don't overuse them.
+- Image frames (photo, photo-split) ANIMATE their generated picture. You may add an optional "anim" object to choose the camera move: a "preset" (ken-burns-in/out, pan-left/right/up/down, push-diagonal, focus-pull, breathe) plus optional "intensity" (subtle/medium/bold), "focus" (center/top/bottom/left/right), and "overlay" (none/sweep/vignette/grain/glow) that match the scene's mood — e.g. an establishing shot → a pan; a slow reveal → focus-pull; an energetic hook → ken-burns-in bold. Omit "anim" to accept a gentle default push.
 - VARY frame types across scenes — do NOT repeat the same type back-to-back unless the content genuinely calls for it. You can see every scene in this batch, so choose types that read as a varied sequence, not a run of identical frames.
 - Fields that hold on-screen labels (node/tool/app/step labels, code lines, terminal commands) are DISPLAY text — they may abbreviate, summarize, and use symbols freely; they do not need to quote the sentences verbatim.
 - The input includes a "REQUIRED CONTENT FIELDS PER TYPE" list: a scene missing ANY of its type's required fields renders as a broken frame. Fill every required field with a real value; if a scene's sentences don't give you enough to fill them, pick a more general type (bullet-list/concept-card/cta) instead. Also give each scene a "headline" or "title" where the type has one — it is the frame's visible title.
@@ -267,6 +268,7 @@ SCENE_EXAMPLES = """{
       "eyebrow": "~/workspace",
       "headline": "Where the **code** lives",
       "imagePrompt": "A realistic photograph of a developer's desk at night with a laptop showing code, a mechanical keyboard, and monitor glow, no text",
+      "anim": { "preset": "ken-burns-in", "intensity": "medium", "overlay": "glow" },
       "captions": ["Every product", "starts at a **desk**."]
     },
     {
@@ -276,6 +278,7 @@ SCENE_EXAMPLES = """{
       "headline": "Where **models** run",
       "body": "Racks of GPUs train and serve the models you call through an API.",
       "imagePrompt": "A realistic photograph of a data center aisle with rows of server racks and blue LED lighting, no text",
+      "anim": { "preset": "focus-pull", "intensity": "medium", "focus": "center" },
       "captions": ["Your prompt reaches", "a room **like this**."]
     }
   ]
